@@ -1,0 +1,15 @@
+import express from "express";
+import * as controller from "../../controller/admin/artist.controller.js";
+;
+import multer from "multer";
+import { uploadCloud } from "../../middleware/admin/uploadCloud.middleware.js";
+const upload = multer({ storage: multer.memoryStorage() });
+const router = express.Router();
+router.get("/", controller.index);
+router.get("/create", controller.create);
+router.post("/create", upload.fields([{ name: "avatar", maxCount: 1 }]), uploadCloud, controller.createPost);
+router.get("/detail/:id", controller.detail);
+router.get("/edit/:id", controller.edit);
+router.patch("/edit/:id", upload.fields([{ name: "avatar", maxCount: 1 }]), uploadCloud, controller.editPost);
+router.patch("/deleted/:id", controller.deleted);
+export const artistRouter = router;

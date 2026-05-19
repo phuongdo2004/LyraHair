@@ -1,0 +1,63 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  main.flex-1.p-10
+    //- Header trang
+    //- Header trang
+    header.mb-10
+      a.text-sm.font-bold.text-neutral-400.flex.items-center.gap-2.mb-3.transition-all(
+        href=`/${prefixAdmin}/categories`
+        class="hover:text-[#FF2D55]"
+      )
+        i.fa-solid.fa-arrow-left
+        | Quay lại danh sách
+      h2.text-3xl.font-bold.serif-font.italic Thêm Danh mục Mới
+      p.text-neutral-400.text-base Tạo một nhóm phân loại mới cho các dịch vụ làm tóc tại salon.
+
+    //- Khung Form Nhập Liệu
+    .max-w-2xl.bg-white.rounded-2xl.border.border-neutral-100.shadow-sm.p-8
+      form(
+        action=`/${prefixAdmin}/categories/create`
+        method="POST"
+      )
+        //- Trường Tên danh mục
+        .mb-6
+          label.block.text-sm.font-black.text-neutral-700.uppercase.tracking-widest.mb-2(for="name")
+            | Tên danh mục 
+            span.text-red-500 *
+          input#name.w-full.px-4.py-4.text-base.rounded-xl.border.border-neutral-200.text-neutral-800.transition-all(
+            type="text"
+            name="name"
+            placeholder="Ví dụ: Cắt tóc nam, Nhuộm màu thời trang, Chăm sóc da đầu..."
+            required
+            class='focus:outline-none focus:border-[#FF2D55] focus:ring-1 focus:ring-[#FF2D55]/20'
+          )
+
+        //- Trường Mô tả danh mục
+        .mb-8
+          label.block.text-sm.font-black.text-neutral-700.uppercase.tracking-widest.mb-2(for="description")
+            | Mô tả danh mục
+          textarea#description.w-full.px-4.py-4.text-base.rounded-xl.border.border-neutral-200.text-neutral-800.transition-all(
+            name="description"
+            rows="5"
+            placeholder="Nhập mô tả ngắn gọn về nhóm danh mục này (không bắt buộc)..."
+            class='focus:outline-none focus:border-[#FF2D55] focus:ring-1 focus:ring-[#FF2D55]/20 resize-none'
+          )
+
+        //- Cụm nút bấm hành động (To, rõ ràng)
+        //- Cụm nút bấm hành động (To, rõ ràng)
+        .flex.items-center.justify-end.gap-4.border-t.border-neutral-50.pt-6
+          a.rounded-full.font-bold.text-sm.uppercase.tracking-widest.transition-all(
+            href=`/${prefixAdmin}/categories`
+            class="px-6 py-3 text-neutral-500 bg-neutral-100 hover:bg-neutral-200"
+          )
+            | Hủy bỏ
+          
+          button.rounded-full.font-bold.text-sm.uppercase.tracking-widest.text-white.transition-all.shadow-lg(
+            type="submit"
+            class="px-8 py-3 bg-[#FF2D55] hover:bg-[#ff4f70] shadow-[#FF2D55]/10"
+          )
+            i.fa-solid.fa-floppy-disk.mr-2
+            | Lưu danh mục

@@ -1,0 +1,78 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  main.flex-1.p-10
+    header.flex.justify-between.items-center.mb-10
+      div
+        h2.text-3xl.font-bold.serif-font.italic Hồ sơ cá nhân
+        p.text-neutral-400.text-sm Quản lý thông tin tài khoản và thiết lập bảo mật của bạn.
+      //- Phần Header trong block main
+      .flex.gap-4
+        //- Chuyển thành thẻ a với thuộc tính href
+        a#editBtn.px-6.py-3.bg-black.rounded-full.font-bold.text-sm.uppercase.tracking-widest.flex.items-center.gap-2.transition-all.shadow-lg(
+          href=`/${prefixAdmin}/profile/edit` 
+          class='text-[#D2B48C] hover:bg-neutral-800 shadow-black/10'
+        )
+          i.fa-solid.fa-pen-to-square
+          |  Chỉnh sửa hồ sơ
+
+        //- Nút lưu thường dùng trong form nên giữ là button hoặc có thể xóa nếu trang này chỉ để xem
+        button#saveBtn.hidden.px-6.py-3.bg-green-600.text-white.rounded-full.font-bold.text-sm.uppercase.tracking-widest.flex.items-center.gap-2.transition-all(
+          onclick='saveProfile()' 
+          class='hover:bg-green-700'
+        )
+          i.fa-solid.fa-check
+          |  Lưu thay đổi
+
+    .grid.grid-cols-1.gap-8(class='lg:grid-cols-3')
+      //- Dòng 18: Thêm 'div' vào trước hoặc chỉ dùng div(class=...)
+      div(class='lg:col-span-1')
+        .card.p-8.text-center.flex.flex-col.items-center
+          .relative.group
+            img#avatarPreview.w-40.h-40.rounded-full.border-4.object-cover.shadow-xl.transition-all(src=user.avatar[0] class='border-[#F5F5DC] group-hover:opacity-80')
+            label#avatarLabel.hidden.absolute.inset-0.flex.items-center.justify-center.cursor-pointer.rounded-full.text-white.text-sm.transition-all(for='avatarInput' class='bg-black/40')
+              i.fa-solid.fa-camera.text-xl
+            input#avatarInput.hidden(type='file' accept='image/*' onchange='previewImage(event)')
+          h3.mt-6.text-xl.font-bold.serif-font.italic #{user.fullName}
+          p.text-xs.font-black.uppercase.tracking-widest.mt-2(class='text-[#D2B48C]') Quản trị viên cấp cao
+          .w-full.bg-neutral-100.my-6(class='h-[1px]')
+          .flex.flex-col.gap-4.w-full
+            .flex.justify-between.text-xs
+              span.text-neutral-400.font-bold.uppercase.tracking-tighter Ngày gia nhập
+              span.font-bold #{user.createdAt}
+            .flex.justify-between.text-xs
+              span.text-neutral-400.font-bold.uppercase.tracking-tighter Kinh nghiệm
+              span.text-green-500.font-bold #{user.experience} năm       
+            .flex.justify-between.text-xs
+              span.text-neutral-400.font-bold.uppercase.tracking-tighter Trạng thái
+              span.text-green-500.font-bold Hoạt động
+
+      //- Dòng 30: Tương tự, thêm 'div' vào trước
+      div(class='lg:col-span-2')
+        .card.p-8
+          h4.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-8.border-b.border-neutral-50.pb-4 Thông tin chi tiết
+          form#profileForm.grid.grid-cols-1.gap-6(class='md:grid-cols-2')
+            .space-y-2
+              label.font-black.uppercase.tracking-widest.text-neutral-500(class='text-[10px]') Họ và tên
+              input.profile-input.w-full.px-4.py-3.bg-neutral-50.border-none.rounded-xl.text-sm.outline-none.transition-all(type='text' value=user.fullName disabled='' class='focus:ring-1 focus:ring-[#D2B48C] disabled:opacity-70')
+            .space-y-2
+              label.font-black.uppercase.tracking-widest.text-neutral-500(class='text-[10px]') Email liên hệ
+              input.profile-input.w-full.px-4.py-3.bg-neutral-50.border-none.rounded-xl.text-sm.outline-none.transition-all(type='email' value=user.email disabled='' class='focus:ring-1 focus:ring-[#D2B48C] disabled:opacity-70')
+            .space-y-2
+              label.font-black.uppercase.tracking-widest.text-neutral-500(class='text-[10px]') Số điện thoại
+              input.profile-input.w-full.px-4.py-3.bg-neutral-50.border-none.rounded-xl.text-sm.outline-none.transition-all(type='text' value=user.phone disabled='' class='focus:ring-1 focus:ring-[#D2B48C] disabled:opacity-70')
+            .space-y-2
+              label.font-black.uppercase.tracking-widest.text-neutral-500(class='text-[10px]') Địa chỉ
+              input.profile-input.w-full.px-4.py-3.bg-neutral-50.border-none.rounded-xl.text-sm.outline-none.transition-all(type='text' value=user.address disabled='' class='focus:ring-1 focus:ring-[#D2B48C] disabled:opacity-70')
+            //- .space-y-2
+            //-   label.font-black.uppercase.tracking-widest.text-neutral-500(class='text-[10px]') Vị trí công việc
+            //-   input.profile-input.w-full.px-4.py-3.bg-neutral-50.border-none.rounded-xl.text-sm.outline-none.transition-all(type='text' value=user.position disabled='' class='focus:ring-1 focus:ring-[#D2B48C] disabled:opacity-70')
+            .space-y-2.pt-4(class='md:col-span-2')
+              label.font-black.uppercase.tracking-widest.text-neutral-500(class='text-[10px]') Tiểu sử tóm tắt
+              textarea.profile-input.w-full.px-4.py-3.bg-neutral-50.border-none.rounded-xl.text-sm.outline-none.transition-all(disabled='' class='focus:ring-1 focus:ring-[#D2B48C] disabled:opacity-70' rows='3')
+                | #{user.biography}
+          h4.font-black.uppercase.tracking-widest.text-red-400.mt-12.mb-6.flex.items-center.gap-2(class='text-[10px]')
+            i.fa-solid.fa-shield-halved
+            |  Bảo mật tài khoản

@@ -1,0 +1,414 @@
+extends ../../layouts/default.pug
+
+block main
+  //- Toàn bộ trang được bao bọc bởi lớp nền Pastel kem sữa ấm áp, thanh lịch
+  div.min-h-screen.w-full.text-neutral-800(class='bg-[#FDFBF7]')
+    
+    //- ================= HERO BANNER: NỀN PASTEL NGHỆ THUẬT & CỤM ẢNH BẤT ĐỐI XỨNG =================
+    //- ================= HERO BANNER: NỀN PASTEL NGHỆ THUẬT & CỤM ẢNH BẤT ĐỐI XỨNG =================
+    section.service-banner.relative.py-20.overflow-hidden.border-b(class='bg-[#F7F4EF] border-neutral-200/60')
+      //- Background hiệu ứng đèn Blur hồng nhạt thơ mộng phía sau
+      .absolute.w-96.h-96.rounded-full.blur-3xl.opacity-25.top-10.left-10(class='bg-[#FF69B4]')
+      .absolute.w-96.h-96.rounded-full.blur-3xl.opacity-25.bottom-10.right-10(class='bg-[#FF69B4]')
+
+      .container.mx-auto.px-6.relative.z-10(class='max-w-7xl')
+        .grid.grid-cols-1.gap-12.items-center(class='lg:grid-cols-12')
+          
+          //- Bên trái: Tiêu đề & Breadcrumb
+          div(class='lg:col-span-7 space-y-6 text-left')
+            p.text-xs.uppercase.font-black(class='text-[#FF69B4] tracking-[0.3em]')
+              | Trang chủ / Dịch vụ / #{service.name}
+            
+            //- SỬA TẠI ĐÂY: Ép hẳn màu text-neutral-950 (Đen sẫm bậc nhất) để tiêu đề nổi bật hoàn toàn
+            h1.text-4xl.font-black.leading-tight.text-neutral-950(class='md:text-5xl lg:text-6xl tracking-tight uppercase font-serif') 
+              | #{service.name}
+            .h-1.w-24(class='bg-gradient-to-r from-[#FF69B4] to-transparent')
+            p(class="text-sm font-bold leading-relaxed text-[#F497B1] max-w-xl")
+              | Trải nghiệm dịch vụ đẳng cấp được cá nhân hóa hoàn toàn tại Lyra Hair Studio. Đội ngũ stylist hàng đầu sẵn sàng đồng hành cùng bạn để tạo nên diện mạo hoàn hảo nhất.
+          div(class='lg:col-span-5 relative h-[380px] w-full hidden md:block')
+            //- Ảnh lớn phía sau
+            .absolute.top-0.right-4.overflow-hidden.border.shadow-xl(class='w-[80%] h-[85%] rounded-[32px] border-neutral-200 bg-white')
+              img.w-full.h-full.object-cover(src=service.images alt=service.name)
+            //- Ảnh nhỏ đè phía trước bên dưới
+            .absolute.bottom-0.left-4.overflow-hidden.border-4.shadow-xl.z-20(class='w-[50%] h-[55%] rounded-[24px] border-[#F7F4EF] bg-neutral-100')
+              if service.allImages && service.allImages[1]
+                img.w-full.h-full.object-cover(src=service.allImages[1])
+              else
+                .w-full.h-full.flex.items-center.justify-center(class='text-[#FF69B4]/40')
+                  i.fa-solid.fa-wand-magic-sparkles.text-3xl
+    //- ================= MAIN BENTO CONTENT: CHIA KHỐI TRÊN NỀN SÁNG =================
+    main.container.mx-auto.px-6.py-16.relative.z-20(class='max-w-7xl')
+      .grid.grid-cols-1.gap-8(class='lg:grid-cols-12')
+        
+        //- CỘT 1 (Trái - Lg: 4 cột): WIDGET THÔNG TIN NHANH
+        div(class='lg:col-span-4 space-y-6')
+          //- Thẻ Badge Dịch vụ
+          .p-6.rounded-3xl.border.bg-white.shadow-sm.transition-all(class='border-neutral-200/60 hover:shadow-md hover:border-[#FF69B4]/40')
+            .flex.items-center.gap-4
+              .w-12.h-12.rounded-2xl.flex.items-center.justify-center(class='bg-[#FF69B4]/10 text-[#FF69B4]')
+                i.fa-solid.fa-gem.text-lg
+              div
+                span.font-extrabold.tracking-widest.uppercase.block(class='text-[#FF69B4] text-[10px]') Phân hạng
+                p.text-base.font-bold.text-neutral-900(class='mt-0.5') Premium Experience
+
+          //- Thẻ Địa điểm
+          .p-6.rounded-3xl.border.bg-white.shadow-sm.transition-all(class='border-neutral-200/60 hover:shadow-md hover:border-[#FF69B4]/40')
+            .flex.items-start.gap-4
+              .w-12.h-12.rounded-2xl.flex.items-center.justify-center.flex-shrink-0(class='bg-[#FF69B4]/10 text-[#FF69B4]')
+                i.fa-solid.fa-location-dot.text-lg
+              div
+                span.font-extrabold.tracking-widest.uppercase.block(class='text-neutral-400 text-[10px]') Địa điểm thực hiện
+                p.text-sm.font-medium.leading-relaxed(class='text-neutral-700 mt-1')
+                  | Thị trấn Lim, Huyện Tiên Du, Bắc Ninh
+
+          //- Thẻ Thời gian vận hành
+          .p-6.rounded-3xl.border.bg-white.shadow-sm.transition-all(class='border-neutral-200/60 hover:shadow-md hover:border-[#FF69B4]/40')
+            .flex.items-center.gap-4
+              .w-12.h-12.rounded-2xl.flex.items-center.justify-center(class='bg-[#FF69B4]/10 text-[#FF69B4]')
+                i.fa-solid.fa-clock.text-lg
+              div
+                span.font-extrabold.tracking-widest.uppercase.block(class='text-neutral-400 text-[10px]') Thời gian xử lý
+                p.text-base.font-bold.text-neutral-900(class='mt-0.5') #{service.duration} phút / ca
+
+        //- CỘT 2 (Giữa - Lg: 5 cột): CHI TIẾT & TIỆN ÍCH
+        div(class='lg:col-span-5')
+          .p-8.rounded-3xl.border.bg-white.shadow-sm.h-full(class='border-neutral-200/60')
+            h3.text-lg.font-bold.text-neutral-900.mb-6.pb-4.border-b.flex.items-center.gap-2(class='border-neutral-100 tracking-wide')
+              i.fa-solid.fa-circle-info(class='text-[#FF69B4]')
+              | Mô tả chi tiết dịch vụ
+            
+            .space-y-6.text-sm.leading-relaxed(class='text-neutral-600')
+              p #{service.description || 'Chưa có mô tả chi tiết cho dịch vụ này. Vui lòng liên hệ hỗ trợ để biết thêm chi tiết.'}
+              
+              .pt-6.border-t(class='border-neutral-100')
+                h4.text-xs.font-bold.uppercase.mb-4.tracking-wider(class='text-[#FF69B4]') Đặc quyền đi kèm:
+                ul.space-y-3.text-xs(class='text-neutral-500')
+                  li.flex.items-center.gap-3
+                    i.fa-solid.fa-check.text-xs(class='text-[#FF69B4]')
+                    span Tư vấn layout phù hợp với từng khuôn mặt miễn phí.
+                  li.flex.items-center.gap-3
+                    i.fa-solid.fa-check.text-xs(class='text-[#FF69B4]')
+                    span Sử dụng 100% mỹ phẩm chính hãng cao cấp.
+                  li.flex.items-center.gap-3
+                    i.fa-solid.fa-check.text-xs(class='text-[#FF69B4]')
+                    span Tặng kèm nước uống và bánh ngọt tại phòng chờ VIP.
+
+        //- CỘT 3 (Phải - Lg: 3 cột): THẺ BÁO GIÁ STICKY
+        div(class='lg:col-span-3')
+          .sticky.top-24.p-6.rounded-3xl.border.bg-white.shadow-md(class='border-neutral-200/80')
+            .inline-block.mb-3.rounded-md.font-black.tracking-widest(class='bg-[#FF69B4]/10 text-[#FF69B4] text-[9px] px-2 py-0.5') BOOKING CARD
+            h4.text-sm.font-bold.text-neutral-800.mb-4(class='tracking-wide') Chi phí thực hiện
+            
+            .p-4.rounded-2xl.mb-6(class='bg-[#F7F4EF] border border-neutral-200/40')
+              p.text-xs.uppercase.tracking-wider(class='text-neutral-400') Giá trọn gói
+              p.text-3xl.font-black(class='text-[#FF69B4] mt-1') #{(service.price * 1).toLocaleString()} đ
+            
+            button.w-full.py-4.font-bold.rounded-xl.transition-all.uppercase.text-xs.shadow-sm.flex.items-center.justify-center.gap-2(onclick='openBookingModal()' class='bg-[#121212] text-white hover:bg-[#FF69B4] tracking-[0.15em] hover:scale-[1.02]')
+              i.fa-solid.fa-calendar-check
+              | Đặt lịch ngay
+
+      //- ================= SECTION SLIDER: ALBUM ẢNH THỰC TẾ =================
+      .py-16.mt-16.border-t(class='border-neutral-200/60')
+        .flex.flex-col.justify-between.items-start.mb-8.gap-2(class='md:flex-row md:items-end')
+          div
+            p.text-xs.font-bold.uppercase.tracking-widest(class='text-[#FF69B4]') Gallery
+            h3.text-2xl.font-bold.text-neutral-900(class='md:text-3xl font-serif mt-1') Ảnh thực tế từ khách hàng
+          p.text-xs(class='text-neutral-400') (Hình ảnh 100% thực tế được chụp tại Lyra Hair Studio)
+        
+        .relative.max-w-4xl.mx-auto.overflow-hidden.rounded-3xl.border(class='border-neutral-200/60 shadow-sm')
+          .swiper.mySwiper.overflow-hidden(class='bg-white')
+            .swiper-wrapper
+              - var testImages = service.allImages ? service.allImages : [];
+              if testImages.length > 0
+                each imgUrl in testImages
+                  .swiper-slide.flex.items-center.justify-center.p-4
+                    .w-full.overflow-hidden.rounded-2xl.flex.items-center.justify-center(class='h-[350px] md:h-[500px]')
+                      img.w-full.h-full.object-contain(
+                        src=`${imgUrl}?auto=format&fit=max&w=1200&q=80` 
+                        alt=service.name
+                      )
+              else
+                .swiper-slide.flex.items-center.justify-center(class='text-neutral-300 h-[350px]')
+                  p Chưa có thêm hình ảnh album thực tế cho dịch vụ này.
+            .swiper-button-next(class='!text-[#FF69B4]')
+            .swiper-button-prev(class='!text-[#FF69B4]')
+            .swiper-pagination
+
+    //- ================= MODAL 1: ĐẶT LỊCH DỊCH VỤ =================
+    #bookingModal.fixed.inset-0.hidden.items-center.justify-center.p-4(class='z-[100] bg-black/40 backdrop-blur-sm' onclick='closeBookingModal()')
+      .w-full.max-w-2xl.shadow-2xl.overflow-hidden.relative.border(class='bg-white rounded-[32px] border-neutral-100' onclick='event.stopPropagation()')
+        .p-6.border-b.flex.justify-between.items-center(class='bg-[#F7F4EF] border-neutral-200/60 text-[#FF69B4]')
+          h3.font-bold.text-base.uppercase.tracking-wider(class='font-serif italic text-neutral-800') ĐẶT LỊCH DỊCH VỤ
+          //- Đưa toàn bộ class vào trong ngoặc đơn như thế này:
+          button(class="text-2xl text-neutral-400 hover:text-black" onclick="closeBookingModal()") ×     
+        .p-8.overflow-y-auto(class='max-h-[70vh] custom-scrollbar text-neutral-800')
+          //- BƯỚC 1: Chọn Nhân viên
+          .mb-8
+            label.uppercase.font-bold.block.mb-4(class='tracking-[0.2em] text-[#FF69B4] text-[11px]') 1. CHỌN CHUYÊN VIÊN STYLIST
+            .grid.grid-cols-2.gap-4(class='sm:grid-cols-3' id='artistList')
+              - var testArtists = artists ? artists : [];
+              if testArtists.length > 0
+                each artist in testArtists
+                  .artist-item.p-4.border.rounded-2xl.text-center.cursor-pointer.transition-all(
+                    class='bg-white border-neutral-200 hover:border-[#FF69B4] hover:shadow-sm'
+                    data-id=artist.id 
+                    data-name=artist.name 
+                    onclick='selectArtist(this)'
+                  )
+                    img.w-14.h-14.rounded-full.object-cover.mx-auto.mb-2.border(src=artist.avatar ? artist.avatar : '/images/default-avatar.png' class='border-neutral-100')
+                    p.text-xs.font-bold.text-neutral-800.uppercase.tracking-tight #{artist.name}
+                    p.mt-1(class='text-neutral-400 text-[10px]') #{artist.experience || 0} năm kinh nghiệm
+              else
+                p.text-sm.col-span-full(class='text-neutral-400') Chuyên viên hiện không có sẵn.
+
+          //- BƯỚC 2: Chọn Ngày
+          #dateSection.mb-8.hidden.border-t.pt-8(class='border-neutral-100')
+            label.uppercase.font-bold.block.mb-4(class='tracking-[0.2em] text-[#FF69B4] text-[11px]') 2. CHỌN NGÀY HẸN
+            #dateList.flex.gap-3.overflow-x-auto.pb-4.no-scrollbar
+
+          //- BƯỚC 3: Chọn Khung Giờ
+          #timeSection.mb-8.hidden.border-t.pt-8(class='border-neutral-100')
+            label.uppercase.font-bold.block.mb-4(class='tracking-[0.2em] text-[#FF69B4] text-[11px]') 3. CHỌN KHUNG GIỜ CÒN TRỐNG
+            #timeList.grid.grid-cols-2.gap-3(class='sm:grid-cols-3 md:grid-cols-4')
+
+        .p-6.border-t.flex.gap-4(class='bg-[#F7F4EF] border-neutral-200/60')
+          button.flex-1.py-3.bg-transparent.border.rounded-xl.font-bold.text-xs.uppercase.text-neutral-600(class='border-neutral-300 hover:bg-neutral-100' onclick='closeBookingModal()') Hủy bỏ
+          button.py-3.rounded-xl.font-black.text-xs.uppercase(onclick='openConfirmModal()' class='flex-[2] bg-[#FF69B4] text-white shadow-sm shadow-[#FF69B4]/20') Xác nhận đặt lịch
+
+    //- ================= MODAL 2: XÁC NHẬN THÔNG TIN =================
+    #confirmModal.fixed.inset-0.hidden.items-center.justify-center.p-4(class='z-[110] bg-black/40 backdrop-blur-sm')
+      .w-full.max-w-xl.shadow-2xl.overflow-hidden.relative.border(class='bg-white rounded-[32px] border-neutral-100' onclick='event.stopPropagation()')
+        .p-6.border-b.flex.justify-between.items-center(class='border-neutral-200/60 text-neutral-800 bg-[#F7F4EF]')
+          h3.font-bold.text-base.uppercase.tracking-wider(class='font-serif italic') Xác nhận thông tin đặt lịch
+          //- THAY THẾ DÒNG 184 CŨ BẰNG DÒNG DƯỚI ĐÂY:
+          button(class="text-2xl text-neutral-400 hover:text-black" onclick="closeConfirmModal()") ×
+        .p-8.text-neutral-700
+          .space-y-4
+            .flex.justify-between.pb-2.border-b.border-dashed(class='border-neutral-200')
+              span(class='text-neutral-400') Dịch vụ:
+              span.font-bold.text-neutral-800 #{service.name}
+            .flex.justify-between.pb-2.border-b.border-dashed(class='border-neutral-200')
+              span(class='text-neutral-400') Chuyên viên:
+              span#selectedArtistDisplay.font-bold.text-neutral-800 --
+            .flex.justify-between.pb-2.border-b.border-dashed(class='border-neutral-200')
+              span(class='text-neutral-400') Ngày:
+              span#selectedDateDisplay.font-bold.text-neutral-800 --/--/2026
+            .flex.justify-between.pb-2.border-b.border-dashed(class='border-neutral-200')
+              span(class='text-neutral-400') Giờ:
+              span#displayTimeConfirm.font-bold.text-neutral-800 --:--
+            .flex.justify-between.pb-2.border-b.border-dashed(class='border-neutral-200')
+              span(class='text-neutral-400') Địa điểm:
+              span.font-bold.text-neutral-800 Thị trấn Lim, Huyện Tiên Du, Bắc Ninh
+            .flex.justify-between.pb-2.border-b.border-dashed(class='border-neutral-200')
+              span(class='text-neutral-400') Tổng giá dịch vụ:
+              span.font-bold(class='text-neutral-600') #{(service.price * 1).toLocaleString()} đ
+            .flex.justify-between.pb-2.border-b.border-dashed(class='border-neutral-200')
+              span(class='text-neutral-400') Tiền đặt cọc trực tuyến:
+              span.font-bold.text-neutral-800 100.000 đ
+            
+            .flex.justify-between.pt-4
+              span(class='text-neutral-400') Số tiền thanh toán tại Salon:
+              span.text-xl.font-black(class='text-[#FF69B4]') #{((service.price * 1) - 100000).toLocaleString()} đ
+
+        .p-6.flex.gap-4(class='bg-[#F7F4EF] border-neutral-200/60')
+          button.flex-1.py-3.bg-transparent.border.rounded-xl.font-bold.text-neutral-600(class='border-neutral-300 hover:bg-neutral-100' onclick='closeConfirmModal()') Quay lại
+          button.py-3.rounded-xl.font-black(onclick='goToPaymentPage()' class='flex-[2] bg-[#FF69B4] text-white shadow-sm') Tiến hành thanh toán
+
+  style.
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .artist-item.selected { border-color: #FF69B4 !important; background-color: rgba(255, 105, 180, 0.05); box-shadow: 0 4px 12px rgba(255,105,180,0.1); }
+    .date-item.selected { background-color: #FF69B4 !important; color: white !important; border-color: #FF69B4 !important; }
+    .date-item.selected p { color: rgba(255,255,255,0.8) !important; }
+    .time-item.selected { background-color: #FF69B4 !important; color: white !important; border-color: #FF69B4 !important; }
+    .swiper-slide {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+  //- THƯ VIỆN & CẤU HÌNH SWIPER JS
+  script(src='https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js')
+  link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css')
+  script.
+    document.addEventListener('DOMContentLoaded', function () {
+      new Swiper('.mySwiper', {
+        slidesPerView: 1,
+        centeredSlides: true,
+        spaceBetween: 0,
+        loop: true,
+        speed: 800,
+        autoplay: {
+          delay: 3000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        pagination: { el: '.swiper-pagination', clickable: true },
+      });
+    });
+
+    let bookingData = { artistId: '', artistName: '', date: '', time: '' };
+
+    function openBookingModal() {
+      const modal = document.getElementById('bookingModal');
+      modal.style.display = 'flex';
+      modal.classList.remove('hidden');
+    }
+
+    function closeBookingModal() {
+      const modal = document.getElementById('bookingModal');
+      modal.style.display = 'none';
+      modal.classList.add('hidden');
+    }
+
+    function selectArtist(element) {
+      document.querySelectorAll('.artist-item').forEach(el => el.classList.remove('selected'));
+      element.classList.add('selected');
+      
+      bookingData.artistId = element.getAttribute('data-id');
+      bookingData.artistName = element.getAttribute('data-name');
+      
+      document.getElementById('dateSection').classList.remove('hidden');
+      renderDays();
+
+      document.getElementById('timeSection').classList.add('hidden');
+      bookingData.date = '';
+      bookingData.time = '';
+    }
+
+    function renderDays() {
+      const dateList = document.getElementById('dateList');
+      dateList.innerHTML = '';
+      const daysOfWeek = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+      const today = new Date();
+
+      for (let i = 0; i < 7; i++) {
+        const nextDate = new Date(today);
+        nextDate.setDate(today.getDate() + i);
+
+        const dayName = i === 0 ? 'Hôm nay' : daysOfWeek[nextDate.getDay()];
+        const dateString = `${nextDate.getDate()}/${nextDate.getMonth() + 1}`;
+        const fullDateValue = `${nextDate.getFullYear()}-${String(nextDate.getMonth() + 1).padStart(2, '0')}-${String(nextDate.getDate()).padStart(2, '0')}`;
+
+        const dayBtn = document.createElement('div');
+        dayBtn.className = 'date-item flex-shrink-0 w-24 p-3 border border-neutral-200 bg-white rounded-2xl text-center cursor-pointer transition-all hover:border-[#FF69B4]';
+        dayBtn.innerHTML = `
+          <p class="text-[10px] font-bold text-neutral-400 uppercase">${dayName}</p>
+          <p class="text-sm font-black text-neutral-700 mt-1">${dateString}</p>
+        `;
+        
+        dayBtn.onclick = async function() {
+          document.querySelectorAll('.date-item').forEach(el => el.classList.remove('selected'));
+          dayBtn.classList.add('selected');
+          bookingData.date = fullDateValue;
+          
+          document.getElementById('timeSection').classList.add('hidden');
+          
+          try {
+            const response = await fetch(`/service/check-busy?id_artist=${bookingData.artistId}&booking_date=${bookingData.date}`);
+            const result = await response.json();
+            
+            if (result.success) {
+              document.getElementById('timeSection').classList.remove('hidden');
+              const isToday = (i === 0); 
+              renderTimeSlots(result.busySlots, isToday);
+            } else {
+              alert("Không thể tải lịch làm việc của nghệ sĩ này!");
+            }
+          } catch (error) {
+            console.error("Lỗi kết nối:", error);
+          }
+        };
+        dateList.appendChild(dayBtn);
+      }
+    }
+
+    function renderTimeSlots(busySlots = [], isToday = false) {
+      const timeList = document.getElementById('timeList');
+      timeList.innerHTML = '';
+      bookingData.time = '';
+
+      const currentHour = new Date().getHours();
+
+      for (let hour = 8; hour <= 20; hour++) {
+        if (isToday && hour < currentHour) {
+          continue;
+        }
+
+        const startTime = `${String(hour).padStart(2, '0')}:00`;
+        const endTime = `${String(hour + 1).padStart(2, '0')}:00`;
+        const slotDisplay = `${startTime} - ${endTime}`;
+
+        const isBusy = busySlots.includes(slotDisplay);
+        const timeBtn = document.createElement('div');
+        
+        if (isBusy) {
+          timeBtn.className = 'time-item p-3 border border-neutral-100 bg-neutral-50 text-neutral-300 rounded-xl text-center cursor-not-allowed font-bold text-xs line-through opacity-60';
+          timeBtn.innerText = `${slotDisplay} (Bận)`;
+        } else {
+          timeBtn.className = 'time-item p-3 border border-neutral-200 bg-white rounded-xl text-center cursor-pointer font-bold text-xs transition-all hover:border-[#FF69B4] text-neutral-700';
+          timeBtn.innerText = slotDisplay;
+          
+          timeBtn.onclick = function() {
+            document.querySelectorAll('.time-item').forEach(el => el.classList.remove('selected'));
+            timeBtn.classList.add('selected');
+            bookingData.time = slotDisplay;
+          };
+        }
+        timeList.appendChild(timeBtn);
+      }
+    }
+
+    function openConfirmModal() {
+      if (!bookingData.artistId || !bookingData.date || !bookingData.time) {
+        alert('Vui lòng hoàn thành đủ 3 bước chọn: Chuyên viên, Ngày hẹn và Giờ ca làm việc nhé!');
+        return;
+      }
+      
+      document.getElementById('selectedArtistDisplay').innerText = bookingData.artistName;
+      const [year, month, day] = bookingData.date.split('-');
+      document.getElementById('selectedDateDisplay').innerText = `${day}/${month}/${year}`;
+      document.getElementById('displayTimeConfirm').innerText = bookingData.time;
+
+      document.getElementById('confirmModal').style.display = 'flex';
+      document.getElementById('confirmModal').classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').style.display = 'none';
+      document.getElementById('confirmModal').classList.add('hidden');
+    }
+
+    function goToPaymentPage() {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/payment';
+      
+      const depositAmount = 100000;
+      const servicePrice = parseFloat("#{service.price}");
+      const remainingBalance = servicePrice - depositAmount;
+      const serviceAddress = "Thị trấn Lim, Huyện Tiên Du, Bắc Ninh"; 
+
+      const data = {
+        id_service: "#{service.id}", 
+        id_artist: bookingData.artistId,        
+        booking_date: bookingData.date,         
+        slot_time: bookingData.time,            
+        price: servicePrice,
+        deposit: depositAmount,                 
+        remaining_balance: remainingBalance,    
+        address: serviceAddress
+      };
+
+      for (const key in data) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = data[key];
+        form.appendChild(input);
+      }
+      
+      document.body.appendChild(form);
+      form.submit();
+    }

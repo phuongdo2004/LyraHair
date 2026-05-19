@@ -1,0 +1,41 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  main.flex-1.p-12
+    +alert(3000)
+    main.flex-1.p-10
+      header.flex.justify-between.items-center.mb-10
+        div
+          h2.text-3xl.font-bold.serif-font.italic Đánh giá từ khách hàng
+          p.text-neutral-400.text-sm Lắng nghe phản hồi để nâng cao chất lượng dịch vụ Susannie.
+        .flex.gap-4
+          .flex.items-center.bg-white.px-4.py-2.rounded-2xl.border.border-neutral-100.shadow-sm
+            //- Hiển thị điểm trung bình từ stats
+            span.font-bold.mr-2(class='text-[#D2B48C]') #{stats.avg}
+            .flex(class='text-[#D2B48C] text-[10px]')
+              - for (var i = 1; i <= 5; i++)
+                i(class=(i <= Math.round(stats.avg) ? 'fa-solid fa-star' : 'fa-regular fa-star'))
+            span.text-neutral-300.ml-2.font-bold.uppercase.tracking-widest(class='text-[10px]') (#{stats.total} Đánh giá)
+        if reviews && reviews.length > 0
+          .reviews-row.flex.flex-wrap.gap-6.justify-start
+            each review in reviews
+              .card.p-8.group.bg-white.rounded-3xl.border.border-neutral-100.shadow-sm.flex-1(class='min-w-[320px]')
+                .flex.justify-between.items-start.mb-6
+                  .flex.items-center.gap-4
+                    img.w-12.h-12.rounded-full.border.border-neutral-100.object-cover(src=review.customerAvatar || "/images/default-avatar.png")
+                    div
+                      h4.text-sm.font-bold.text-neutral-800 #{review.customerName}
+                      p.text-neutral-400.uppercase.tracking-widest(class='text-[10px]') Dịch vụ: #{review.serviceName} • #{new Date(review.createdAt).toLocaleDateString('vi-VN')}
+                  .flex.flex-col.items-end
+                    .flex.mb-1(class='text-[#D2B48C] text-[11px]')
+                      - for (var i = 1; i <= 5; i++)
+                        if (i <= review.rating)
+                          i.fa-solid.fa-star
+                        else
+                          i.fa-regular.fa-star
+                    span.status-pill.bg-green-50.text-green-600.px-2.py-1.rounded-lg(class='text-[9px] uppercase font-bold') Đã xác thực
+                p.text-sm.text-neutral-600.leading-relaxed.mb-6
+                  | "#{review.content}"
+        else
+          p.text-center.text-neutral-400 Chưa có đánh giá nào.

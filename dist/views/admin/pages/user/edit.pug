@@ -1,0 +1,114 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  main.flex-1.p-10
+    header.flex.justify-between.items-center.mb-10
+      div
+        h2.text-3xl.font-bold.serif-font.italic Chỉnh sửa hồ sơ
+        p.text-neutral-400.text-sm Cập nhật thông tin cá nhân của bạn để mọi người luôn nhận ra bạn.
+      .flex.gap-4
+        a.px-6.py-3.bg-white.border.border-neutral-200.rounded-full.font-bold.text-sm.uppercase.tracking-widest.flex.items-center.gap-2.transition-all(
+          href='/admin/profile' 
+          class='hover:bg-neutral-50 text-neutral-600'
+        )
+          i.fa-solid.fa-arrow-left
+          |  Quay lại
+    
+    //- Form bắt đầu ở đây để bao quát cả phần upload ảnh và input
+    form#profileForm(action="/admin/profile/edit?_method=PATCH" method="POST" enctype="multipart/form-data")
+      .grid.grid-cols-1.gap-8(class='lg:grid-cols-3')
+        
+        //- Cột trái: Ảnh đại diện
+      //- Thay thế đoạn cũ bằng đoạn này
+      div(class='lg:col-span-1')
+        .card.p-8.text-center.flex.flex-col.items-center
+          .relative.group
+            img#avatarPreview.w-40.h-40.rounded-full.border-4.object-cover.shadow-xl.transition-all(
+              name  = "avatar"
+              src=user.avatar[0]
+              class='border-[#F5F5DC]'
+            )
+            label.absolute.inset-0.flex.items-center.justify-center.cursor-pointer.rounded-full.text-white.text-sm.transition-all(
+              for='avatarInput' 
+              class='bg-black/40 hover:bg-black/50'
+            )
+              i.fa-solid.fa-camera.text-xl
+            input#avatarInput.hidden(type='file' name="avatar" accept='image/*' onchange='previewImage(event)')
+          
+          h3.mt-6.text-xl.font-bold.serif-font.italic #{user.fullName}
+          p.text-xs.font-black.uppercase.tracking-widest.mt-2(class='text-[#D2B48C]') Quản trị viên cấp cao
+          
+          //- Dòng 41: Sửa lại cách viết class h-[1px]
+          .w-full.bg-neutral-100.my-6(class='h-[1px]')
+          
+          //- Dòng 43: Đã sửa lỗi bằng cách đưa text-[11px] vào ngoặc class
+          p.text-neutral-400.italic(class='text-[11px]') Nhấp vào ảnh để thay đổi hình đại diện mới.
+        //- Cột phải: Form thông tin
+        div(class='lg:col-span-2')
+          .card.p-8
+            h4.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-8.border-b.border-neutral-50.pb-4 Thông tin chi tiết
+            
+            .grid.grid-cols-1.gap-6(class='md:grid-cols-2')
+              .space-y-2
+                label.font-black.uppercase.tracking-widest.text-neutral-500(class='text-[10px]') Họ và tên
+                input.w-full.px-4.py-3.bg-white.border.border-neutral-100.rounded-xl.text-sm.outline-none.transition-all(
+                  type='text' 
+                  name="fullName"
+                  value= user.fullName
+                  class='focus:ring-1 focus:ring-[#D2B48C] shadow-sm'
+                )
+              
+              .space-y-2
+                label.font-black.uppercase.tracking-widest.text-neutral-500(class='text-[10px]') Email liên hệ
+                input.w-full.px-4.py-3.bg-white.border.border-neutral-100.rounded-xl.text-sm.outline-none.transition-all(
+                  type='email' 
+                  name="email"
+                  value= user.email
+                  class='focus:ring-1 focus:ring-[#D2B48C] shadow-sm'
+                )
+              
+              .space-y-2
+                label.font-black.uppercase.tracking-widest.text-neutral-500(class='text-[10px]') Số điện thoại
+                input.w-full.px-4.py-3.bg-white.border.border-neutral-100.rounded-xl.text-sm.outline-none.transition-all(
+                  type='text' 
+                  name="phone"
+                  value=user.phone
+                  class='focus:ring-1 focus:ring-[#D2B48C] shadow-sm'
+                )
+              
+              .space-y-2
+                label.font-black.uppercase.tracking-widest.text-neutral-500(class='text-[10px]') Vị trí công việc
+                input.w-full.px-4.py-3.bg-white.border.border-neutral-100.rounded-xl.text-sm.outline-none.transition-all(
+                  type='text' 
+                  name="address"
+                  value=user.address
+                  class='focus:ring-1 focus:ring-[#D2B48C] shadow-sm'
+                )
+              
+              .space-y-2.pt-4(class='md:col-span-2')
+                label.font-black.uppercase.tracking-widest.text-neutral-500(class='text-[10px]') Tiểu sử tóm tắt
+                textarea.w-full.px-4.py-3.bg-white.border.border-neutral-100.rounded-xl.text-sm.outline-none.transition-all(
+                  name="biography"
+                  class='focus:ring-1 focus:ring-[#D2B48C] shadow-sm' 
+                  rows='4'
+                ) #{user.biography}
+
+            .mt-10.pt-6.border-t.border-neutral-50.flex.justify-end
+              button.px-10.py-4.bg-black.text-white.rounded-full.font-bold.text-sm.uppercase.tracking-widest.flex.items-center.gap-2.transition-all.shadow-xl(
+                type="submit"
+                class='hover:bg-neutral-800 shadow-black/10 text-[#D2B48C]'
+              )
+                i.fa-solid.fa-cloud-arrow-up
+                |  Cập nhật hồ sơ
+
+  script.
+    function previewImage(event) {
+      const reader = new FileReader();
+      reader.onload = function() {
+        const output = document.getElementById('avatarPreview');
+        output.src = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }

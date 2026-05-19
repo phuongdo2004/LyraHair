@@ -1,0 +1,66 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  main.flex-1.p-10
+    //- Header điều hướng và nút thao tác chính
+    header.flex.justify-between.items-start.mb-10
+      div
+        a.text-sm.font-bold.text-neutral-400.flex.items-center.gap-2.mb-3.transition-all(
+          href=`/${prefixAdmin}/categories`
+          class="hover:text-[#FF2D55]"
+        )
+          i.fa-solid.fa-arrow-left
+          | Quay lại danh sách
+        h2.text-3xl.font-bold.serif-font.italic Chi tiết Danh mục
+        p.text-neutral-400.text-base Xem thông tin chi tiết cấu hình của nhóm danh mục.
+      
+      //- NÚT SỬA DANH MỤC: To, rõ ràng và nổi bật ở góc phải
+      .flex.gap-4
+        a.rounded-full.font-bold.text-sm.uppercase.tracking-widest.text-white.transition-all.shadow-lg.flex.items-center.gap-2(
+          href=`/${prefixAdmin}/categories/edit/${category.id}`
+          class='bg-[#FF2D55] hover:bg-[#ff4f70] shadow-[#FF2D55]/10 px-8 py-3'
+        )
+          i.fa-solid.fa-pen-to-square
+          | Chỉnh sửa danh mục
+
+    //- Khung hiển thị thông tin chi tiết
+    .max-w-2xl.bg-white.rounded-2xl.border.border-neutral-100.shadow-sm.p-8
+      .space-y-8
+        //- Khối hiển thị tên và ID tổng quan
+        .flex.items-center.gap-5.border-b.border-neutral-50.pb-6
+          .w-14.h-14.rounded-2xl.flex.items-center.justify-center.font-black.text-xl(class='bg-[#FFEFF2] text-[#FF2D55]')
+            i.fa-solid.fa-folder-open
+          div
+            h3.text-xl.font-bold.text-neutral-800 #{category.name}
+            p.text-neutral-400.mt-1.uppercase.tracking-tighter(class='text-xs') Mã hệ thống (ID): #{category.id}
+
+        //- Chi tiết: Mô tả
+        div
+          span.block.text-sm.font-black.text-neutral-400.uppercase.tracking-widest.mb-2
+            | Mô tả danh mục
+          .bg-neutral-50.rounded-xl.p-5.text-base.text-neutral-700.leading-relaxed
+            if category.description
+              | #{category.description}
+            else
+              span.italic.text-neutral-400 Không có mô tả chi tiết cho danh mục này.
+
+        //- Khối chia 2 cột thông tin phụ (Ngày tạo & Trạng thái)
+        .grid.grid-cols-2.gap-6.border-t.border-neutral-50.pt-6
+          //- Chi tiết: Ngày tạo
+          div
+            span.block.text-xs.font-black.text-neutral-400.uppercase.tracking-widest.mb-2
+              | Ngày khởi tạo
+            p.text-base.font-bold.text-neutral-700
+              | #{category.created_at ? new Date(category.created_at).toLocaleDateString('vi-VN') : '--/--/----'}
+          
+          //- Chi tiết: Trạng thái hiển thị
+          div
+            span.block.text-xs.font-black.text-neutral-400.uppercase.tracking-widest.mb-2
+              | Trạng thái hoạt động
+            div
+              if category.is_deleted === 0
+                span.status-pill.bg-green-100.text-green-700.font-bold.text-sm Hoạt động
+              else
+                span.status-pill.bg-red-100.text-red-700.font-bold.text-sm Đã ẩn

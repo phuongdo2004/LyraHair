@@ -1,0 +1,83 @@
+extends ../../layouts/defaultLog.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  
+  //- Phần Banner trên cùng - Đồng bộ tone hồng neon chủ đạo
+  section.login-banner.py-24.text-center.relative
+    h2.text-5xl.font-bold.serif-font.italic.mb-4.drop-shadow-lg(class='md:text-6xl text-[#FF69B4]') Đăng ký
+    p.text-xs.uppercase.font-medium(class='text-white/60 md:text-sm tracking-[0.4em]')
+      | Trang chủ / 
+      span(class='text-[#FF69B4]') Đăng ký
+
+  //- Khung form đăng ký: Đổi sang nền dark card (bg-[#1E1E1E]) và bọc class an toàn không lo lỗi cú pháp
+  main.container.mx-auto.px-6.mb-20.relative.z-10(class='-mt-16')
+    .max-w-lg.mx-auto.p-10.border(class='bg-[#1E1E1E] shadow-2xl rounded-[40px] md:p-14 border-white/5 shadow-[#FF69B4]/5')
+      
+      form.space-y-6(action='/user/register' method='POST')
+        
+        //- Ô nhập Họ và tên
+        div
+          label.uppercase.font-black.tracking-widest.block.mb-2.ml-1(class='text-[11px] text-[#FFB7D5]') Họ và tên
+          input.w-full.px-6.py-4.rounded-2xl.text-sm.font-medium.border.text-white(
+            type='text' 
+            name='fullName' 
+            placeholder='Nguyễn Văn A' 
+            class='border-white/10 bg-white/5 focus:border-[#FF69B4] focus:bg-white/10 outline-none transition-all placeholder:text-white/30' 
+            required
+          )
+        
+        //- Ô nhập Tài khoản Email
+        div
+          label.uppercase.font-black.tracking-widest.block.mb-2.ml-1(class='text-[11px] text-[#FFB7D5]') Tài khoản Email
+          input.w-full.px-6.py-4.rounded-2xl.text-sm.font-medium.border.text-white(
+            type='email' 
+            name='email' 
+            placeholder='nhapemail@gmail.com' 
+            class='border-white/10 bg-white/5 focus:border-[#FF69B4] focus:bg-white/10 outline-none transition-all placeholder:text-white/30' 
+            required
+          )
+        
+        //- Ô nhập Số điện thoại
+        div
+          label.uppercase.font-black.tracking-widest.block.mb-2.ml-1(class='text-[11px] text-[#FFB7D5]') Số điện thoại
+          input.w-full.px-6.py-4.rounded-2xl.text-sm.font-medium.border.text-white(
+            type='text' 
+            name='phone' 
+            placeholder='090xxxxxxx' 
+            class='border-white/10 bg-white/5 focus:border-[#FF69B4] focus:bg-white/10 outline-none transition-all placeholder:text-white/30'
+          )
+
+        //- Ô nhập Mật khẩu
+        div
+          label.uppercase.font-black.tracking-widest.block.mb-2.ml-1(class='text-[11px] text-[#FFB7D5]') Mật khẩu
+          input.w-full.px-6.py-4.rounded-2xl.text-sm.font-medium.border.text-white(
+            type='password' 
+            name='password' 
+            placeholder='********' 
+            class='border-white/10 bg-white/5 focus:border-[#FF69B4] focus:bg-white/10 outline-none transition-all placeholder:text-white/30' 
+            required
+          )
+        
+        //- Checkbox đồng ý điều khoản
+        .flex.items-center.gap-2.text-xs.font-bold.px-1
+          input#terms.w-4.h-4.rounded(
+            type='checkbox' 
+            class='border-white/20 bg-white/5 text-[#FF69B4] focus:ring-[#FF69B4] focus:ring-offset-[#1E1E1E]' 
+            required
+          )
+          label.cursor-pointer(for='terms' class='text-white/60') Tôi đồng ý với Điều khoản & Chính sách
+
+        //- Nút Đạo tài khoản ngay
+        button.w-full.py-5.rounded-2xl.font-black.text-sm.uppercase.shadow-xl.transition-all.border-none.cursor-pointer(
+          type='submit' 
+          class='tracking-[0.2em] bg-[#FF69B4] text-[#121212] hover:bg-white hover:text-[#121212] shadow-[#FF69B4]/20 hover:scale-[1.01]'
+        )
+          | Tạo tài khoản ngay
+
+        //- Chuyển hướng sang trang đăng nhập nếu đã có tài khoản
+        .text-center.mt-8
+          p.text-xs.font-bold(class='text-white/60')
+            | Bạn đã có tài khoản? 
+            a.ml-1.transition-colors.font-black(href='/user/login' class='text-[#FF69B4] hover:text-white') Đăng nhập ngay

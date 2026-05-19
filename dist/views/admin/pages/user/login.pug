@@ -1,0 +1,198 @@
+include ../../mixins/alert.pug
+doctype html
+html(lang="vi")
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title Đăng nhập hệ thống | LYRA HAIR Admin
+    script(src='https://cdn.tailwindcss.com')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css')
+    style.
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Urbanist:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+      
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #0f0f11;
+        color: #e4e4e7;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .font-display { font-family: 'Urbanist', sans-serif; }
+      
+      /* Cập nhật Toast theo tone màu mới nhẹ nhàng hơn */
+      :root {
+          --rose-primary: #f43f5e;
+          --dark-bg: #18181b;
+          --success-color: #10b981;
+          --warning-color: #f59e0b;
+          --delete-color: #ef4444;
+      }
+
+      #toast-container {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          z-index: 9999;
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+      }
+
+      .toast {
+          width: 350px;
+          background: #1c1c1f;
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          padding: 15px 20px;
+          border-radius: 16px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+          display: flex;
+          align-items: center;
+          position: relative;
+          overflow: hidden;
+          transform: translateX(120%);
+          transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+          opacity: 0;
+      }
+
+      .toast.active {
+          transform: translateX(0);
+          opacity: 1;
+      }
+
+      .toast-success { border-left: 4px solid var(--success-color); }
+      .toast-warning { border-left: 4px solid var(--warning-color); }
+      .toast-delete  { border-left: 4px solid var(--delete-color); }
+
+      .toast-icon {
+          font-size: 20px;
+          margin-right: 15px;
+      }
+      .toast-success .toast-icon { color: var(--success-color); }
+      .toast-warning .toast-icon { color: var(--warning-color); }
+      .toast-delete .toast-icon  { color: var(--delete-color); }
+
+      .toast-content {
+          display: flex;
+          flex-direction: column;
+      }
+
+      .toast-title {
+          font-weight: 700;
+          color: #fff;
+          font-size: 14px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+      }
+
+      .toast-message {
+          color: #a1a1aa;
+          font-size: 13px;
+          margin-top: 3px;
+      }
+
+      .toast-close {
+          position: absolute;
+          top: 12px;
+          right: 15px;
+          cursor: pointer;
+          font-size: 16px;
+          color: #71717a;
+          transition: 0.3s;
+      }
+
+      .toast-close:hover { color: #fff; }
+
+      .toast-progress {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          height: 2px;
+          width: 100%;
+      }
+
+      .toast-success .toast-progress { background: var(--success-color); }
+      .toast-warning .toast-progress { background: var(--warning-color); }
+      .toast-delete .toast-progress  { background: var(--delete-color); }
+
+      .toast.active .toast-progress {
+          animation: progress 4s linear forwards;
+      }
+
+      @keyframes progress {
+          100% { width: 0%; }
+      }
+
+  body
+    +alert(3000)
+    
+    // --- KHU VỰC ẢNH NỀN ---
+    // Bạn chỉ cần thay link ảnh Unsplash bên dưới bằng link ảnh nội bộ của bạn (ví dụ: '/admin/images/bg.jpg') nếu muốn
+    .absolute.inset-0.w-full.h-full.z-0
+      img.w-full.h-full.object-cover(src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1920" alt="Lyra Hair Background")
+      // Lớp phủ tối đè lên ảnh giúp nổi bật bảng đăng nhập lên trên
+      div(class='absolute inset-0 bg-zinc-950/75 backdrop-blur-sm')
+    
+    .w-full.max-w-md.p-6.relative.z-10
+      // Header đổi tên thành LYRA HAIR
+      .text-center.mb-10
+        h1.text-5xl.font-black.tracking-tighter.font-display.text-white.mb-3
+          | LYRA HAIR
+          span(class='text-rose-400') .
+          span(class='text-xs font-bold tracking-[0.4em] text-zinc-400 align-middle ml-2') ADMIN
+        p.text-zinc-400.uppercase.font-semibold(class='text-[10px] tracking-[0.35em]') Hệ thống quản trị nội bộ
+
+      // Card Login được tinh chỉnh lại nền mờ kính (glassmorphism) tiệp với ảnh nền
+      div(class='backdrop-blur-xl border p-8 shadow-3xl bg-zinc-900/60 border-zinc-700/40 rounded-[2.5rem]')
+        .mb-8
+          h2.text-xl.font-bold.text-white Chào mừng trở lại
+          p.text-xs.text-zinc-400.mt-1 Đăng nhập để tiếp tục quản lý hệ thống.
+        
+        form.space-y-5(action='/admin/auth/login' method='POST')
+          // Input Tài khoản
+          div(class='space-y-1.5')
+            label.font-bold.uppercase.tracking-wider.ml-1(class='text-[10px] text-zinc-400 focus-within:text-rose-400') Tài khoản
+            .relative
+              i.fa-solid.fa-envelope.absolute.left-4.text-zinc-500.text-xs(class='top-1/2 -translate-y-1/2')
+              input.w-full.pl-11.pr-4.border.text-sm.outline-none.transition-all.text-white(
+                type='email' 
+                name='email' 
+                required 
+                class='py-3.5 bg-zinc-950/40 border-zinc-700/50 focus:border-rose-400/70 focus:ring-1 focus:ring-rose-400/30 rounded-2xl placeholder-zinc-500' 
+                placeholder='admin@lyrahair.vn'
+              )
+          
+          // Input Mật khẩu
+          div(class='space-y-1.5')
+            .flex.justify-between.items-center.px-1
+              label.font-bold.uppercase.tracking-wider(class='text-[10px] text-zinc-400') Mật khẩu
+              a.text-zinc-500.uppercase.font-bold(href='#' class='text-[9px] hover:text-rose-400 transition-colors') Quên?
+            .relative
+              i.fa-solid.fa-lock.absolute.left-4.text-zinc-500.text-xs(class='top-1/2 -translate-y-1/2')
+              input.w-full.pl-11.pr-4.border.text-sm.outline-none.transition-all.text-white(
+                type='password' 
+                name='password' 
+                required 
+                class='py-3.5 bg-zinc-950/40 border-zinc-700/50 focus:border-rose-400/70 focus:ring-1 focus:ring-rose-400/30 rounded-2xl placeholder-zinc-500' 
+                placeholder='••••••••'
+              )
+
+          // Ghi nhớ mật khẩu
+          .flex.items-center.gap-2.px-1.pt-1
+            input#remember.w-4.h-4.rounded(type='checkbox' class='border-zinc-700 bg-zinc-950/40 checked:bg-rose-500 text-rose-500 focus:ring-0 accent-rose-500')
+            label.text-xs.text-zinc-400.select-none(for='remember') Ghi nhớ đăng nhập
+          
+          // Nút Đăng nhập hồng đào cao cấp
+          button.w-full.py-4.text-white.font-bold.uppercase.transition-all.transform.shadow-lg.mt-6(
+            type='submit' 
+            class='bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-[11px] tracking-[0.2em] rounded-2xl hover:scale-[1.01] active:scale-[0.98] shadow-rose-950/40'
+          )
+            | Đăng nhập ngay
+
+      p.text-center.mt-12.text-zinc-500.font-medium(class='text-[10px] tracking-wide relative z-10')
+        | &copy; 2026 LYRA HAIR STUDIO. Powered by Gold Dev Team.
+        
+  script(type="module" src="/admin/js/main.js")

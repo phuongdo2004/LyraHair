@@ -1,0 +1,100 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/pagination.pug
+
+block main
+  +alert(3000)
+  main.flex-1.p-10.bg-neutral-50.min-h-screen
+    
+    //- HEADER TRANG (Giữ nguyên kích thước và font cũ)
+    header.flex.justify-between.items-center.mb-10
+      div
+        h2.text-3xl.font-bold.serif-font.italic Danh sách dịch vụ làm tóc
+        p.text-neutral-400.text-sm Quản lý các gói dịch vụ và bảng giá chung tại Lyra Hair.
+      
+      .flex.gap-4
+        a.px-6.py-3.rounded-full.font-bold.text-sm.uppercase.tracking-widest.flex.items-center.gap-2.text-white(href=`/${prefixAdmin}/service/create` class='bg-[#FF2D55] hover:bg-[#ff4f70] hover:scale-105 transition-all shadow-sm')
+          i.fa-solid.fa-plus
+          | Thêm dịch vụ
+
+    //- THỐNG KÊ NHANH (Layout mới, sửa lỗi border-l-[#FF2D55])
+    .grid.grid-cols-1.gap-6.mb-10(class='md:grid-cols-2')
+      .card.p-6.bg-white.rounded-2xl.border-l-4.border-neutral-100.shadow-sm.flex.justify-between.items-center(class='border-l-[#FF2D55]')
+        div
+          p.text-neutral-400.uppercase.font-black.tracking-widest(class='text-[10px]') Tổng dịch vụ hiện tại
+          h3.text-2xl.font-bold.mt-1.text-neutral-800 #{totalService} Gói khả dụng
+        i.fa-solid.fa-sparkles(class='text-[#FF2D55] text-lg opacity-80')
+        
+      .card.p-6.bg-white.rounded-2xl.border.border-neutral-100.shadow-sm
+        p.text-neutral-400.uppercase.font-black.tracking-widest(class='text-[10px]') Trạng thái hệ thống
+        h3.text-sm.font-bold.mt-2.text-emerald-600.bg-emerald-50.px-3.py-1.rounded-full.w-fit.flex.items-center.gap-2
+          span.w-2.h-2.bg-emerald-500.rounded-full.animate-pulse
+          | Đang hoạt động ổn định
+
+    //- BẢNG DANH SÁCH (Giữ nguyên font chữ to rõ cũ)
+    .card.overflow-hidden.bg-white.rounded-2xl.border.border-neutral-100.shadow-sm
+      .p-8.border-b.border-neutral-100.flex.justify-between.items-center
+        h3.text-xl.font-bold.serif-font.italic Tất cả dịch vụ
+      
+      .overflow-x-auto
+        table.w-full.text-left
+          thead.bg-neutral-50.uppercase.font-black.text-neutral-400.tracking-widest(class='text-[10px]')
+            tr
+              th.px-8.py-4 Hình ảnh
+              th.px-8.py-4 Tên dịch vụ
+              th.px-8.py-4 Thời lượng
+              th.px-8.py-4 Giá tiền
+              th.px-8.py-4.text-right Thao tác
+              
+          tbody.divide-y.divide-neutral-50
+            each item in services
+              tr.transition-all.group(
+                class='hover:bg-neutral-50/50 cursor-pointer'
+                onclick=`window.location.href='/${prefixAdmin}/service/detail/${item.id}'`
+              )
+                td.px-8.py-5
+                  img.w-16.h-16.object-cover.rounded-2xl.border.border-neutral-100.shadow-sm.transition-transform(src= item.images class='group-hover:scale-105')
+                
+                td.px-8.py-5
+                  p.text-sm.font-bold.text-neutral-800 #{item.name}
+                  if(item.rating)
+                    p.text-amber-500.text-xs.mt-1
+                      i.fa-solid.fa-star.mr-1
+                      | #{item.rating}
+                
+                td.px-8.py-5
+                  .flex.items-center.gap-2.text-xs.text-neutral-500
+                    i.fa-regular.fa-clock
+                    | #{item.duration} phút
+                
+                //- Sửa lỗi ngoặc vuông ở text-[#FF2D55]
+                td.px-8.py-5.font-bold.text-sm(class='text-[#FF2D55]')
+                  | #{item.price ? Math.floor(item.price).toLocaleString('vi-VN') : 0}đ
+                
+                td.px-8.py-5.text-right
+                  .flex.justify-end.gap-2(onclick="event.stopPropagation();")
+                    a.w-8.h-8.rounded-full.flex.items-center.justify-center.text-neutral-400.transition-all(
+                      href=`/${prefixAdmin}/service/edit/${item.id}`
+                      class='hover:bg-[#FFEFF2] hover:text-[#FF2D55]' 
+                      title='Chỉnh sửa'
+                    )
+                      i.fa-solid.fa-pen-to-square.text-xs
+                    
+                    button.w-8.h-8.rounded-full.flex.items-center.justify-center.text-neutral-400.transition-all(
+                      class='hover:bg-red-50 hover:text-red-500' 
+                      title='Xóa' 
+                      button-delete 
+                      data-id=item.id
+                    )
+                      i.fa-solid.fa-trash-can.text-xs
+
+          //- Form xóa đặt ngoài vòng lặp
+          form(
+            id="form-delete-item"
+            method="POST"
+            action=""
+            data-path=`/${prefixAdmin}/service/delete`
+          )
+          
+      .p-10
+        +pagination(pagination)

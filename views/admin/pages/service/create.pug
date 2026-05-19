@@ -1,0 +1,121 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  main.flex-1.p-12.bg-neutral-50.min-h-screen
+    +alert(3000)
+    
+    //- HEADER TRANG
+    header.flex.justify-between.items-end.mb-10
+      div
+        h2.text-4xl.font-bold.serif-font.italic Thêm dịch vụ mới
+        p.text-neutral-400.mt-2.text-sm Tạo danh mục dịch vụ làm tóc mới dùng chung cho tất cả chuyên viên tại Studio.
+      a.text-sm.font-bold.uppercase.tracking-widest.flex.items-center.gap-2(href=`/${prefixAdmin}/service` class='text-neutral-400 hover:text-[#FF2D55] transition-colors')
+        i.fa-solid.fa-arrow-left
+        | Quay lại
+
+    .form-card.max-w-4xl.p-10.bg-white.rounded-2xl.border.border-neutral-100.shadow-sm
+      form(action=`/${prefixAdmin}/service/create` method="POST" enctype="multipart/form-data")
+        .grid.grid-cols-2.gap-8
+          
+          //- Tên dịch vụ (name)
+          .col-span-2(class='md:col-span-1')
+            label.block.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-3 Tên dịch vụ làm tóc
+            input(
+              type="text" 
+              name="name" 
+              placeholder="Ví dụ: Cắt tạo kiểu & Uốn sóng Cloud" 
+              required
+              class="w-full px-5 py-4 rounded-2xl border border-neutral-200 outline-none focus:border-neutral-400"
+            )
+
+          //- Chọn Danh mục dịch vụ (category_id)
+          .col-span-2(class='md:col-span-1')
+            label.block.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-3 Phân loại danh mục
+            .relative
+              select(
+                name="category_id" 
+                required
+                class="w-full px-5 py-4 rounded-2xl border border-neutral-200 outline-none appearance-none bg-white focus:border-neutral-400"
+              )
+                option(value="" disabled selected) -- Chọn danh mục dịch vụ --
+                if categories && categories.length > 0
+                  each cat in categories
+                    option(value=cat.id) #{cat.name}
+                else
+                  option(value="" disabled) Chưa có danh mục nào trên hệ thống
+              // Mũi tên góc phải dropdown
+              .pointer-events-none.absolute.inset-y-0.right-0.flex.items-center.px-5.text-neutral-400
+                i.fa-solid.fa-chevron-down.text-xs
+
+          //- Giá (price)
+          .col-span-2(class='md:col-span-1')
+            label.block.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-3 Giá dịch vụ (VNĐ)
+            input(
+              type="number" 
+              name="price" 
+              placeholder="1200000"
+              class="w-full px-5 py-4 rounded-2xl border border-neutral-200 outline-none focus:border-neutral-400"
+            )
+
+          //- Thời lượng (duration)
+          .col-span-2(class='md:col-span-1')
+            label.block.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-3 Thời lượng thực hiện (Phút)
+            input(
+              type="number" 
+              name="duration" 
+              value="60" 
+              placeholder="60"
+              class="w-full px-5 py-4 rounded-2xl border border-neutral-200 outline-none focus:border-neutral-400"
+            )
+
+          //- Tiện ích / Mô tả (amenities)
+          .col-span-2
+            label.block.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-3 Quy trình & Sản phẩm đi kèm
+            textarea(
+              name="amenities" 
+              rows="3" 
+              placeholder="Ví dụ: Bao gồm gội dưỡng sinh, Tặng tinh chất phục hồi Loreal, Bảo hành phom tóc 1 tháng..."
+              class="w-full px-5 py-4 rounded-2xl border border-neutral-200 outline-none focus:border-neutral-400"
+            )
+
+          //- Hình ảnh minh họa
+          .col-span-2(upload-image)
+            label.block.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-3 Hình ảnh minh họa kiểu tóc
+            
+            .relative.w-full.border-2.border-dashed.border-neutral-200.rounded-2xl.bg-neutral-50.transition-all(
+              class='min-h-[200px] hover:border-[#FF2D55] hover:bg-white group p-4'
+            )
+              input.absolute.inset-0.w-full.h-full.opacity-0.cursor-pointer.z-50(
+                type="file" 
+                name="images" 
+                accept="image/*"
+                multiple
+                upload-image-input
+              )
+              
+              .flex.flex-col.items-center.justify-center.h-full.py-10(class="group-[.has-image]:hidden")
+                i.fa-solid.fa-cloud-arrow-up.text-4xl.text-neutral-300(class='group-hover:text-[#FF2D55] transition-colors')
+                p.text-xs.text-neutral-400.mt-4.font-bold Nhấn hoặc kéo thả ảnh phom dáng tóc vào đây
+                p.text-neutral-300.uppercase.tracking-widest.mt-1(class="text-[10px]") (JPG, PNG, WEBP)
+
+              .hidden.grid.grid-cols-2.gap-4(
+                class="md:grid-cols-4 lg:grid-cols-5 group-[.has-image]:grid relative z-40"
+                upload-image-container
+              )
+                button.absolute.right-0.font-black.uppercase.tracking-widest.text-red-400(
+                  type="button"
+                  close-icon-upload
+                  class="text-[10px] -top-12 hover:text-red-600 z-[60]"
+                ) 
+                  i.fa-solid.fa-trash-can.mr-1
+                  | Xóa tất cả ảnh
+
+        //- NÚT SUBMIT
+        .mt-10.pt-10.border-t.border-neutral-100.flex.justify-end
+          button.px-10.py-4.rounded-full.font-bold.text-sm.uppercase.tracking-widest.text-white.transition-all(
+            type="submit" 
+            class='bg-[#FF2D55] hover:bg-[#ff4f70] hover:scale-105 active:scale-95 shadow-xl shadow-[#FF2D55]/20 cursor-pointer'
+          )
+            i.fa-solid.fa-check.mr-2
+            | Xác nhận thêm dịch vụ

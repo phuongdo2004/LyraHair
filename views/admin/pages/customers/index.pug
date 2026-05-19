@@ -1,0 +1,34 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/pagination.pug
+
+block main
+  +alert(3000)
+  main.flex-1.p-10
+    header.flex.justify-between.items-center.mb-10
+      div
+        h2.text-3xl.font-bold.serif-font.italic Quản lý khách hàng
+        p.text-neutral-400.text-sm Hệ thống lưu trữ thông tin và lịch sử làm đẹp của khách hàng.
+    .card.overflow-hidden
+      .overflow-x-auto
+        table.w-full.text-left
+          thead.bg-neutral-50.uppercase.font-black.text-neutral-400.tracking-widest(class='text-[10px]')
+            tr
+              th.px-8.py-5 Khách hàng
+          tbody.divide-y.divide-neutral-50
+            if customers && customers.length > 0
+              each item in customers
+                tr.transition-all(class='hover:bg-neutral-50/50')
+                  td.px-8.py-5
+                    .flex.items-center.gap-4
+                      .w-12.h-12.rounded-full.bg-neutral-200.border-2(class='border-[#D2B48C] p-0.5')
+                        .w-full.h-full.rounded-full.bg-neutral-100.flex.items-center.justify-center.font-bold.text-neutral-400 #{item.fullName.charAt(0)}
+                      div
+                        p.text-sm.font-bold.text-neutral-800 #{item.fullName}
+                        p.text-neutral-400(class='text-[10px]') #{item.email || item.phone}
+            else
+              tr
+                td.px-8.py-10.text-center.text-neutral-400(colspan="6") Không tìm thấy khách hàng nào.
+
+      //- Sử dụng Mixin phân trang đã có của bạn
+      +pagination(pagination)

@@ -1,0 +1,88 @@
+include ../../mixins/alert.pug
+
+doctype html
+html(lang="vi")
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title Đăng ký tài khoản | SUSANNIE Admin
+    script(src='https://cdn.tailwindcss.com')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css')
+    style.
+      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #000;
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow-x: hidden;
+      }
+      .serif-font { font-family: 'Playfair Display', serif; }
+      .gold-glow {
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(210, 180, 140, 0.1) 0%, rgba(0,0,0,0) 70%);
+        border-radius: 50%;
+        z-index: 0;
+        filter: blur(40px);
+      }
+      ::-webkit-scrollbar { width: 5px; }
+      ::-webkit-scrollbar-track { background: #000; }
+      ::-webkit-scrollbar-thumb { background: #D2B48C; border-radius: 10px; }
+
+  body
+    +alert(3000)
+    .gold-glow.top-0.right-0
+    .gold-glow.bottom-0.left-0
+    
+    .w-full.max-w-lg.p-4.relative.z-10
+      .text-center.mb-8
+        h1.text-4xl.font-black.tracking-tighter.serif-font.italic.text-white.mb-2
+          | SUSANNIE
+          span(class='text-[#D2B48C]') .Admin
+        p.text-neutral-500.uppercase.font-bold(class='text-[10px] tracking-[0.3em]') Tạo tài khoản quản trị mới
+
+      .backdrop-blur-xl.border.p-8.shadow-2xl(class='bg-white/[0.03] border-white/10 md:p-10 rounded-[2.5rem]')
+        h2.text-2xl.font-bold.serif-font.italic.text-center.mb-8 Gia nhập đội ngũ
+        
+        form.space-y-5(action='/admin/auth/register' method='POST')
+          .space-y-2
+            label.font-black.uppercase.tracking-widest.ml-1(class='text-[10px] text-[#D2B48C]') Họ và Tên
+            .relative
+              i.fa-solid.fa-user.absolute.left-4.text-neutral-500.text-xs(class='top-1/2 -translate-y-1/2')
+              input.w-full.pl-12.pr-4.py-4.border.rounded-2xl.text-sm.outline-none.transition-all.text-white(type='text' name='fullName' required class='bg-white/5 border-white/10 focus:border-[#D2B48C] focus:ring-1 focus:ring-[#D2B48C] placeholder:text-neutral-600' placeholder='Nguyễn Như Xuân')
+          
+          .space-y-2
+            label.font-black.uppercase.tracking-widest.ml-1(class='text-[10px] text-[#D2B48C]') Email làm việc
+            .relative
+              i.fa-solid.fa-envelope.absolute.left-4.text-neutral-500.text-xs(class='top-1/2 -translate-y-1/2')
+              input.w-full.pl-12.pr-4.py-4.border.rounded-2xl.text-sm.outline-none.transition-all.text-white(type='email' name='email' required class='bg-white/5 border-white/10 focus:border-[#D2B48C] focus:ring-1 focus:ring-[#D2B48C] placeholder:text-neutral-600' placeholder='artist@susannie.vn')
+          
+          .grid.grid-cols-1.gap-4(class='md:grid-cols-2')
+            .space-y-2
+              label.font-black.uppercase.tracking-widest.ml-1(class='text-[10px] text-[#D2B48C]') Mật khẩu
+              .relative
+                i.fa-solid.fa-key.absolute.left-4.text-neutral-500.text-xs(class='top-1/2 -translate-y-1/2')
+                input.w-full.pl-12.pr-4.py-4.border.rounded-2xl.text-sm.outline-none.transition-all.text-white(type='password' name='password' required class='bg-white/5 border-white/10 focus:border-[#D2B48C] focus:ring-1 focus:ring-[#D2B48C] placeholder:text-neutral-600' placeholder='••••••••')
+            .space-y-2
+              label.font-black.uppercase.tracking-widest.ml-1(class='text-[10px] text-[#D2B48C]') Xác nhận
+              .relative
+                i.fa-solid.fa-shield-check.absolute.left-4.text-neutral-500.text-xs(class='top-1/2 -translate-y-1/2')
+                input.w-full.pl-12.pr-4.py-4.border.rounded-2xl.text-sm.outline-none.transition-all.text-white(type='password' name='confirmPassword' required class='bg-white/5 border-white/10 focus:border-[#D2B48C] focus:ring-1 focus:ring-[#D2B48C] placeholder:text-neutral-600' placeholder='••••••••')
+          
+
+          button.w-full.py-4.text-black.font-black.uppercase.rounded-2xl.transition-all.transform.shadow-lg.mt-6(type='submit' class='bg-[#D2B48C] hover:bg-[#b8952e] text-[11px] tracking-[0.2em] hover:scale-[1.01] active:scale-95 shadow-[#D2B48C]/10')
+            | Tạo tài khoản ngay
+
+        .mt-8.pt-6.border-t.text-center(class='border-white/5')
+          p.text-xs.text-neutral-500
+            | Đã có tài khoản? 
+            a.font-bold.ml-1(href='/admin/auth/login' class='text-[#D2B48C] hover:underline') Đăng nhập
+
+      p.text-center.mt-8.text-neutral-700.font-medium.tracking-wide(class='text-[10px]')
+        | &copy; 2026 SUSANNIE STUDIO. PRIVATE ADMINISTRATION.

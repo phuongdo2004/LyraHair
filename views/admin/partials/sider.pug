@@ -1,0 +1,71 @@
+//- Sidebar
+aside.sidebar.w-64.min-h-screen.sticky.top-0.flex.flex-col.bg-white.border-r.border-neutral-200(class='text-neutral-600')
+  .p-8
+    h1.text-2xl.font-black.tracking-tighter.serif-font.italic.text-neutral-800
+      | Lyra Hair
+      span(class='text-[#FF2D55]') .Admin
+  
+  nav.flex-1.px-4.space-y-1.uppercase.tracking-widest.font-bold(class='text-[11px]')
+    a.nav-item.flex.items-center.gap-4.p-4.rounded-xl.transition-all(
+      href='/admin/dashboard' 
+      class=(currentUrl && currentUrl.startsWith('/admin/dashboard') ? 'active text-[#FF2D55] bg-[#FFEFF2]' : 'text-neutral-500 hover:text-[#FF2D55] hover:bg-[#FFEFF2]/50')
+    )
+      i.fa-solid.fa-chart-line.text-lg
+      | Tổng quan
+
+    a.nav-item.flex.items-center.gap-4.p-4.rounded-xl.transition-all(
+      href='/admin/bookings' 
+      class=(currentUrl && currentUrl.startsWith('/admin/bookings') ? 'active text-[#FF2D55] bg-[#FFEFF2]' : 'text-neutral-500 hover:text-[#FF2D55] hover:bg-[#FFEFF2]/50')
+    )
+      i.fa-solid.fa-calendar-check.text-lg
+      | Quản lý lịch đặt
+
+    a.nav-item.flex.items-center.gap-4.p-4.rounded-xl.transition-all(
+      href='/admin/service' 
+      class=(currentUrl && currentUrl.startsWith('/admin/service') ? 'active text-[#FF2D55] bg-[#FFEFF2]' : 'text-neutral-500 hover:text-[#FF2D55] hover:bg-[#FFEFF2]/50')
+    )
+      i.fa-solid.fa-wand-magic-sparkles.text-lg
+      | Dịch vụ làm tóc
+
+    //- MỤC MỚI THÊM: Danh mục dịch vụ
+    a.nav-item.flex.items-center.gap-4.p-4.rounded-xl.transition-all(
+      href='/admin/categories' 
+      class=(currentUrl && currentUrl.startsWith('/admin/categories') ? 'active text-[#FF2D55] bg-[#FFEFF2]' : 'text-neutral-500 hover:text-[#FF2D55] hover:bg-[#FFEFF2]/50')
+    )
+      i.fa-solid.fa-folder-open.text-lg
+      | Danh mục dịch vụ
+    
+    //- Mục Quản lý Artist
+    a.nav-item.flex.items-center.gap-4.p-4.rounded-xl.transition-all(
+      href='/admin/artists' 
+      class=(currentUrl && currentUrl.startsWith('/admin/artists') ? 'active text-[#FF2D55] bg-[#FFEFF2]' : 'text-neutral-500 hover:text-[#FF2D55] hover:bg-[#FFEFF2]/50')
+    )
+      i.fa-solid.fa-palette.text-lg
+      | Đội ngũ nhân viên 
+
+    a.nav-item.flex.items-center.gap-4.p-4.rounded-xl.transition-all(
+      href='/admin/customers' 
+      class=(currentUrl && currentUrl.startsWith('/admin/customers') ? 'active text-[#FF2D55] bg-[#FFEFF2]' : 'text-neutral-500 hover:text-[#FF2D55] hover:bg-[#FFEFF2]/50')
+    )
+      i.fa-solid.fa-users.text-lg
+      | Khách hàng
+
+    a.nav-item.flex.items-center.gap-4.p-4.rounded-xl.transition-all(
+      href='/admin/reviews' 
+      class=(currentUrl && currentUrl.startsWith('/admin/reviews') ? 'active text-[#FF2D55] bg-[#FFEFF2]' : 'text-neutral-500 hover:text-[#FF2D55] hover:bg-[#FFEFF2]/50')
+    )
+      i.fa-solid.fa-star.text-lg
+      | Đánh giá & Bình luận
+  
+  .p-6.border-t.border-neutral-100
+    a.flex.items-center.gap-3.mb-6.group(href='/admin/profile' class='transition-opacity hover:opacity-90')
+      img.w-10.h-10.rounded-full.border.object-cover(src=user.avatar[0] class='border-neutral-200 group-hover:border-[#FF2D55]')
+      div
+        p.text-xs.font-bold.text-neutral-800(class='group-hover:text-[#FF2D55]') Quản trị viên
+        p.text-neutral-400(class='text-[10px]') #{user.email}
+        
+    a.w-full.py-3.rounded-xl.transition-all.font-black.uppercase.tracking-widest.text-center.block(
+      href='/admin/auth/logout' 
+      class='bg-neutral-100 hover:bg-red-50 hover:text-red-500 text-neutral-500 text-[10px]'
+    )
+      | Đăng xuất

@@ -1,0 +1,24 @@
+import { dashboardRouter } from "./dashboard.route.js";
+import { system } from "../../config/system.js";
+// const upload = multer({ storage: multer.memoryStorage() });
+// // import { userRouter } from "./user.route";
+import { profileRouter } from "./profile.route.js";
+import { serviceRouter } from "./service.route.js";
+import { bookingsRouter } from "./bookings.route.js";
+import { customerRouter } from "./customers.route.js";
+import { reviewsRouter } from "./reviews.route.js";
+import { userRouter } from "./user.route.js";
+import { artistRouter } from "./artist.route.js";
+import { requireAuth } from "../../middleware/admin/auth.middlewares.js";
+import { serviceCategoryRouter } from "./serviceCategory.route.js";
+export const adminRouter = async (app) => {
+    app.use(`/${system.prefixAdmin}/auth`, userRouter);
+    app.use(`/${system.prefixAdmin}/dashboard`, requireAuth, dashboardRouter);
+    app.use(`/${system.prefixAdmin}/service`, requireAuth, serviceRouter);
+    app.use(`/${system.prefixAdmin}/categories`, requireAuth, serviceCategoryRouter);
+    app.use(`/${system.prefixAdmin}/profile`, requireAuth, profileRouter);
+    app.use(`/${system.prefixAdmin}/bookings`, requireAuth, bookingsRouter);
+    app.use(`/${system.prefixAdmin}/customers`, requireAuth, customerRouter);
+    app.use(`/${system.prefixAdmin}/reviews`, requireAuth, reviewsRouter);
+    app.use(`/${system.prefixAdmin}/artists`, requireAuth, artistRouter);
+};

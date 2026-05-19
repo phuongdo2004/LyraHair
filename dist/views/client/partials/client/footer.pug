@@ -1,0 +1,47 @@
+//- ================= FOOTER: NỀN TRẮNG SÁNG VỚI TONE HỒNG PASTEL ĐỒNG BỘ LAYOUT =================
+footer.pt-20.pb-10(class="bg-white border-t border-neutral-100")
+  .container.mx-auto.px-6
+    .grid.gap-12.mb-16(class="grid-cols-1 md:grid-cols-4")
+      
+      //- Cột 1: Thông tin thương hiệu & Mạng xã hội
+      .col-span-1(class="md:col-span-2")
+        h1.text-3xl.font-black.tracking-tighter.serif-font.italic.text-neutral-900.mb-6
+          | LYRA 
+          span(class="text-[#FF69B4]") .Studio
+        
+        //- Câu slogan đổi sang màu hồng pastel dịu nhẹ, font-bold cho sắc nét
+        p(class="text-[#FF758F] text-sm max-w-sm mb-8 leading-relaxed font-bold italic")
+          | "Tôn vinh vẻ đẹp riêng biệt của bạn qua bàn tay nghệ thuật chuyên nghiệp."
+        
+        //- Các nút icon mạng xã hội đổi hiệu ứng hover sang màu hồng pastel
+        .flex.gap-4
+          each icon in ['facebook-f', 'instagram', 'tiktok']
+            a(class="w-10 h-10 border border-neutral-200 text-neutral-500 flex items-center justify-center rounded-full hover:bg-[#FF69B4] hover:text-white hover:border-[#FF69B4] transition-all" href="#")
+              i(class=`fa-brands fa-${icon}`)
+      
+      //- Cột 2: Khám phá danh mục dịch vụ
+      div
+        h4(class="text-[#FF69B4] font-black uppercase text-[11px] tracking-widest mb-6") Khám Phá
+        ul.space-y-4.text-sm(class="text-neutral-500 font-medium")
+          li: a(class="hover:text-[#FF69B4] transition-colors" href="#") Về Lyra Studio
+          li: a(class="hover:text-[#FF69B4] transition-colors" href="#") Danh mục dịch vụ
+          li: a(class="hover:text-[#FF69B4] transition-colors" href="#") Đội ngũ Stylist
+          li: a(class="hover:text-[#FF69B4] transition-colors" href="#") Đặt lịch hẹn
+      
+      //- Cột 3: Thông tin liên hệ đầy đủ
+      div
+        h4(class="text-[#FF69B4] font-black uppercase text-[11px] tracking-widest mb-6") Liên Hệ
+        ul.space-y-4.text-sm(class="text-neutral-500 font-medium")
+          li.flex.items-center
+            i(class="fa-solid fa-envelope mr-3 text-[#FF69B4]")
+            span.text-neutral-600 lyrahair@gmail.com
+          li.flex.items-center
+            i(class="fa-solid fa-phone mr-3 text-[#FF69B4]")
+            span.text-neutral-600 (+84) 032 618 7204
+          li.flex.items-start
+            i(class="fa-solid fa-location-arrow mr-3 mt-1 text-[#FF69B4]")
+            span.text-neutral-600.leading-relaxed Thị Trấn Thứa, Huyện Lương Tài, Tỉnh Bắc Ninh
+
+    //- Phần Copyright chân trang
+    .pt-8.text-center(class="border-t border-neutral-100")
+      p(class="text-[10px] text-neutral-400 uppercase tracking-[0.4em] font-semibold") © 2026 LYRA HAIR STUDIO. ALL RIGHTS RESERVED. DESIGNED FOR ELEGANCE.

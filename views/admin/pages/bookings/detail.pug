@@ -1,0 +1,125 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  main(class="flex-1 p-8 bg-neutral-50 min-h-screen")
+    
+    //- SECTION 1: HEADER & CÁC NÚT ĐIỀU HƯỚNG/CẬP NHẬT TRẠNG THÁI
+    header(class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8")
+      div
+        a(href=`/${prefixAdmin}/bookings` class="text-xs font-bold uppercase tracking-widest text-neutral-400 flex items-center gap-2 mb-2 hover:text-[#FF2D55] transition-colors")
+          i(class="fa-solid.fa-arrow-left")
+          | Quay lại danh sách
+        h2(class="text-3xl font-bold text-neutral-800 serif-font italic") Chi tiết lịch đặt #...#{booking.id.substring(0, 8)}
+      
+      div(class="flex flex-wrap items-center gap-4")
+        //- FORM CẬP NHẬT TRẠNG THÁI (Đã làm sạch cú pháp Tailwind)
+        form(
+          method="POST"
+          action=`/${prefixAdmin}/bookings/change-status/${booking.id}?_method=PATCH`
+          class="flex items-center gap-2 bg-white p-2 rounded-full border border-neutral-200 shadow-sm"
+        )
+          select(
+            name="status" 
+            class="bg-transparent text-xs font-bold uppercase tracking-widest px-4 py-2 outline-none cursor-pointer text-neutral-700"
+          )
+            option(value="pending" selected=(booking.status === 'pending')) ⏳ Chờ xác nhận
+            option(value="deposited" selected=(booking.status === 'deposited')) 🔵 Đã đặt cọc
+            option(value="paid" selected=(booking.status === 'paid')) ✅ Đã hoàn thành
+            option(value="cancelled" selected=(booking.status === 'cancelled')) ❌ Đã hủy
+          
+          button(
+            type="submit"
+            class="px-6 py-2 bg-[#FF2D55] text-white rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-[#ff4f70] transition-all cursor-pointer"
+          ) Cập nhật
+
+        //- Nút Hủy nhanh (Chuyển sang dạng viền đỏ tinh tế)
+        if booking.status !== 'cancelled'
+          button(
+            class="px-6 py-3 bg-white text-red-500 border border-red-200 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-red-50 hover:border-red-300 transition-all cursor-pointer"
+            button-cancel-booking
+            data-id=booking.id
+          ) Hủy lịch
+
+    //- Form ẩn để gửi lệnh Hủy
+    form(
+      id="form-cancel-booking"
+      method="POST"
+      action=`/${prefixAdmin}/bookings/cancel/${booking.id}?_method=PATCH`
+      class="hidden"
+    )
+
+    //- SECTION 2: BỐ CỤC NỘI DUNG CHI TIẾT
+    div(class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start")
+      
+      //- CỘT TRÁI (CHIẾM 2/3): THÔNG TIN KHÁCH VÀ THỜI GIAN
+      div(class="lg:col-span-2 space-y-8")
+        
+        //- Khối Thông Tin Chung
+        div(class="bg-white p-8 rounded-2xl border border-neutral-200 shadow-sm")
+          h3(class="text-lg font-bold mb-6 text-neutral-800 serif-font italic") Thông tin chung
+          div(class="grid grid-cols-1 sm:grid-cols-2 gap-6")
+            div
+              p(class="text-neutral-400 uppercase tracking-widest text-[10px] font-bold") Khách hàng
+              p(class="text-sm font-bold text-neutral-800 mt-1") #{booking.customerName}
+            div
+              p(class="text-neutral-400 uppercase tracking-widest text-[10px] font-bold") Dịch vụ sử dụng
+              p(class="text-sm font-bold text-[#FF2D55] mt-1") #{booking.serviceName}
+            div(class="sm:col-span-2")
+              p(class="text-neutral-400 uppercase tracking-widest text-[10px] font-bold mb-2") Trạng thái hiện tại
+              span(class=`status-pill inline-block ${booking.statusClass}`) #{booking.statusLabel}
+
+        //- Khối Thời Gian & Địa Điểm
+        div(class="bg-white p-8 rounded-2xl border border-neutral-200 shadow-sm")
+          h3(class="text-lg font-bold mb-6 text-neutral-800 serif-font italic") Thời gian & Địa điểm
+          div(class="flex flex-wrap items-center gap-10")
+            div(class="flex items-center gap-4")
+              div(class="w-12 h-12 rounded-2xl bg-[#FFEFF2] flex items-center justify-center text-xl text-[#FF2D55]")
+                i(class="fa-regular fa-calendar")
+              div
+                p(class="text-neutral-400 uppercase text-[10px] font-bold") Ngày hẹn
+                p(class="text-sm font-bold text-neutral-800") #{booking.booking_date}
+            
+            div(class="flex items-center gap-4")
+              div(class="w-12 h-12 rounded-2xl bg-[#FFEFF2] flex items-center justify-center text-xl text-[#FF2D55]")
+                i(class="fa-regular fa-clock")
+              div
+                p(class="text-neutral-400 uppercase text-[10px] font-bold") Khung giờ (Slot)
+                p(class="text-sm font-bold text-neutral-800") #{booking.slot_time}
+          
+          div(class="mt-8 p-4 bg-neutral-50 rounded-2xl border border-neutral-100")
+            p(class="text-neutral-400 uppercase text-[10px] font-bold mb-1") Địa chỉ thực hiện
+            p(class="text-sm text-neutral-700") #{booking.address || 'Tại Studio'}
+
+      //- CỘT PHẢI (CHIẾM 1/3): TỔNG KẾT CHI PHÍ ĐỔI TỪ NỀN ĐEN SANG NỀN TRẮNG VIỀN HỒNG SANG TRỌNG
+      div(class="lg:col-span-1")
+        div(class="bg-white p-8 rounded-[24px] border-2 border-[#FFEFF2] shadow-sm")
+          h3(class="text-lg font-bold mb-8 text-neutral-800 serif-font italic") Tổng kết chi phí
+          
+          div(class="space-y-4 border-b border-neutral-100 pb-6")
+            div(class="flex justify-between items-center")
+              span(class="text-neutral-400 text-xs font-medium") Tổng giá dịch vụ
+              span(class="text-sm font-bold text-neutral-800") #{booking.priceDisplay}đ
+            
+            div(class="flex justify-between items-center")
+              span(class="text-neutral-400 text-xs font-medium") Đã đặt cọc
+              span(class="text-sm font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg") #{booking.depositDisplay}đ
+          
+          div(class="pt-6")
+            div(class="flex justify-between items-end")
+              span(class="text-neutral-500 text-xs font-bold uppercase tracking-wider") Còn lại cần trả
+              span(class="text-2xl font-black text-[#FF2D55]") #{booking.remainingDisplay}đ
+
+  script.
+    // Xử lý nút Hủy lịch đặt nhanh bằng Form ẩn
+    const buttonCancel = document.querySelector("[button-cancel-booking]");
+    if(buttonCancel) {
+      buttonCancel.addEventListener("click", () => {
+        const isConfirm = confirm("Bạn có chắc chắn muốn hủy lịch đặt này không?");
+        if(isConfirm) {
+          const formCancel = document.querySelector("#form-cancel-booking");
+          formCancel.submit();
+        }
+      });
+    }

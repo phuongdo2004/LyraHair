@@ -1,0 +1,32 @@
+mixin pagination(pagination)
+  if pagination.totalPage > 1
+    .p-8.border-t.border-neutral-100.flex.justify-between.items-center
+      p.text-xs.text-neutral-400.font-medium
+        | Trang 
+        span.text-black.font-bold #{pagination.currentPage} 
+        | / 
+        span.text-black.font-bold #{pagination.totalPage}
+      
+      .flex.items-center.gap-2
+        //- Nút Quay lại
+        if(pagination.currentPage > 1)
+          a.w-10.h-10.rounded-xl.border.border-neutral-200.flex.items-center.justify-center.text-neutral-500.transition-all(
+            href=`?page=${pagination.currentPage - 1}`
+            class='hover:bg-black hover:text-[#D2B48C] hover:border-black'
+          )
+            i(class="fa-solid fa-chevron-left text-[10px]")
+        
+        //- Danh sách các số trang
+        - for (var i = 1; i <= pagination.totalPage; i++)
+          a.w-10.h-10.rounded-xl.border.flex.items-center.justify-center.text-xs.font-bold.transition-all(
+            href=`?page=${i}`
+            class=(pagination.currentPage == i ? 'bg-black text-[#D2B48C] border-black' : 'border-neutral-200 text-neutral-500 hover:border-black hover:text-black')
+          ) #{i}
+        
+        //- Nút Tiếp theo
+        if(pagination.currentPage < pagination.totalPage)
+          a.w-10.h-10.rounded-xl.border.border-neutral-200.flex.items-center.justify-center.text-neutral-500.transition-all(
+            href=`?page=${pagination.currentPage + 1}`
+            class='hover:bg-black hover:text-[#D2B48C] hover:border-black'
+          )
+            i(class="fa-solid fa-chevron-right text-[10px]")

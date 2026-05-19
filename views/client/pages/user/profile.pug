@@ -1,0 +1,38 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.mx-auto.px-4.py-12.max-w-6xl
+    .flex.flex-col.justify-between.items-start.mb-10.gap-4(class='md:flex-row md:items-end')
+        div
+          h1.text-4xl.font-bold.serif-font.italic Hồ sơ cá nhân
+          p.text-sm.text-neutral-400.mt-2.font-medium Quản lý thông tin tài khoản và thiết lập bảo mật của bạn.
+        a(href="/user/edit").btn-black
+          i.fa-solid.fa-edit
+          span CHỈNH SỬA HỒ SƠ
+    
+    .grid.grid-cols-1.gap-8(class='lg:grid-cols-12')
+      //- ĐÃ SỬA DÒNG NÀY (Thêm div)
+      div(class='lg:col-span-4')
+        .profile-card.p-10.flex.flex-col.items-center
+          .avatar-wrapper.mb-6
+            img.w-44.h-44.rounded-full.object-cover.shadow-sm(src=user.avatar[0] alt='Avatar')
+          h2.text-2xl.font-bold.serif-font.italic #{user.fullName}
+          p.font-bold.uppercase.mt-2(class='text-[10px] text-[#D2B48C] tracking-[0.2em]') KHÁCH HÀNG
+      div(class='lg:col-span-8')
+        .profile-card.p-10(class='md:p-12')
+          h3.font-extrabold.text-neutral-400.uppercase.mb-10(class='text-[11px] tracking-[0.15em]') THÔNG TIN CHI TIẾT
+          form.space-y-8
+            .grid.grid-cols-1.gap-8(class='md:grid-cols-2')
+              div
+                label.label-custom HỌ VÀ TÊN
+                input.form-input-custom(type='text' value= user.fullName)
+              div
+                label.label-custom EMAIL LIÊN HỆ
+                input.form-input-custom(type='email' value=user.email)
+            .grid.grid-cols-1.gap-8(class='md:grid-cols-2')
+              div
+                label.label-custom SỐ ĐIỆN THOẠI
+                input.form-input-custom(type='text' value= user.phone)
+              div
+                label.label-custom ĐỊA CHỈ
+                input.form-input-custom(type='text' value=user.address)

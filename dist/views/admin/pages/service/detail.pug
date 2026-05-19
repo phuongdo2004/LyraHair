@@ -1,0 +1,101 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  main.flex-1.p-10.bg-neutral-50.min-h-screen
+    
+    //- HEADER TRANG
+    header.flex.justify-between.items-center.mb-10
+      .flex.items-center.gap-6
+        a.w-12.h-12.rounded-full.border.border-neutral-200.flex.items-center.justify-center.transition-all(href=`/${prefixAdmin}/service` class='hover:bg-[#FFEFF2] hover:text-[#FF2D55] hover:border-[#FF2D55]')
+          i.fa-solid.fa-arrow-left
+        div
+          h2.text-3xl.font-bold.serif-font.italic Chi tiết dịch vụ
+          p.text-neutral-400.text-sm Xem thông tin gói dịch vụ tại Susannie Studio.
+      
+      .flex.gap-4
+        button.px-6.py-3.border.border-red-200.text-red-500.rounded-full.font-bold.text-sm.uppercase.tracking-widest.transition-all(
+          class='hover:bg-red-50 cursor-pointer'
+          button-delete
+          data-id=service.id
+        )
+          i.fa-solid.fa-trash-can.mr-2
+          | Xóa
+        
+        //- Nút chỉnh sửa chuyển sang tone Hồng chủ đạo kết hợp bóng đổ mềm
+        a.px-6.py-3.rounded-full.font-bold.text-sm.uppercase.tracking-widest.flex.items-center.gap-2.text-white.transition-all.shadow-lg(
+          href=`/${prefixAdmin}/service/edit/${service.id}`
+          class='bg-[#FF2D55] hover:bg-[#ff4f70] shadow-[#FF2D55]/10'
+        )
+          i.fa-solid.fa-pen-to-square
+          | Chỉnh sửa dịch vụ
+
+    //- BỐ CỤC NỘI DUNG CHI TIẾT
+    .grid.grid-cols-1.gap-8(class='lg:grid-cols-3')
+      
+      //- Cột bên trái: Ảnh đại diện & Thông số
+      .space-y-6(class='lg:col-span-1')
+        .card.p-4.bg-white.rounded-2xl.border.border-neutral-100.shadow-sm
+          .relative.group.overflow-hidden.rounded-2xl
+            if(service.images && service.images.length > 0)
+              img.w-full.object-cover.transition-transform.duration-700(src=service.images[0] class='aspect-[3/4] group-hover:scale-110')
+            else
+              .w-full.bg-neutral-100.flex.items-center.justify-center(class='aspect-[3/4]')
+                i.fa-regular.fa-image.text-4xl.text-neutral-300
+
+        .card.p-8.bg-white.rounded-2xl.border.border-neutral-100.shadow-sm.space-y-6
+          h4.font-black.uppercase(class='text-[10px] tracking-[0.2em] text-[#FF2D55]') Thông số dịch vụ
+          .space-y-4
+            .flex.justify-between.items-center
+              span.text-xs.text-neutral-400.font-bold.uppercase Giá niêm yết
+              span.text-lg.font-bold.text-neutral-800 #{service.price ? Math.floor(service.price).toLocaleString('vi-VN') : 0}đ
+            
+            //- PHẦN THÊM MỚI: Hiển thị tên danh mục phân loại dịch vụ tóc
+            .flex.justify-between.items-center
+              span.text-xs.text-neutral-400.font-bold.uppercase Danh mục
+              span.text-sm.font-bold.text-neutral-800.px-3.py-1.bg-neutral-50.rounded-xl.border.border-neutral-100 #{categoryName}
+            
+            .flex.justify-between.items-center
+              span.text-xs.text-neutral-400.font-bold.uppercase Thời lượng
+              span.text-sm.font-bold.text-neutral-800 #{service.duration} phút
+            
+            .flex.justify-between.items-center
+              span.text-xs.text-neutral-400.font-bold.uppercase Loại hình
+              span.px-3.py-1.bg-emerald-50.text-emerald-700.rounded-full.font-bold(class='text-[10px]') Dịch vụ Studio
+
+      //- Cột bên phải: Nội dung văn bản & Album ảnh
+      .space-y-6(class='lg:col-span-2')
+        .card.p-10.bg-white.rounded-2xl.border.border-neutral-100.shadow-sm
+          .mb-10
+            span.font-black.uppercase.block.mb-2(class='text-[10px] tracking-[0.3em] text-[#FF2D55]') Thông tin chi tiết
+            h3.text-4xl.font-bold.serif-font.italic.text-neutral-800.mb-4 #{service.name}
+            span.px-3.py-1.bg-neutral-100.rounded.font-bold.uppercase.tracking-widest.text-neutral-500(class='text-[9px]') ID: #{service.id}
+
+          .space-y-8
+            div
+              h5.text-xs.font-black.uppercase.tracking-widest.text-neutral-700.mb-4 Quy trình & Sản phẩm đi kèm
+              p.text-neutral-600.leading-relaxed.italic.text-sm.border-l-2.pl-4(class='border-[#FF2D55]')
+                | #{service.amenities || "Chưa cập nhật thông tin tiện ích."}
+            
+            div
+              h5.text-xs.font-black.uppercase.tracking-widest.text-neutral-700.mb-4 Mô tả dịch vụ
+              p.text-neutral-600.text-sm.leading-relaxed
+                | #{service.description || "Không có mô tả chi tiết cho dịch vụ này."}
+            
+            div
+              h5.text-xs.font-black.uppercase.tracking-widest.text-neutral-700.mb-6 Album ảnh dịch vụ
+              .grid.grid-cols-2.gap-4(class='md:grid-cols-4')
+                if(service.images && service.images.length > 0)
+                  each image in service.images
+                    img.w-full.aspect-square.object-cover.rounded-xl.transition-all.cursor-pointer(src=image class='hover:opacity-80 shadow-sm border border-neutral-100')
+                
+                //- Nút thêm ảnh đổi hiệu ứng hover sang màu hồng nhạt
+                a.w-full.aspect-square.rounded-xl.bg-neutral-50.border.border-dashed.border-neutral-300.flex.items-center.justify-center.text-neutral-400.transition-all(
+                  href=`/${prefixAdmin}/service/edit/${service.id}`
+                  class='hover:bg-[#FFEFF2] hover:text-[#FF2D55] hover:border-[#FF2D55]'
+                )
+                  i.fa-solid.fa-plus.text-xl
+
+  //- Form gửi lệnh xóa ẩn
+  form(id="form-delete-item" method="POST" action="" data-path=`/${prefixAdmin}/service/delete`)

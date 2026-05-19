@@ -1,0 +1,25 @@
+Lý do đơn giản là: Express không mặc định hiểu được các file được gửi qua form (định dạng multipart/form-data).
+
+Dưới đây là giải thích chi tiết tại sao req.file bị undefined nếu thiếu middleware của Multer:
+
+1. Bản chất của HTTP Request
+Khi bạn gửi một form có chứa file, trình duyệt sẽ gửi dữ liệu dưới định dạng multipart/form-data. Đây là một cấu trúc dữ liệu phức tạp gồm nhiều phần: phần chứa text (string) và phần chứa dữ liệu nhị phân (file).
+
+Express mặc định: Chỉ có thể phân tích (parse) các định dạng đơn giản như application/json hoặc application/x-www-form-urlencoded (thông qua express.json() hoặc express.urlencoded()).
+
+Multer: Là một "người phiên dịch" chuyên biệt cho multipart/form-data.
+
+2. Vai trò của upload.single("images")
+Khi bạn thêm upload.single("images") vào router, nó đóng vai trò là một Middleware. Quy trình hoạt động như sau:
+
+Tiếp nhận: Middleware này chặn request trước khi nó đến được controller.store.
+
+Phân tích: Multer "mổ xẻ" cái request đó ra, tìm kiếm field nào có tên là "images".
+
+Xử lý: Nó lấy dữ liệu nhị phân của file đó, xử lý (trong trường hợp của bạn là lưu vào RAM vì dùng memoryStorage).
+
+Gán dữ liệu: Đây là bước quan trọng nhất. Multer sẽ tự tay tạo ra thuộc tính .file (hoặc .files) và gắn nó vào đối tượng req.
+
+Chuyển tiếp: Sau khi đã gán xong, nó gọi hàm next() để chuyển quyền điều khiển cho controller.store.
+
+Kết luận: Nếu bạn không cho upload.single("images") vào, không có ai làm nhiệm vụ "mổ xẻ" dữ liệu file và gắn nó vào req cả. Vì req.file chưa bao giờ được khởi tạo, nên khi bạn gọi nó trong controller, nó trả về undefined là điều hiển nhiên.

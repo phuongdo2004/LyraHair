@@ -1,0 +1,106 @@
+header(class="bg-black/95 backdrop-blur-md sticky top-0 z-50 border-b border-white/10 shadow-2xl")
+  .container.mx-auto.px-6.py-5.flex.flex-wrap(class="lg:flex-nowrap justify-between items-center gap-6")
+    h1.text-3xl.font-black.tracking-tighter.serif-font.italic.text-white.flex-shrink-0
+      | SUSANNIE
+      span(class="font-light not-italic tracking-normal text-[#D2B48C]") .Studio  
+    .w-full(class="order-3 lg:order-2 lg:max-w-md relative group")
+      input#search-input(class="w-full bg-white/10 border border-white/20 rounded-full py-3 px-12 text-sm text-white focus:outline-none focus:border-[#D2B48C] focus:bg-white/20 transition-all placeholder:text-white/50" type="text" placeholder="Tìm dịch vụ, tone makeup..." autocomplete="off")
+      i(class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-white/50 group-focus-within:text-[#D2B48C] text-base")
+      
+      //- Phần danh sách gợi ý hiện ra khi có kết quả
+      #search-suggest(class="hidden absolute top-full left-0 w-full bg-white mt-2 rounded-2xl shadow-2xl overflow-hidden z-[60] border border-neutral-100")
+        //- Nội dung gợi ý sẽ được render bằng Javascript vào đây
+    nav(class="hidden xl:flex space-x-8 text-[13px] font-bold tracking-widest uppercase text-white/90 order-2")
+      a(class="hover:text-[#D2B48C] transition-colors border-b-2 border-transparent hover:border-[#D2B48C] pb-1" href="/home") Trang chủ
+      a(class="hover:text-[#D2B48C] transition-colors border-b-2 border-transparent hover:border-[#D2B48C] pb-1" href="/service") Dịch vụ
+      a(class="hover:text-[#D2B48C] transition-colors border-b-2 border-transparent hover:border-[#D2B48C] pb-1" href="/service/favorite") Yêu thích
+      //- a(class="hover:text-[#D2B48C] transition-colors border-b-2 border-transparent hover:border-[#D2B48C] pb-1" href="/comments") Liên hệ
+
+    .flex.items-center.gap-4.ml-auto(class="order-2 lg:order-3")
+      //- Kiểm tra nếu KHÔNG có biến Customer (chưa đăng nhập)
+      if !Customer
+        a(href="/user/login" class="inline-block text-center border-2 border-[#D2B48C] text-[#D2B48C] px-6 py-2.5 rounded-full text-sm font-bold uppercase tracking-wider hover:bg-[#D2B48C] hover:text-black transition-all")
+          | Đăng nhập
+      else
+        //- Nếu ĐÃ đăng nhập: Hiện Avatar + Menu thả xuống
+        .relative.group.flex.items-center.gap-2.cursor-pointer(class="order-2 lg:order-3")
+          //- Khối hiển thị chính
+          .flex.items-center.gap-2
+            if Customer.avatar
+              img(src=Customer.avatar[0] class="w-10 h-10 rounded-full border-2 border-[#D2B48C] object-cover shadow-sm")
+            else
+              i(class="fa-solid fa-circle-user text-2xl text-[#D2B48C]")
+              span(class="text-white text-sm font-medium hidden md:block group-hover:text-[#D2B48C] transition-colors") #{Customer.fullName}
+              i(class="fa-solid fa-chevron-down text-[10px] text-white/50 group-hover:text-[#D2B48C]")
+
+            //- SỬA LỖI DÒNG 37 Ở ĐÂY: Đưa toàn bộ class vào ngoặc (class="...")
+            div(class="absolute top-full right-0 mt-2 w-40 bg-white rounded-xl shadow-xl py-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300 z-50 border border-neutral-100")
+              a(href="/user/profile" class="flex items-center gap-3 px-4 py-2 text-xs text-neutral-600 hover:bg-neutral-50 hover:text-black transition-colors")
+                i.fa-solid.fa-user-gear
+                | Tài khoản
+              
+              .h-px.bg-neutral-100.my-1 
+
+              a(href="/user/logout" class="flex items-center gap-3 px-4 py-2 text-xs text-red-500 hover:bg-red-50 transition-colors font-bold")
+                i.fa-solid.fa-right-from-bracket
+                | Đăng xuất
+      a(href="/booking" class="inline-block text-center bg-[#D2B48C] text-black px-7 py-2.5 rounded-full text-sm font-bold uppercase tracking-wider hover:bg-white transition-all shadow-lg shadow-[#D2B48C]/20 whitespace-nowrap")
+        | Đặt lịch ngay
+  script.
+    const searchInput = document.querySelector('#search-input');
+    const suggestBox = document.querySelector('#search-suggest');
+    console.log(searchInput);
+    console.log(suggestBox);
+
+    let debounceTimer;
+    if(searchInput){
+      searchInput.addEventListener('input', (e) => {
+      const keyword = e.target.value.trim();
+        console.log(keyword);
+      clearTimeout(debounceTimer);
+      
+      if (keyword.length < 2) {
+          suggestBox.classList.add('hidden');
+          return;
+      }
+
+      // Đợi 300ms sau khi ngừng gõ mới gửi request
+      debounceTimer = setTimeout(() => {
+          fetch(`/service/search-suggest?keyword=${keyword}`)
+              .then(res => res.json())
+              .then(data => {
+                  if (data.services && data.services.length > 0) {
+                      renderSuggest(data.services);
+                      suggestBox.classList.remove('hidden');
+                  } else {
+                      suggestBox.classList.add('hidden');
+                  }
+              });
+      }, 300);
+    });
+    }
+
+
+    function renderSuggest(services) {
+        const html = services.map(item => `
+            <a href="/service/detail/${item.id}" class="flex items-center gap-4 p-4 hover:bg-neutral-50 transition-colors border-b border-neutral-50 last:border-none">
+                <img src="${item.images}" class="w-12 h-12 rounded-lg object-cover">
+                <div>
+                    <div class="text-sm font-bold text-black">${item.name}</div>
+                    <div class="text-xs text-[#D2B48C]">${Number(item.price).toLocaleString()} đ</div>
+                </div>
+            </a>
+        `).join('');
+        
+        suggestBox.innerHTML = html;
+    }
+
+    // Đóng hộp gợi ý khi click ra ngoài
+    document.addEventListener('click', (e) => {
+      if(searchInput){
+        if (!searchInput.contains(e.target) && !suggestBox.contains(e.target)) {
+            suggestBox.classList.add('hidden');
+        }
+      }
+        
+    });

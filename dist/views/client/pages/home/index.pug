@@ -1,0 +1,186 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  
+  //- ================= SECTION 1: HERO BANNER (ĐỔI SANG NỀN TRẮNG TINH KHÔI) =================
+  section(class="relative min-h-[85vh] bg-white flex items-center overflow-hidden pt-12 border-b border-neutral-100")
+    //- Hiệu ứng đèn Blur hồng nhạt ẩn sau nền trắng cho thơ mộng
+    .absolute.w-96.h-96.rounded-full.blur-3xl.opacity-10.top-10.left-10(class='bg-[#FF69B4]')
+    .absolute.w-96.h-96.rounded-full.blur-3xl.opacity-10.bottom-10.right-10(class='bg-[#FF69B4]')
+
+    .container.mx-auto.px-6.grid.grid-cols-1.gap-12.relative.z-10(class="lg:grid-cols-12 lg:items-center")
+      //- Bên trái: Nội dung chữ lớn tạo bứt phá thị giác
+      div(class="lg:col-span-7 space-y-6 text-center lg:text-left")
+        p(class="text-[#FF69B4] uppercase tracking-[0.4em] text-xs font-black") Luxury Hair Salon & Academy
+        h2(class="text-5xl md:text-8xl font-black serif-font italic text-neutral-900 leading-none")
+          | LYRA 
+          br
+          span(class="not-italic text-[#FF69B4]") HAIR STUDIO
+        
+        //- Chữ mô tả đổi sang màu Hồng Pastel ngọt ngào, thêm font-bold để hiển thị sắc nét trên nền trắng
+        p(class="text-[#FF758F] text-sm md:text-base max-w-xl font-bold tracking-wide leading-relaxed")
+          | Không chỉ là cắt tóc, chúng tôi thiết kế phong cách định hình bản sắc riêng của bạn. Đột phá với những gam màu thời thượng và công nghệ phục hồi tóc tầng sâu.
+        .pt-4
+          a(href="#featured-services" class="inline-block px-10 py-4 bg-[#FF69B4] text-white font-black text-xs uppercase tracking-[0.2em] rounded-full hover:bg-neutral-900 transition-all shadow-lg shadow-[#FF69B4]/20 hover:scale-105")
+            | Khám phá dịch vụ
+            
+      //- Bên phải: Khối ảnh Hero tĩnh ghép đôi đè lớp nghệ thuật nghệ thuật
+      div(class="lg:col-span-5 relative h-[450px] md:h-[550px] w-full hidden md:block")
+        .absolute.right-0.top-0.w-4.h-4.rounded-full(class="bg-[#FF69B4]/20 animate-ping")
+        //- Ảnh chính phía sau
+        div(class="absolute top-0 right-4 w-[80%] h-[85%] rounded-[40px] overflow-hidden border border-neutral-100 shadow-2xl bg-white")
+          img.w-full.h-full.object-cover(src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&q=80&w=1200" alt="Lyra Hair Model")
+        //- Ảnh nhỏ đè phía trước (Đổi border thành màu trắng kem #F7F4EF đè lớp mịn màng)
+        div(class="absolute bottom-0 left-4 w-[55%] h-[50%] rounded-[30px] overflow-hidden border-4 border-[#F7F4EF] shadow-2xl z-20 bg-neutral-50")
+          img.w-full.h-full.object-cover(
+            src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=800" 
+            alt="Hair Styling"
+          )
+
+  //- ================= SECTION 2: ABOUT STORY (NỀN PASTEL KEM SỮA NHẸ NHÀNG) =================
+  section.py-24(class="bg-[#F7F4EF] text-neutral-800")
+    .container.mx-auto.px-6.flex.flex-col-reverse.items-center.gap-16(class="lg:flex-row")
+      //- Khối nội dung chữ (Bên Trái)
+      div(class="lg:w-1/2 space-y-6")
+        h3(class="text-4xl serif-font italic text-[#FF69B4] font-bold") Đột phá phong cách, dẫn đầu xu hướng
+        
+        //- Đổi text sang Hồng Pastel đậm đà tôn da, tôn chữ trên nền kem sáng
+        p(class="text-[#FF758F] leading-relaxed text-sm md:text-base font-bold")
+          | Xuất phát từ niềm đam mê với nghệ thuật tóc đương đại, Lyra Hair Studio mang đến không gian trải nghiệm đẳng cấp high-end. Chúng tôi tự hào đồng hành cùng hàng ngàn khách hàng trên hành trình làm mới bản thân bằng những mẫu tóc layer sắc sảo, uốn sóng lơi nhẹ nhàng hay các tone màu nhuộm tẩy cá tính độc bản.
+        
+      //- Khối hình ảnh bo tròn nghệ thuật (Bên Phải)
+      div(class="lg:w-1/2 relative")
+        div(class="absolute -bottom-4 -right-4 w-full h-full border border-[#FF69B4]/20 rounded-[40px]")
+        img.relative.z-10.transition-all.duration-700.w-full.object-cover(
+          src='https://images.unsplash.com/photo-1595475207225-428b62bda831?q=80&w=1200&auto=format&fit=crop' 
+          class='h-[450px] rounded-[40px] shadow-lg'
+          alt="Salon Experience"
+        )
+
+  //- ================= SECTION 3: FEATURED SERVICES (NỀN TRẮNG SÁNG VỚI CARD CÓ ĐỔ BÓNG NHẸ) =================
+  section#featured-services.py-24.px-6(class="bg-white")
+    .container.mx-auto
+      .flex.flex-col.justify-between.items-start.mb-12.gap-4(class="md:flex-row md:items-end")
+        div.space-y-2
+          h3.text-4xl.serif-font.italic.text-neutral-900.font-bold Danh mục dịch vụ
+          p.text-sm.text-neutral-400 Kiệt tác nghệ thuật được thực hiện bởi đội ngũ Stylist chuyên nghiệp hàng đầu.
+
+      //- Lưới danh sách dịch vụ giữ nguyên logic vòng lặp
+      .grid.gap-8(class="grid-cols-1 md:grid-cols-2 lg:grid-cols-3")
+        each service in services
+          //- Chuyển nền card sang trắng tinh (bg-white), viền xám nhạt (border-neutral-100) và shadow mềm mại
+          .service-card.overflow-hidden.flex.flex-col.h-full.border.transition-all(class="bg-white border-neutral-100 rounded-[32px] hover:border-[#FF69B4]/30 hover:shadow-xl shadow-neutral-100")
+            .relative.h-72.overflow-hidden
+              img.w-full.h-full.object-cover.transition-transform.duration-500(src=service.images class="hover:scale-105")
+            
+            //- Phần nội dung thông tin dịch vụ
+            .p-8.flex.flex-col.flex-grow.justify-between
+              div
+                h3.text-xl.font-black.text-neutral-900.uppercase.mb-2.tracking-wide #{service.name}
+                p.text-xs.mb-6.flex.items-center.font-semibold(class='text-neutral-400')
+                  i.fa-solid.fa-location-dot.mr-2(class='text-[#FF69B4]')
+                  | Thị trấn Lim, Huyện Tiên Du, Bắc Ninh
+              
+              div
+                .flex.justify-between.items-center.py-4.mb-6(class="border-y border-neutral-100")
+                  .flex.items-center.gap-2
+                    i.fa-regular.fa-clock(class='text-[14px] text-neutral-400')
+                    span.font-bold.uppercase.tracking-tighter(class='text-[11px] text-neutral-400')
+                      | #{service.duration} phút
+                  
+                  span.px-3.py-1.rounded-md.font-black.text-sm(class='bg-[#FF69B4]/10 text-[#FF69B4]') 
+                    | #{(service.price * 1).toLocaleString()} đ
+                
+                //- Nút chuyển sang phong cách Dark-Button nổi bật trên nền trắng
+                a(href=`/service/detail/${service.id}` class="w-full inline-block text-center py-4 bg-neutral-900 text-white rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-[#FF69B4] hover:text-white transition-all")
+                  | Xem chi tiết & Đặt lịch
+
+  //- ================= SECTION 4: FEEDBACKS (CARD REVIEW ĐƯỢC CHUẨN HÓA TRẮNG TRONG SUỐT ĐỔ BÓNG) =================
+  section.py-24(class="bg-[#F7F4EF]")
+    .container.mx-auto.px-6.text-center
+      p(class="text-[#FF69B4] text-xs font-bold uppercase tracking-widest mb-2") Trải nghiệm thực tế
+      h3.text-4xl.serif-font.italic.text-neutral-900.mb-4.font-bold Khách hàng nói gì về Lyra Hair?
+      p.max-w-2xl.mx-auto.mb-16.text-sm(class="text-neutral-400") Sự hài lòng và nụ cười rạng rỡ của bạn là động lực lớn nhất của chúng tôi.
+      
+      .grid.gap-8.text-left(class="grid-cols-1 md:grid-cols-3")
+        if feedbacks && feedbacks.length > 0
+          each feedback in feedbacks
+            //- Thay card sang màu nền trắng, viền nhạt và bóng đổ mềm ôm trọn feedback
+            .p-8.border.rounded-3xl.relative.shadow-sm(class="bg-white border-neutral-100")
+              .absolute.left-8.p-2.rounded-lg(class="-top-4 bg-[#FF69B4] text-white")
+                i.fa-solid.fa-quote-left
+              .flex.items-center.gap-4.mb-6
+                - const custInfo = feedback.customer || {}
+                img.w-12.h-12.rounded-full.object-cover.border(src=custInfo.avatar || `https://i.pravatar.cc/150?u=${feedback.customer_id}` || `https://i.pravatar.cc/150?u=default` class="border-neutral-200")
+                div
+                  h5.font-bold.text-sm.text-neutral-800= custInfo.fullName || 'Khách hàng ẩn danh'
+                  p(class="text-[10px] text-neutral-400 uppercase tracking-tighter font-bold") Thành viên tuyển chọn
+              
+              //- Đoạn trích dẫn đổi sang màu hồng pastel cuốn hút
+              p(class="text-xs text-[#FF758F] leading-relaxed mb-6 font-semibold italic") "#{feedback.content}"
+              .flex.text-yellow-500(class="text-[10px] gap-1")
+                - const stars = Math.round(feedback.rating || 5)
+                each star in [1,2,3,4,5]
+                  if star <= stars
+                    i.fa-solid.fa-star
+                  else
+                    i.fa-regular.fa-star
+        else
+          .col-span-3.text-center.py-8
+            p(class="text-neutral-400 text-sm") Chưa có phản hồi từ khách hàng. Hãy là người đầu tiên trải nghiệm!
+
+  //- ================= JAVASCRIPT LOGIC (Giữ nguyên gốc bảo đảm kết nối API) =================
+  script.
+    async function toggleFavorite(btn) {
+      const serviceId = btn.getAttribute('data-id');
+      const icon = btn.querySelector('i');
+      
+      const isAdding = icon.classList.contains('fa-regular');
+      const updateUI = (adding) => {
+        if (adding) {
+          icon.classList.replace('fa-regular', 'fa-solid');
+          icon.classList.add('text-red-500');
+          btn.classList.add('bg-white');
+          btn.classList.remove('text-white');
+        } else {
+          icon.classList.replace('fa-solid', 'fa-regular');
+          icon.classList.remove('text-red-500');
+          btn.classList.remove('bg-white');
+          btn.classList.add('text-white');
+        }
+      };
+
+      updateUI(isAdding);
+
+      try {
+        const response = await fetch('/service/favorite/toggle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ serviceId: serviceId })
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            alert("Vui lòng đăng nhập để thực hiện chức năng này!");
+            window.location.href = "/user/login";
+            return;
+          }
+          throw new Error(`Server returned status ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log(result);
+        if (result.code === 200) {
+          alert("Cập nhật mục yêu thích thành công!");
+        } else {
+          throw new Error(result.message || "Unknown error");
+        }
+
+      } catch (error) {
+        console.error("Lỗi thực thi:", error);
+        updateUI(!isAdding); 
+        alert("Không thể cập nhật mục yêu thích. Vui lòng kiểm tra lại kết nối!");
+      }
+    }

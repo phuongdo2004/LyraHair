@@ -1,0 +1,402 @@
+/* ==========================================
+   1. FONTS & ROOT VARIABLES (BLACKPINK TONE)
+   ========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --color-pink-primary: #FF69B4;  /* Hồng Neon đậm chất BlackPink */
+    --color-pink-light: #FFB7D5;    /* Hồng pastel dịu nhẹ làm nền hoặc viền */
+    --color-deep-black: #121212;    /* Đen tuyền huyền bí */
+    --color-card-bg: #1E1E1E;       /* Đen xám nhẹ cho nền Card */
+    
+    /* Hệ màu Toast Thông báo */
+    --success-color: #2ecc71;
+    --warning-color: #f1c40f;
+    --delete-color: #e74c3c;
+}
+
+body { 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+    background-color: var(--color-deep-black); 
+    color: #FFFFFF; /* Chữ trắng nổi bật trên nền đen */
+    margin: 0;
+    padding: 0;
+}
+
+.serif-font { 
+    font-family: 'Playfair Display', serif; 
+}
+
+/* ==========================================
+   2. HUB CARDS & HAIR SERVICES
+   ========================================== */
+.hub-card { 
+    transition: all 0.3s ease; 
+    border: 1px solid rgba(255, 105, 180, 0.15);
+    background-color: var(--color-card-bg);
+}
+.hub-card:hover { 
+    transform: translateY(-8px); 
+    border-color: var(--color-pink-primary);
+    box-shadow: 0 15px 30px rgba(255, 105, 180, 0.2); 
+}
+
+/* Card Dịch vụ tóc */
+.service-card {
+    background-color: var(--color-card-bg);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid rgba(255, 105, 180, 0.1);
+}
+.service-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--color-pink-primary);
+    box-shadow: 0 20px 40px rgba(255, 105, 180, 0.25);
+}
+
+.price-tag { 
+    background-color: var(--color-pink-primary); 
+    color: var(--color-deep-black); 
+    padding: 4px 12px; 
+    border-radius: 6px; 
+    font-weight: 800; 
+    font-size: 11px; 
+}
+
+.meta-tag { 
+    font-size: 10px; 
+    font-weight: 700; 
+    padding: 6px 12px; 
+    border-radius: 8px; 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    background: rgba(255, 255, 255, 0.1); 
+    color: var(--color-pink-light);
+}
+
+.hair-tag {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background-color: rgba(255, 105, 180, 0.15);
+    color: var(--color-pink-primary);
+    border: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+/* ==========================================
+   3. BANNER HERO & SLIDER
+   ========================================== */
+.page-banner, .login-banner, .register-banner, .service-banner {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+/* Tạo lớp phủ tối màu cho banner để nổi bật chữ */
+.page-banner::before, .login-banner::before, .register-banner::before, .service-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18,18,18,0.8), rgba(18,18,18,0.9));
+    z-index: 1;
+}
+.page-banner *, .login-banner *, .register-banner *, .service-banner * {
+    position: relative;
+    z-index: 2;
+}
+
+.service-banner {
+    background-attachment: fixed;
+}
+
+@keyframes slide-infinite {
+    0%, 25% { transform: translateX(0); }
+    33%, 58% { transform: translateX(-25%); }
+    66%, 91% { transform: translateX(-50%); }
+    100% { transform: translateX(-75%); }
+}
+
+.slider-wrapper { 
+    display: flex; 
+    width: 400%; 
+    height: 100%; 
+    animation: slide-infinite 12s infinite ease-in-out; 
+}
+
+.slide-item { 
+    width: 25%; 
+    height: 100%; 
+    background-size: cover; 
+    background-position: center; 
+}
+
+/* ==========================================
+   4. FORMS & INPUTS (BLACKPINK STYLE)
+   ========================================== */
+.input-field, .form-input-custom {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    border-radius: 16px;
+    padding: 14px 20px;
+    width: 100%;
+    font-size: 14px;
+}
+
+.input-field:focus, .form-input-custom:focus {
+    border-color: var(--color-pink-primary);
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.25);
+}
+
+.label-custom {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--color-pink-light);
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.filter-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23FF69B4'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    color: white;
+    background-color: var(--color-card-bg);
+}
+
+/* BUTTONS */
+.btn-primary, .btn-black {
+    background-color: var(--color-pink-primary);
+    color: var(--color-deep-black);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 12px 28px;
+    border-radius: 99px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover, .btn-black:hover {
+    background-color: white;
+    color: var(--color-deep-black);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================
+   5. BOOKING (DATE, TIME, STYLIST)
+   ========================================== */
+.info-card { 
+    background: var(--color-card-bg); 
+    border-radius: 24px; 
+    border: 1px solid rgba(255, 105, 180, 0.1); 
+}
+
+.tag-custom { 
+    background: rgba(255, 105, 180, 0.1); 
+    color: var(--color-pink-primary); 
+    border: 1px solid var(--color-pink-primary); 
+    padding: 6px 16px; 
+    border-radius: 99px; 
+    font-weight: 700; 
+    font-size: 12px; 
+}
+
+.price-box { 
+    background: var(--color-pink-primary); 
+    color: var(--color-deep-black); 
+    padding: 10px 20px; 
+    border-radius: 12px; 
+    font-weight: 800; 
+}
+
+.image-frame { 
+    border: 2px solid var(--color-pink-primary); 
+    border-radius: 32px; 
+    padding: 15px; 
+    background: var(--color-deep-black); 
+}
+
+/* Ô Chọn Ngày / Giờ lịch hẹn */
+.date-card, .time-card { 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    background: var(--color-deep-black);
+    color: white;
+    transition: all 0.2s; 
+    cursor: pointer; 
+    min-width: 75px; 
+    text-align: center; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 8px;
+}
+.date-card:hover, .time-card:hover {
+    border-color: var(--color-pink-light);
+}
+
+/* Trạng thái đã chọn (Active) */
+.date-card.active, .time-card.active { 
+    border-color: var(--color-pink-primary) !important; 
+    background-color: var(--color-pink-primary) !important; 
+    color: var(--color-deep-black) !important; 
+}
+.date-card.active span, .time-card.active span { 
+    color: var(--color-deep-black) !important; 
+}
+
+/* Card chọn Thợ làm tóc (Stylist) */
+.stylist-card {
+    background: var(--color-card-bg);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.stylist-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-pink-light);
+}
+.stylist-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 105, 180, 0.3);
+}
+.stylist-card.active {
+    background-color: var(--color-pink-primary);
+    color: var(--color-deep-black);
+    border-color: var(--color-pink-primary);
+}
+.stylist-card.active .stylist-avatar {
+    border-color: var(--color-deep-black);
+}
+
+/* ==========================================
+   6. CUSTOMER PROFILE & UTILITIES
+   ========================================== */
+.profile-card {
+    background: var(--color-card-bg);
+    border-radius: 32px; 
+    border: 1px solid rgba(255, 105, 180, 0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Viền ảnh đại diện BlackPink cực xinh */
+.avatar-wrapper img {
+    border: 8px solid rgba(255, 105, 180, 0.2); 
+}
+
+.map-wrapper iframe { filter: invert(90%) hue-rotate(180deg); } /* Làm tối bản đồ cho hợp nền đen */
+
+.modal-overlay { background: rgba(0, 0, 0, 0.85); display: none; backdrop-filter: blur(6px); }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+footer { 
+    background-color: #000000; 
+    color: var(--color-pink-light); 
+    border-top: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+.animate-heart { animation: heartBeat 0.3s ease-in-out; }
+
+/* ==========================================
+   7. TOAST NOTIFICATION SYSTEM
+   ========================================== */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    pointer-events: none;
+}
+
+.toast {
+    pointer-events: auto; 
+    width: 350px;
+    background: var(--color-card-bg);
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    transform: translateX(120%);
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+    opacity: 0;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.toast.active {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast-success { border-left: 5px solid var(--success-color); }
+.toast-warning { border-left: 5px solid var(--warning-color); }
+.toast-delete  { border-left: 5px solid var(--delete-color); }
+
+.toast-icon { font-size: 24px; margin-right: 15px; }
+.toast-success .toast-icon { color: var(--success-color); }
+.toast-warning .toast-icon { color: var(--warning-color); }
+.toast-delete .toast-icon  { color: var(--delete-color); }
+
+.toast-content { display: flex; flex-direction: column; }
+.toast-title { font-weight: 700; color: #FFFFFF; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; }
+.toast-message { color: #BBB; font-size: 13px; margin-top: 3px; }
+.toast-close { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 20px; color: #666; transition: 0.3s; }
+.toast-close:hover { color: var(--color-pink-primary); }
+
+.toast-progress { position: absolute; bottom: 0; left: 0; height: 3px; width: 100%; }
+.toast-success .toast-progress { background: var(--success-color); }
+.toast-warning .toast-progress { background: var(--warning-color); }
+.toast-delete .toast-progress  { background: var(--delete-color); }
+
+.toast.active .toast-progress { animation: progress 4s linear forwards; }
+@keyframes progress { 100% { width: 0%; } }
+
+/* ==========================================
+   8. SWIPER SLIDER REFS
+   ========================================== */
+.mySwiper {
+    width: 100%;
+    height: 500px; 
+    background-color: #050505; 
+}
+@media (min-width: 768px) { .mySwiper { height: 650px; } }
+.swiper-slide { display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.swiper-slide img { width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; }

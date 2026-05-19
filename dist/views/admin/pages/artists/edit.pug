@@ -1,0 +1,90 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  main.flex-1.p-10.bg-neutral-50
+    +alert(3000)
+    
+    //- Breadcrumb & Header
+    header.mb-10
+      .flex.items-center.gap-2.text-xs.uppercase.tracking-widest.text-neutral-400.mb-4
+        a(href='/admin/artists' class='hover:text-black') Đội ngũ Artist
+        i.fa-solid.fa-chevron-right(class="text-[8px]")
+        a(href=`/admin/artists/detail/${artist.id}` class='hover:text-black') Hồ sơ Artist
+        i.fa-solid.fa-chevron-right(class="text-[8px]")
+        span.text-black.font-bold Chỉnh sửa hồ sơ
+
+      .flex.justify-between.items-center
+        div
+          h2.text-3xl.font-bold.serif-font.italic.mb-3 Cập nhật thông tin Nghệ sĩ
+          p.text-neutral-400.text-sm Thay đổi thông tin cá nhân hoặc trạng thái hoạt động của #{artist.name}.
+
+    //- Form chỉnh sửa Artist
+    //- Lưu ý: Dùng phương thức PATCH (nếu route hỗ trợ) hoặc POST với id
+    form(action=`/${prefixAdmin}/artists/edit/${artist.id}?_method=PATCH` method='POST' enctype='multipart/form-data')
+      .grid.grid-cols-1(class='lg:grid-cols-3 gap-8')
+        
+        //- Cột trái: Ảnh đại diện & Trạng thái
+        .space-y-8
+          .card.p-8.text-center
+            h4(class="text-[10px]").font-black.uppercase.tracking-widest.mb-6.text-neutral-400 Ảnh đại diện
+            .relative.w-40.h-40.mx-auto.mb-6
+              .w-full.h-full.rounded-full.bg-neutral-100.border-2.border-dashed.border-neutral-300.flex.items-center.justify-center.overflow-hidden.group
+                img#avatar-preview.w-full.h-full.object-cover(src=(artist.avatar ? artist.avatar : "/admin/images/default-avatar.png"))
+                input#avatar-input.absolute.inset-0.opacity-0.cursor-pointer(type='file' name='avatar' accept='image/*')
+            
+            p(class="text-[10px]").text-neutral-400.italic Thay đổi ảnh mới (Nếu có)
+
+            .pt-8.space-y-6.text-left
+              div
+                label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Trạng thái hoạt động
+                select.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(name='status' class='focus:ring-1 focus:ring-[#D2B48C]')
+                  option(value='active' selected=(artist.status === 'active')) Sẵn sàng
+                  option(value='inactive' selected=(artist.status === 'inactive')) Tạm nghỉ
+                  option(value='busy' selected=(artist.status === 'busy')) Đang bận
+              
+              div
+                label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Đánh giá (Rating)
+                .flex.items-center.gap-3
+                  input.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(type='number' name='rating' step='0.1' min='0' max='5' value=artist.rating class='focus:ring-1 focus:ring-[#D2B48C]')
+                  i.fa-solid.fa-star(class="text-[#D2B48C]")
+
+        //- Cột phải: Thông tin chi tiết
+        .space-y-8(class="lg:col-span-2")
+          .card.p-8
+            h4(class="text-[10px]").font-black.uppercase.tracking-widest.mb-8.text-neutral-400.border-b.pb-4 Thông tin cơ bản
+            
+            .grid.grid-cols-2.gap-6
+              .col-span-2(class='md:col-span-1')
+                label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Họ và tên Artist
+                input.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(type='text' name='name' value=artist.name required class='focus:ring-1 focus:ring-[#D2B48C]')
+              
+              .col-span-2(class='md:col-span-1')
+                label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Email liên hệ
+                input.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(type='email' name='email' value=artist.email required class='focus:ring-1 focus:ring-[#D2B48C]')
+
+              .col-span-2(class='md:col-span-1')
+                label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Số điện thoại
+                input.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(type='text' name='phone' value=artist.phone class='focus:ring-1 focus:ring-[#D2B48C]')
+
+              .col-span-2(class='md:col-span-1')
+                label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Kinh nghiệm (Năm)
+                input.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(type='number' name='experience' value=artist.experience min='0' class='focus:ring-1 focus:ring-[#D2B48C]')
+
+            .mt-6
+              label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Địa chỉ cư trú
+              input.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(type='text' name='address' value=artist.address class='focus:ring-1 focus:ring-[#D2B48C]')
+
+          .card.p-8
+            h4(class="text-[10px]").font-black.uppercase.tracking-widest.mb-8.text-neutral-400.border-b.pb-4 Thời gian & Tiểu sử
+
+            div
+              label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Tiểu sử & Phong cách nghệ thuật
+              textarea.w-full.px-4.py-4.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(name='biography' rows='5' class='focus:ring-1 focus:ring-[#D2B48C]') #{artist.biography}
+
+          //- Nút thao tác
+          .flex.justify-end.gap-4.mt-10
+            a.px-8.py-4.rounded-full.text-xs.font-bold.uppercase.tracking-widest.transition-all.border.border-neutral-200(href=`/admin/artists/detail/${artist.id}` class='hover:bg-neutral-100') Hủy bỏ
+            button.px-10.py-4.bg-black.rounded-full.text-xs.font-bold.uppercase.tracking-widest.transition-all(type='submit' class='text-[#D2B48C] hover:bg-neutral-800 shadow-xl shadow-black/10') 
+              i.fa-solid.fa-floppy-disk.mr-2
+              | Lưu thay đổi

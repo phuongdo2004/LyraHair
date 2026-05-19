@@ -1,0 +1,7 @@
+sdt 0919100100
+
+
+  "scripts": {
+    "start": "nodemon --exec tsx ./index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },

@@ -1,0 +1,82 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+block main
+  +alert(3000)
+  main.flex-1.p-10
+    header.flex.justify-between.items-center.mb-10
+      div
+        h2.text-3xl.font-bold.serif-font.italic Đội ngũ Nhân viên
+        p.text-neutral-400.text-sm Quản lý đội ngũ nhân viên của bạn.
+      
+      .flex.gap-4
+
+        a.px-6.py-3.rounded-full.font-bold.text-sm.uppercase.tracking-widest.flex.items-center.gap-2.text-white.transition-all.shadow-lg(
+          href='/admin/artists/create'
+          class='bg-[#FF2D55] hover:bg-[#ff4f70] shadow-[#FF2D55]/10'
+        )
+          i.fa-solid.fa-pen-to-square
+          | Thêm Nhân viên mới
+    .card.overflow-hidden
+      .overflow-x-auto
+        table.w-full.text-left
+          thead.bg-neutral-50.uppercase.font-black.text-neutral-400.tracking-widest(class='text-[10px]')
+            tr
+              th.px-8.py-4 Nhân viên
+              //- th.px-8.py-4 Chuyên môn (Style)
+              th.px-8.py-4 Kinh nghiệm
+              th.px-8.py-4 Đánh giá
+              th.px-8.py-4 Trạng thái
+              th.px-8.py-4.text-right Thao tác
+          tbody.divide-y.divide-neutral-50.bg-white
+            //- Ví dụ cho Artist 1
+            each artist in artists
+              tr.transition-all.group(class='hover:bg-neutral-50/50 cursor-pointer')
+                td.px-8.py-5
+                  //- Click vào Avatar hoặc Tên để sang trang Detail
+                  a.flex.items-center.gap-4(href=`/${prefixAdmin}/artists/detail/${artist.id}`)
+                    .relative
+                      img.w-12.h-12.rounded-full.object-cover.border-2.border-white.shadow-sm.ring-1.ring-neutral-100(src=artist.avatar ? artist.avatar : "/admin/images/default-avatar.png")
+                      span.absolute.bottom-0.right-0.w-3.h-3.bg-green-500.border-2.border-white.rounded-full
+                    div
+                      p.text-sm.font-bold.text-neutral-800 #{artist.name}
+                      p.text-neutral-400.mt-1.uppercase.tracking-tighter(class='text-[10px]') ID: #{artist.id}
+                //- td.px-8.py-5
+                //-   .flex.flex-wrap.gap-1
+                //-     span.px-2.py-1.bg-neutral-100.text-neutral-600.rounded.font-bold.uppercase(class='text-[9px]') Bridal Luxe
+                //-     span.px-2.py-1.bg-neutral-100.text-neutral-600.rounded.font-bold.uppercase(class='text-[9px]') Natural
+                td.px-8.py-5.text-xs.text-neutral-600.font-medium
+                  | #{artist.experience} Năm kinh nghiệm
+                td.px-8.py-5
+                  .flex.items-center.gap-1(class='text-[#D2B48C]')
+                    span.text-xs.font-bold.text-neutral-800.mr-1 #{artist.rating}
+                    - for (var i = 1; i <= 5; i++)
+                      if i <= artist.rating
+                        i.fa-solid.fa-star(class='text-[10px]')
+                      else
+                        i.fa-regular.fa-star(class='text-[10px]')
+                td.px-8.py-5
+                  span.status-pill.bg-green-100.text-green-700 #{artist.status === 'active' ? 'Sẵn sàng' : artist.status === 'busy' ? 'Đang bận' : 'Tạm nghỉ'}
+                td.px-8.py-5.text-right
+                  .flex.justify-end.gap-2
+                    //- Nút xem cũng chuyển thành thẻ a cho chuẩn SEO/UX
+                    a.w-8.h-8.rounded-lg.flex.items-center.justify-center.text-neutral-400.transition-all(href=`/admin/artists/detail/${artist.id}` class='hover:bg-neutral-100 hover:text-black' title='Xem Portfolio')
+                      i.fa-solid.fa-eye.text-xs
+                    a.w-8.h-8.rounded-lg.flex.items-center.justify-center.text-neutral-400.transition-all(href=`/admin/artists/edit/${artist.id}` class='hover:bg-[#D2B48C]/10 hover:text-[#D2B48C]' title='Chỉnh sửa')
+                      i.fa-solid.fa-user-pen.text-xs
+                    //- Nút "Nghỉ việc" (Style vuông nhỏ như m muốn)
+                    button.w-8.h-8.rounded-lg.flex.items-center.justify-center.text-neutral-400.transition-all(
+                      type="button"
+                      class='hover:bg-red-50 hover:text-red-500' 
+                      title='Cho nghỉ việc' 
+                      button-change-status-artist
+                      data-id=artist.id
+                    )
+                      i.fa-solid.fa-user-slash.text-xs
+
+                    //- Đặt Form này ở cuối file (ngoài cùng block main)
+            form(
+              id="form-change-status-artist"
+              method="POST"
+              action=""
+              data-path=`/${prefixAdmin}/artists/deleted` 
+            )

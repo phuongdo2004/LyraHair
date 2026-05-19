@@ -1,0 +1,120 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  main.flex-1.p-10.bg-neutral-50
+    //- Breadcrumb & Header
+    header.mb-10
+      .flex.items-center.gap-2.text-xs.uppercase.tracking-widest.text-neutral-400.mb-4
+        a(href=`/${prefixAdmin}/artists` class='hover:text-black') Đội ngũ Nhân viên
+        i.fa-solid.fa-chevron-right(class="text-[8px]")
+        span.text-black.font-bold Thêm Nhân viên mới
+
+      .flex.justify-between.items-center
+        div
+          h2.text-3xl.font-bold.serif-font.italic.mb-3 Khởi tạo Nhân viên mới
+          p.text-neutral-400.text-sm Thiết lập hồ sơ chuyên nghiệp cho thành viên mới của Lyra Hair Studio.
+
+    //- Form tạo mới Artist
+    form(action=`/${prefixAdmin}/artists/create` method='POST' enctype='multipart/form-data')
+      .grid.grid-cols-1(class='lg:grid-cols-3 gap-8')
+        
+        //- Cột trái: Ảnh đại diện & Trạng thái
+        .space-y-8
+          .card.p-8.text-center.bg-white.rounded-3xl.shadow-sm
+            h4(class="text-[10px]").font-black.uppercase.tracking-widest.mb-6.text-neutral-400 Ảnh đại diện
+            .relative.w-40.h-40.mx-auto.mb-6
+              .w-full.h-full.rounded-full.bg-neutral-100.border-2.border-dashed.border-neutral-300.flex.items-center.justify-center.overflow-hidden.group
+                img#avatar-preview.hidden.w-full.h-full.object-cover(src="#")
+                i#camera-icon.fa-solid.fa-camera.text-2xl.text-neutral-300(class='group-hover:scale-110 transition-transform')
+                input#avatar-input.absolute.inset-0.opacity-0.cursor-pointer(type='file' name='avatar' accept='image/*' upload-image-input)
+              
+              button#reset-avatar.absolute.bottom-0.right-0.bg-black.text-white.w-8.h-8.rounded-full.border-2.border-white.hidden(type='button')
+                i.fa-solid.fa-xmark.text-xs
+
+            p(class="text-[10px]").text-neutral-400.italic Hỗ trợ: JPG, PNG, WEBP (Tối đa 2MB)
+
+          .card.p-8.bg-white.rounded-3xl.shadow-sm
+            h4(class="text-[10px]").font-black.uppercase.tracking-widest.mb-6.text-neutral-400 Thiết lập nhanh
+            .space-y-6
+              div
+                label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Trạng thái hoạt động
+                select.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(name='status' class='focus:ring-1 focus:ring-[#D2B48C]')
+                  option(value='Hoạt động') Hoạt động
+                  option(value='Tạm nghỉ') Tạm nghỉ
+              
+              div
+                label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Đánh giá khởi tạo
+                .flex.items-center.gap-3
+                  input.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(type='number' name='rating' step='0.1' min='0' max='5' value='5.0' class='focus:ring-1 focus:ring-[#D2B48C]')
+                  i.fa-solid.fa-star(class="text-[#D2B48C]")
+
+        //- Cột phải: Thông tin chi tiết
+        .space-y-8(class="lg:col-span-2")
+          .card.p-8.bg-white.rounded-3xl.shadow-sm
+            h4(class="text-[10px]").font-black.uppercase.tracking-widest.mb-8.text-neutral-400.border-b.pb-4 Thông tin cơ bản
+            
+            .grid.grid-cols-2.gap-6
+              .col-span-2(class='md:col-span-1')
+                label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Họ và tên Artist
+                input.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(type='text' name='name' placeholder='Ví dụ: Nguyễn Như Xuân' required class='focus:ring-1 focus:ring-[#D2B48C]')
+              
+              .col-span-2(class='md:col-span-1')
+                label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Email liên hệ
+                input.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(type='email' name='email' placeholder='artist@susannie.com' required class='focus:ring-1 focus:ring-[#D2B48C]')
+
+              .col-span-2(class='md:col-span-1')
+                label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Số điện thoại
+                input.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(type='text' name='phone' placeholder='090xxxxxxx' class='focus:ring-1 focus:ring-[#D2B48C]')
+
+              .col-span-2(class='md:col-span-1')
+                label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Kinh nghiệm (Năm)
+                input.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(type='number' name='experience' value='2' min='0' class='focus:ring-1 focus:ring-[#D2B48C]')
+
+            .mt-6
+              label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Địa chỉ cư trú
+              input.w-full.px-4.py-3.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(type='text' name='address' placeholder='Quận, Thành phố...' class='focus:ring-1 focus:ring-[#D2B48C]')
+
+          .card.p-8.bg-white.rounded-3xl.shadow-sm
+            h4(class="text-[10px]").font-black.uppercase.tracking-widest.mb-8.text-neutral-400.border-b.pb-4 Giới thiệu chuyên môn
+            
+            div
+              label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2 Tiểu sử & Phong cách nghệ thuật
+              textarea.w-full.px-4.py-4.bg-neutral-50.border.border-neutral-100.rounded-xl.text-sm.outline-none(name='biography' rows='6' placeholder='Mô tả phong cách makeup, các giải thưởng hoặc tâm đắc nghề nghiệp...' class='focus:ring-1 focus:ring-[#D2B48C]')
+
+          //- Nút thao tác
+          .flex.justify-end.gap-4.mt-10
+            a.px-8.py-4.rounded-full.text-xs.font-bold.uppercase.tracking-widest.transition-all.border.border-neutral-200.bg-white(href=`/${prefixAdmin}/artists` class='hover:bg-neutral-100') Hủy bỏ
+            button.px-10.py-4.bg-black.rounded-full.text-xs.font-bold.uppercase.tracking-widest.transition-all(type='submit' class='text-[#D2B48C] hover:bg-neutral-800 shadow-xl shadow-black/10') 
+              i.fa-solid.fa-check.mr-2
+              | Xác nhận thêm Artist
+
+  //- Script xử lý Preview ảnh
+  script.
+    const uploadImageInput = document.querySelector("#avatar-input");
+    const uploadImagePreview = document.querySelector("#avatar-preview");
+    const cameraIcon = document.querySelector("#camera-icon");
+    const btnReset = document.querySelector("#reset-avatar");
+
+    if(uploadImageInput) {
+      uploadImageInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if(file) {
+          uploadImagePreview.src = URL.createObjectURL(file);
+          uploadImagePreview.classList.remove("hidden");
+          cameraIcon.classList.add("hidden");
+          btnReset.classList.remove("hidden");
+        }
+      });
+    }
+
+    if(btnReset) {
+      btnReset.addEventListener("click", () => {
+        uploadImageInput.value = "";
+        uploadImagePreview.src = "";
+        uploadImagePreview.classList.add("hidden");
+        cameraIcon.classList.remove("hidden");
+        btnReset.classList.add("hidden");
+      });
+    }

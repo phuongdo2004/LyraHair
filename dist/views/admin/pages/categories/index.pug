@@ -1,0 +1,95 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  main.flex-1.p-10
+    header.flex.justify-between.items-center.mb-10
+      div
+        h2.text-3xl.font-bold.serif-font.italic Danh mục Dịch vụ
+        p.text-neutral-400.text-base Quản lý các nhóm phân loại dịch vụ của cửa hàng.
+      
+      .flex.gap-4
+        a.px-6.py-3.rounded-full.font-bold.text-sm.uppercase.tracking-widest.flex.items-center.gap-2.text-white.transition-all.shadow-lg(
+          href=`/${prefixAdmin}/categories/create`
+          class='bg-[#FF2D55] hover:bg-[#ff4f70] shadow-[#FF2D55]/10'
+        )
+          i.fa-solid.fa-folder-plus
+          | Thêm Danh mục mới
+
+    .card.overflow-hidden
+      .overflow-x-auto
+        table.w-full.text-left
+          //- Tăng tiêu đề bảng lên text-xs để rõ ràng hơn
+          thead.bg-neutral-50.uppercase.font-black.text-neutral-400.tracking-widest(class='text-xs')
+            tr
+              th.px-8.py-5 Tên Danh mục
+              th.px-8.py-5 Mô tả
+              th.px-8.py-5 Ngày tạo
+              th.px-8.py-5 Trạng thái
+              th.px-8.py-5.text-right Thao tác
+          tbody.divide-y.divide-neutral-50.bg-white
+            if categories && categories.length > 0
+              each category in categories
+                tr.transition-all.group(class='hover:bg-neutral-50/50 cursor-pointer')
+                  //- Tăng py-5 lên py-6 để dòng thoáng và dễ nhìn hơn
+                  td.px-8.py-6
+                    a.flex.items-center.gap-4(href=`/${prefixAdmin}/categories/detail/${category.id}`)
+                      .w-11.h-11.rounded-xl.flex.items-center.justify-center.font-black.text-base(class='bg-[#FFEFF2] text-[#FF2D55]')
+                        i.fa-solid.fa-folder
+                      div
+                        //- Tăng tên danh mục lên text-base (16px)
+                        p.text-base.font-bold.text-neutral-800 #{category.name}
+                        //- Tăng chữ ID lên text-xs (12px)
+                        p.text-neutral-400.mt-1.uppercase.tracking-tighter(class='text-xs') ID: #{category.id}
+                  
+                  //- Tăng mô tả lên text-sm (14px)
+                  td.px-8.py-6.text-sm.text-neutral-500.max-w-xs.truncate
+                    | #{category.description ? category.description : 'Không có mô tả'}
+                  
+                  //- Tăng ngày tạo lên text-sm (14px)
+                  td.px-8.py-6.text-sm.text-neutral-600.font-medium
+                    | #{category.created_at ? new Date(category.created_at).toLocaleDateString('vi-VN') : '--/--/----'}
+                  
+                  //- Tăng chữ trạng thái trong pill lên text-sm
+                  td.px-8.py-6.text-sm
+                    if category.is_deleted === 0
+                      span.status-pill.bg-green-100.text-green-700.font-bold Hoạt động
+                    else
+                      span.status-pill.bg-red-100.text-red-700.font-bold Đã ẩn
+                  
+                  td.px-8.py-6.text-right
+                    .flex.justify-end.gap-3
+                      a.w-9.h-9.rounded-lg.flex.items-center.justify-center.text-neutral-400.transition-all(
+                        href=`/${prefixAdmin}/categories/detail/${category.id}` 
+                        class='hover:bg-neutral-100 hover:text-black' 
+                        title='Xem chi tiết'
+                      )
+                        i.fa-solid.fa-eye.text-sm
+                      
+                      a.w-9.h-9.rounded-lg.flex.items-center.justify-center.text-neutral-400.transition-all(
+                        href=`/${prefixAdmin}/categories/edit/${category.id}` 
+                        class='hover:bg-[#D2B48C]/10 hover:text-[#D2B48C]' 
+                        title='Chỉnh sửa'
+                      )
+                        i.fa-solid.fa-pen.text-sm
+                      
+                      button.w-9.h-9.rounded-lg.flex.items-center.justify-center.text-neutral-400.transition-all(
+                        type="button"
+                        class='hover:bg-red-50 hover:text-red-500' 
+                        title='Xóa danh mục' 
+                        button-delete-category
+                        data-id=category.id
+                      )
+                        i.fa-solid.fa-trash.text-sm
+            else
+              tr
+                td.px-8.py-12.text-center.text-neutral-400.text-base(colspan="5") 
+                  | Chưa có danh mục dịch vụ nào được tạo.
+
+    form(
+      id="form-delete-category"
+      method="POST"
+      action=""
+      data-path=`/${prefixAdmin}/categories/delete` 
+    )

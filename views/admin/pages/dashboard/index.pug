@@ -1,0 +1,158 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  main(class="flex-1 p-8 bg-neutral-50 min-h-screen")
+    
+    //- SECTION 1: HEADER & DATE FILTER TRÊN CÙNG MỘT DÒNG
+    header(class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 mb-8 pb-6 border-b border-neutral-200")
+      div
+        h2(class="text-3xl font-bold text-neutral-800 serif-font italic") Chào mừng trở lại, #{user ? user.fullName : 'Admin'}!
+        p(class="text-neutral-400 text-sm mt-1") Hệ thống tổng hợp báo cáo tài chính và hiệu suất đặt lịch.
+      
+      form(action=`/${prefixAdmin}/dashboard` method="GET" class="flex flex-wrap items-center gap-3 bg-white p-3 rounded-2xl border border-neutral-200 shadow-sm")
+        div(class="flex items-center gap-2")
+          label(class="text-[11px] font-bold text-neutral-400 uppercase tracking-wider pl-2") Từ
+          input(
+            type="date" 
+            name="startDate" 
+            value=startDate 
+            class="border border-neutral-200 rounded-xl px-3 py-2 text-sm font-medium text-neutral-700 bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-[#FF2D55]/20 focus:border-[#FF2D55] focus:bg-white transition-all"
+          )
+        div(class="flex items-center gap-2")
+          label(class="text-[11px] font-bold text-neutral-400 uppercase tracking-wider") Đến
+          input(
+            type="date" 
+            name="endDate" 
+            value=endDate 
+            class="border border-neutral-200 rounded-xl px-3 py-2 text-sm font-medium text-neutral-700 bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-[#FF2D55]/20 focus:border-[#FF2D55] focus:bg-white transition-all"
+          )
+        button(
+          type="submit" 
+          class="bg-[#FF2D55] text-white font-bold px-5 py-2 rounded-xl text-xs uppercase tracking-wider hover:bg-[#ff4f70] transition-colors shadow-sm cursor-pointer"
+        ) Lọc số liệu
+
+    //- SECTION 2: KHỐI THỐNG KÊ NHANH
+    div(class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8")
+      div(class="p-6 bg-white rounded-2xl border border-neutral-200/60 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow")
+        div
+          p(class="text-neutral-400 uppercase font-black tracking-widest text-[11px]") Tổng doanh thu thực tế
+          h3(class="text-3xl font-extrabold mt-1 text-neutral-800") #{stats.revenue}đ
+        div(class="w-12 h-12 bg-[#FFEFF2] rounded-xl flex items-center justify-center text-[#FF2D55] text-xl")
+          i.fa-solid.fa-wallet
+      
+      div(class="p-6 bg-white rounded-2xl border border-neutral-200/60 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow")
+        div
+          p(class="text-neutral-400 uppercase font-black tracking-widest text-[11px]") Số lịch đặt thành công
+          h3(class="text-3xl font-extrabold mt-1 text-neutral-800") #{stats.totalBookings} đơn
+        div(class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500 text-xl")
+          i.fa-solid.fa-calendar-check
+      
+      div(class="p-6 bg-white rounded-2xl border border-neutral-200/60 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow")
+        div
+          p(class="text-neutral-400 uppercase font-black tracking-widest text-[11px]") Tổng khách hàng đăng ký
+          h3(class="text-3xl font-extrabold mt-1 text-neutral-800") #{stats.totalCustomers} khách
+        div(class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500 text-xl")
+          i.fa-solid.fa-users
+
+    //- SECTION 3: BỐ CỤC CHIA CỘT
+    div(class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start")
+      
+      //- ĐỒ THỊ XU HƯỚNG
+      div(class="lg:col-span-2 w-full bg-white p-6 rounded-2xl border border-neutral-200/70 shadow-sm flex flex-col")
+        div(class="flex justify-between items-center mb-6")
+          div
+            h4(class="font-bold text-neutral-800 text-base") Xu hướng doanh thu tổng hợp
+            p(class="text-neutral-400 text-xs mt-0.5") Biểu đồ theo dõi biến động dòng tiền theo thời gian
+          span(class="text-xs font-bold text-[#FF2D55] bg-[#FFEFF2] px-3 py-1 rounded-full") Đơn vị: VNĐ
+        div(class="h-[320px] relative")
+          canvas#rangeRevenueChart
+
+      //- BẢNG PHÂN TÁCH DÒNG TIỀN CHI TIẾT
+      div(class="w-full bg-white p-6 rounded-2xl border border-neutral-200/70 shadow-sm flex flex-col")
+        div(class="flex justify-between items-center mb-4")
+          div
+            h4(class="font-bold text-neutral-800 text-base") Chi tiết dòng tiền
+            p(class="text-neutral-400 text-xs mt-0.5") Phân tách tiền cọc và thanh toán
+          
+          a(href=`/${prefixAdmin}/service/create` class="p-2.5 bg-[#FF2D55] rounded-xl text-white hover:bg-[#ff4f70] transition-all shadow-sm hover:scale-105" title="Thêm dịch vụ mới")
+            i.fa-solid.fa-plus.text-sm
+
+        div(class="overflow-x-auto w-full")
+          table(class="w-full text-left text-xs")
+            thead(class="bg-neutral-50 text-neutral-500 font-bold uppercase tracking-wider border-b border-neutral-100")
+              tr
+                th(class="p-3") Ngày
+                th(class="p-3 text-right") Tiền cọc
+                th(class="p-3 text-right text-[#FF2D55]") Tổng thu
+            tbody(class="divide-y divide-neutral-100 text-neutral-700")
+              if revenueChartData && revenueChartData.length > 0
+                each item in revenueChartData
+                  tr(class="hover:bg-neutral-50/50 transition-colors")
+                    td(class="p-3 font-medium") #{item.booking_date}
+                    td(class="p-3 text-right font-medium text-neutral-500") #{item.daily_deposited.toLocaleString('vi-VN')}đ
+                    td(class="p-3 text-right font-bold text-neutral-800") #{item.daily_revenue.toLocaleString('vi-VN')}đ
+              else
+                tr
+                  td(colspan="3" class="p-4 text-center text-neutral-400") Không có dữ liệu trong khoảng ngày này.
+
+  //- NHÚNG THƯ VIỆN CHART.JS VÀ THỰC THI SCRIPT AN TOÀN
+  script(src="https://cdn.jsdelivr.net/npm/chart.js")
+  script.
+    // Sử dụng cú pháp unescaped an toàn tuyệt đối của Pug để hứng mảng Object JSON công khai
+    const rawData = !{JSON.stringify(revenueChartData)};
+    
+    if (rawData && rawData.length > 0) {
+      const labels = rawData.map(item => item.booking_date);
+      const dataRevenue = rawData.map(item => item.daily_revenue);
+
+      const ctx = document.getElementById('rangeRevenueChart').getContext('2d');
+      
+      const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+      gradient.addColorStop(0, 'rgba(255, 45, 85, 0.25)');
+      gradient.addColorStop(1, 'rgba(255, 45, 85, 0.0)');
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Tổng doanh thu (VNĐ)',
+            data: dataRevenue,
+            borderColor: '#FF2D55',
+            borderWidth: 3,
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: '#FF2D55',
+            pointBorderColor: '#FFFFFF',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: { 
+              grid: { display: false },
+              ticks: { color: '#8e8e93', font: { size: 11 } }
+            },
+            y: { 
+              beginAtZero: true,
+              grid: { color: '#f2f2f7' },
+              ticks: { color: '#8e8e93', font: { size: 11 } }
+            }
+          }
+        }
+      });
+    } else {
+      // Xử lý hiển thị text thay thế nếu biểu đồ không có dữ liệu
+      document.getElementById('rangeRevenueChart').parentElement.innerHTML = 
+        `<div class="flex items-center justify-center h-full text-sm text-neutral-400">Không có dữ liệu xu hướng trong khoảng ngày này.</div>`;
+    }

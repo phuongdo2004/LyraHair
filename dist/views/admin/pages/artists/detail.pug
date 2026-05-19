@@ -1,0 +1,96 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+block main
+  main.flex-1.p-10.bg-neutral-50
+    +alert(3000)
+    //- Breadcrumb & Header
+    header.mb-10
+      .flex.items-center.gap-2.text-xs.uppercase.tracking-widest.text-neutral-400.mb-4
+        a(href='/admin/artists' class='hover:text-black') Đội ngũ Artist
+        i.fa-solid.fa-chevron-right(class="text-[8px]")
+        span.text-black.font-bold Hồ sơ Artist
+
+      .flex.justify-between.items-center
+        div
+          h2.text-3xl.font-bold.serif-font.italic.mb-3 Chi tiết Nghệ sĩ
+          p.text-neutral-400.text-sm Xem thông tin chi tiết và hiệu suất làm việc của #{artist.name}.
+        
+        .flex.gap-3
+          a.px-6.py-3.bg-white.border.border-neutral-200.rounded-full.text-xs.font-bold.uppercase.tracking-widest(href=`/${prefixAdmin}/artists/edit/${artist.id}` class='hover:bg-neutral-50')
+            i.fa-solid.fa-pen-to-square.mr-2
+            | Chỉnh sửa
+          
+    .grid.grid-cols-1(class='lg:grid-cols-3 gap-8')
+      
+      //- Cột trái: Ảnh đại diện & Trạng thái
+      .space-y-8
+        .card.p-8.text-center
+          h4(class="text-[10px]").font-black.uppercase.tracking-widest.mb-6.text-neutral-400 Ảnh đại diện
+          .relative.w-40.h-40.mx-auto.mb-6
+            .w-full.h-full.rounded-full.bg-neutral-100.border-2.border-white.shadow-lg.overflow-hidden
+              img.w-full.h-full.object-cover(src=(artist.avatar ? artist.avatar : "/admin/images/default-avatar.png"))
+          
+          h3.text-xl.font-bold.mb-1 #{artist.name}
+          p.text-xs.text-neutral-400.uppercase.tracking-widest.mb-6 Artist chuyên nghiệp
+
+          .pt-6.border-t.border-neutral-50.space-y-4
+            div
+              label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2.text-neutral-400 Trạng thái hiện tại
+              if artist.status === 'active'
+                span.px-4.py-1.bg-green-50.text-green-600.rounded-full.text-xs.font-bold Sẵn sàng
+              else if artist.status === 'busy'
+                span.px-4.py-1.bg-amber-50.text-amber-600.rounded-full.text-xs.font-bold Đang bận
+              else
+                span.px-4.py-1.bg-neutral-100.text-neutral-500.rounded-full.text-xs.font-bold Tạm nghỉ
+
+            div.mt-4
+              label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-2.text-neutral-400 Đánh giá
+              .flex.items-center.justify-center.gap-1
+                span.text-lg.font-bold #{artist.rating || '5.0'}
+                i.fa-solid.fa-star(class="text-[#D2B48C] text-sm")
+
+        .card.p-6
+          h4(class="text-[10px]").font-black.uppercase.tracking-widest.mb-4.text-neutral-400 Thống kê nhanh
+          .grid.grid-cols-2.gap-4
+            .p-4.bg-neutral-50.rounded-2xl.text-center
+              p.text-2xl.font-bold #{artist.experience}
+              p(class="text-[9px]").uppercase.tracking-tighter.text-neutral-400 Năm nghề
+
+      //- Cột phải: Thông tin chi tiết
+      .space-y-8(class="lg:col-span-2")
+        .card.p-8
+          h4(class="text-[10px]").font-black.uppercase.tracking-widest.mb-8.text-neutral-400.border-b.pb-4 Thông tin liên hệ & Hồ sơ
+          
+          .grid.grid-cols-2.gap-y-8.gap-x-6
+            div.col-span-2(class='md:col-span-1')
+              label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-1.text-neutral-400 Email công việc
+              p.text-sm.font-medium #{artist.email}
+            
+            div.col-span-2(class='md:col-span-1')
+              label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-1.text-neutral-400 Số điện thoại
+              p.text-sm.font-medium #{artist.phone || 'Chưa cập nhật'}
+
+            div.col-span-2(class='md:col-span-1')
+              label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-1.text-neutral-400 Khu vực hoạt động
+              p.text-sm.font-medium #{artist.address || 'Toàn quốc'}
+
+            div.col-span-2(class='md:col-span-1')
+              label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-1.text-neutral-400 Ngày gia nhập
+              p.text-sm.font-medium #{artist.created_at.toLocaleDateString('vi-VN')}
+
+        .card.p-8
+          h4(class="text-[10px]").font-black.uppercase.tracking-widest.mb-8.text-neutral-400.border-b.pb-4 Lịch trình & Giới thiệu chuyên môn
+
+          div
+            label.block(class="text-[10px]").font-black.uppercase.tracking-widest.mb-3.text-neutral-400 Tiểu sử & Phong cách
+            .text-sm.leading-relaxed.text-neutral-600.bg-neutral-50.p-6.rounded-2xl.italic
+              if artist.biography
+                | #{artist.biography}
+              else
+                | Nghệ sĩ chưa cập nhật thông tin giới thiệu bản thân.
+
+    //- Nút quay lại
+    .flex.justify-start.mt-10
+      a.px-8.py-4.rounded-full.text-xs.font-bold.uppercase.tracking-widest.transition-all.bg-white.border.border-neutral-200(href='/admin/artists' class='hover:bg-neutral-100') 
+        i.fa-solid.fa-arrow-left.mr-2
+        | Quay lại danh sách

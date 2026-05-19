@@ -1,0 +1,72 @@
+extends ../../layouts/default.pug
+block main
+  section.page-banner.py-24.text-center.text-white
+    h2.text-5xl.font-bold.serif-font.italic.mb-4 Dịch vụ yêu thích
+    p.text-sm.uppercase(class='tracking-[0.3em] text-[#D2B48C]') Trang ch&#x1EE7; / Dịch vụ yêu thích
+
+  section.container.mx-auto.px-6.py-16
+    .grid.grid-cols-1.gap-10(class='md:grid-cols-2 lg:grid-cols-3')
+      each service in services
+        .service-card.bg-white.rounded-3xl.overflow-hidden.flex.flex-col.h-full
+          .relative.h-72.overflow-hidden
+
+            .absolute.top-4.right-4.font-bold.px-3.rounded-full.z-10.shadow-lg(class='bg-black/80 text-[#D2B48C] text-[12px] py-1.5')
+              i.fa-solid.fa-star.mr-1
+              |  4.9
+            img.w-full.h-full.object-cover(src=service.images)
+          .p-8.flex.flex-col.flex-grow
+            h3.text-xl.font-bold.text-black.uppercase.mb-2 #{service.name}
+            p.text-xs.text-neutral-400.mb-6.flex.items-center.italic
+              i.fa-solid.fa-location-dot.mr-2(class='text-[#D2B48C]')
+              |  #{service.address}
+            .flex.justify-between.items-center.py-4.border-y.border-neutral-50.mb-6
+              //- Nhóm bên trái: Icon + Thời lượng (Đã bọc lại để không bị vỡ layout)
+              .flex.items-center.gap-2
+                i.fa-regular.fa-clock.text-neutral-400(class='text-[14px]')
+                span.font-bold.uppercase.tracking-tighter.text-neutral-500(class='text-[11px]')
+                  | #{service.duration} phút
+              
+              //- Nhóm bên phải: Giữ nguyên thiết kế giá của bạn
+              span.bg-black.px-3.py-1.rounded-md.font-bold.text-sm(class='text-[#D2B48C]') 
+                | #{(service.price * 1).toLocaleString()} đ
+            a(href=`/service/detail/${service.id}` class="w-full inline-block text-center py-4 bg-black text-[#D2B48C] rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-[#D2B48C] hover:text-black transition-all")
+              | Xem chi tiết & Đặt lịch
+    //- Thay thế đoạn .flex.justify-center.items-center.gap-3.mt-20 cũ bằng đoạn này:
+    .flex.justify-center.items-center.gap-3.mt-20
+      //- Nút quay lại trang trước
+      if pagination.currentPage > 1
+        a(
+          href=`?page=${pagination.currentPage - 1}`
+          class="w-12.h-12.flex.items-center.justify-center.rounded-xl.bg-white.text-black.font-bold.border.border-neutral-200.transition-all.hover:bg-[#D2B48C]"
+        )
+          i.fa-solid.fa-chevron-left.text-xs
+
+      //- Vòng lặp hiển thị số trang
+      - for (var i = 1; i <= pagination.totalPage; i++)
+        a(
+          href=`?page=${i}`
+          class=(pagination.currentPage == i ? "bg-black text-[#D2B48C]" : "bg-white text-black border-neutral-200 hover:bg-[#D2B48C]")
+          class="w-12 h-12 flex items-center justify-center rounded-xl font-bold border transition-all shadow-lg"
+        ) #{i}
+
+      //- Nút sang trang kế tiếp
+      if pagination.currentPage < pagination.totalPage
+        a(
+          href=`?page=${pagination.currentPage + 1}`
+          class="w-12.h-12.flex.items-center.justify-center.rounded-xl.bg-white.text-black.font-bold.border.border-neutral-200.transition-all.hover:bg-[#D2B48C]"
+        )
+          i.fa-solid.fa-chevron-right.text-xs
+  script.
+    const paginationButtons = document.querySelectorAll('[button-pagination]');
+    if(paginationButtons.length > 0) {
+        let url = new URL(window.location.href);
+
+        paginationButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const page = button.getAttribute("button-pagination");
+                
+                url.searchParams.set("page", page);
+                window.location.href = url.href; // Tải lại trang với URL mới
+            });
+        });
+    }

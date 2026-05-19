@@ -1,0 +1,191 @@
+extends ../../layouts/default.pug
+
+block main
+  //- Bọc toàn bộ block main trong class bg-white để ép toàn trang sang màu trắng sáng
+  div(class="bg-white min-h-screen")
+    
+    //- ================= SECTION 1: PAGE BANNER =================
+    section.page-banner.relative.py-28.text-center.overflow-hidden.border-b(class='bg-gradient-to-r from-white via-[#FFF5F7] to-white border-neutral-100/80')
+      
+      //- Các khối cầu Aura phát sáng màu hồng pastel ẩn sau lớp nền tạo chiều sâu nghệ thuật
+      .absolute.w-96.h-96.rounded-full.blur-3xl.opacity-20.-top-20.-left-10(class='bg-[#FF69B4]/40 animate-pulse')
+      .absolute.w-96.h-96.rounded-full.blur-3xl.opacity-20.-bottom-20.-right-10(class='bg-[#FF758F]/30')
+      
+      .absolute.inset-0.flex.items-center.justify-center.opacity-5.pointer-events-none
+        .w-full.h-px(class='bg-gradient-to-r from-transparent via-[#FF69B4] to-transparent')
+      
+      .relative.z-10.container.mx-auto.px-6
+        span.inline-block.font-black.text-neutral-400.uppercase.mb-3(class="text-[10px] tracking-[0.4em]")
+          | Welcome to Lyra Studio
+        
+        h2.text-4xl.font-black.serif-font.italic.mb-4.text-neutral-900.uppercase.tracking-wide(class='md:text-5xl drop-shadow-[0_2px_10px_rgba(255,105,180,0.15)]')
+          | Danh sách 
+          span(class='text-[#FF69B4]') dịch vụ
+        
+        .inline-flex.items-center.gap-2.px-4.rounded-full.bg-white.shadow-sm.border(class='border-neutral-100/60 py-1.5')
+          a.text-neutral-400.transition-colors(href="/" class='text-[11px] font-bold hover:text-[#FF69B4]') Trang chủ
+          span.text-neutral-300(class='text-[10px]') /
+          span.font-black(class='text-[11px] text-[#FF69B4]') Danh sách dịch vụ
+
+    //- ================= SECTION LỌC DANH MỤC (ĐÃ FIX THEO STYLE LYRA) =================
+    section.category-filter.pt-12.pb-4(class="bg-white")
+      .container.mx-auto.px-6(class="max-w-7xl")
+        .flex.flex-wrap.items-center.justify-center.gap-3.pb-4.border-b.border-neutral-100
+          
+          //- Nút Tất cả dịch vụ (Nếu đang chọn thì có màu hồng đầy đủ, không thì có viền hồng nhạt)
+          button(
+            filter-category=""
+            class=(!currentCategoryId ? "bg-[#FF69B4] text-white border-[#FF69B4]" : "bg-white text-neutral-600 border-neutral-200 hover:border-[#FF69B4] hover:text-[#FF69B4]")
+            class="px-6 py-2 rounded-full font-bold uppercase tracking-wider text-[11px] border transition-all cursor-pointer shadow-sm"
+          ) Tất cả dịch vụ
+
+          //- Vòng lặp hiển thị các danh mục khác từ backend truyền qua
+          if categories && categories.length > 0
+            each cat in categories
+              button(
+                filter-category=cat.id
+                class=(currentCategoryId == cat.id ? "bg-[#FF69B4] text-white border-[#FF69B4]" : "bg-white text-neutral-600 border-neutral-200 hover:border-[#FF69B4] hover:text-[#FF69B4]")
+                class="px-6 py-2 rounded-full font-bold uppercase tracking-wider text-[11px] border transition-all cursor-pointer shadow-sm"
+              ) #{cat.name}
+
+    //- ================= SECTION 2: DANH SÁCH SẢN PHẨM / DỊCH VỤ (NỀN TRẮNG) =================
+    section.container.mx-auto.px-6.py-16(class='max-w-7xl bg-white')
+      if services && services.length > 0
+        .grid.grid-cols-1.gap-10(class='md:grid-cols-2 lg:grid-cols-3')
+          each service in services
+            .service-card.bg-white.overflow-hidden.flex.flex-col.h-full.border.transition-all(class='border-neutral-100/80 rounded-[32px] hover:border-[#FF69B4]/30 hover:shadow-xl shadow-sm')
+              .relative.h-72.overflow-hidden
+                //- GIỮ NGUYÊN HOÀN TOÀN CÁCH HIỂN THỊ ẢNH GỐC CỦA BẠN ĐỂ TRÁNH LỖI KHUNG TRẮNG
+                img.w-full.h-full.object-cover.transition-transform.duration-500(src=service.images class='hover:scale-105')
+              
+              .p-8.flex.flex-col.flex-grow.justify-between
+                div
+                  h3.text-xl.font-black.text-neutral-900.uppercase.mb-2.tracking-wide #{service.name}
+                  p.text-xs.text-neutral-400.mb-6.flex.items-center.font-semibold
+                    i.fa-solid.fa-location-dot.mr-2(class='text-[#FF69B4]')
+                    | Thị trấn Lim, Huyện Tiên Du, Bắc Ninh
+                
+                div
+                  .flex.justify-between.items-center.py-4.border-y.border-neutral-100.mb-6
+                    .flex.items-center.gap-2
+                      i.fa-regular.fa-clock.text-neutral-400(class='text-[14px]')
+                      span.font-bold.uppercase.tracking-tighter.text-neutral-400(class='text-[11px]')
+                        | #{service.duration} phút
+                    
+                    span.px-3.py-1.rounded-md.font-black.text-sm(class='bg-[#FF69B4]/10 text-[#FF69B4]') 
+                      | #{(service.price * 1).toLocaleString()} đ
+                  
+                  a(href=`/service/detail/${service.id}` class="w-full inline-block text-center py-4 bg-neutral-900 text-white rounded-xl font-black uppercase tracking-widest hover:bg-[#FF69B4] hover:text-white transition-all" class="text-[11px]")
+                    | Xem chi tiết & Đặt lịch
+      else
+        .text-center.py-20
+          i.fa-solid.fa-scissors.text-4xl.text-neutral-200.mb-4
+          p.text-neutral-400.font-medium.text-sm Hiện tại chưa có dịch vụ nào thuộc danh mục này.
+
+    //- ================= SECTION 3: THANH PHÂN TRANG (PAGINATION NỀN TRẮNG ĐỒNG BỘ) =================
+    .flex.justify-center.items-center.gap-3.mt-20.pb-20
+      if pagination.currentPage > 1
+        a(
+          href=`?page=${pagination.currentPage - 1}`
+          class="w-12 h-12 flex items-center justify-center rounded-xl bg-white text-neutral-800 font-bold border border-neutral-200 transition-all hover:bg-[#FF69B4] hover:text-white hover:border-[#FF69B4]"
+        )
+          i.fa-solid.fa-chevron-left.text-xs
+
+      //- Vòng lặp hiển thị số trang
+      - for (var i = 1; i <= pagination.totalPage; i++)
+        a(
+          href=`?page=${i}`
+          class=(pagination.currentPage == i ? "bg-[#FF69B4] text-white border-[#FF69B4]" : "bg-white text-neutral-800 border-neutral-200 hover:bg-[#FF69B4] hover:text-white hover:border-[#FF69B4]")
+          class="w-12 h-12 flex items-center justify-center rounded-xl font-black border transition-all shadow-sm"
+        ) #{i}
+
+      if pagination.currentPage < pagination.totalPage
+        a(
+          href=`?page=${pagination.currentPage + 1}`
+          class="w-12 h-12 flex items-center justify-center rounded-xl bg-white text-neutral-800 font-bold border border-neutral-200 transition-all hover:bg-[#FF69B4] hover:text-white hover:border-[#FF69B4]"
+        )
+          i.fa-solid.fa-chevron-right.text-xs
+
+  //- ================= JAVASCRIPT LOGIC =================
+  script.
+    // 1. Phân trang bằng nút bấm
+    const paginationButtons = document.querySelectorAll('[button-pagination]');
+    if(paginationButtons.length > 0) {
+        let url = new URL(window.location.href);
+        paginationButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const page = button.getAttribute("button-pagination");
+                url.searchParams.set("page", page);
+                window.location.href = url.href;
+            });
+        });
+    }
+
+    // 2. Bộ lọc danh mục chuyển URL Parameter chuyển trang
+    const categoryButtons = document.querySelectorAll('[filter-category]');
+    if(categoryButtons.length > 0) {
+        let url = new URL(window.location.href);
+        categoryButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const catId = button.getAttribute("filter-category");
+                if(catId) {
+                    url.searchParams.set("categoryId", catId);
+                } else {
+                    url.searchParams.delete("categoryId");
+                }
+                url.searchParams.set("page", "1"); // Bấm lọc danh mục thì ép về trang 1 luôn
+                window.location.href = url.href;
+            });
+        });
+    }
+
+    // 3. Logic yêu thích của bạn (Đã sửa lỗi cú pháp classList)
+    async function toggleFavorite(btn) {
+      const serviceId = btn.getAttribute('data-id');
+      const icon = btn.querySelector('i');
+      const isAdding = icon.classList.contains('fa-regular');
+      const updateUI = (adding) => {
+        if (adding) {
+          icon.classList.replace('fa-regular', 'fa-solid');
+          icon.classList.add('text-red-500');
+          btn.classList.add('bg-white');
+          btn.classList.remove('bg-black/20', 'text-white');
+        } else {
+          icon.classList.replace('fa-solid', 'fa-regular');
+          icon.classList.remove('text-red-500');
+          btn.classList.remove('bg-white');
+          icon.classList.add('bg-black/20', 'text-white');
+        }
+      };
+
+      updateUI(isAdding);
+
+      try {
+        const response = await fetch('/service/favorite/toggle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ serviceId: serviceId })
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            alert("Vui lòng đăng nhập để thực hiện chức năng này!");
+            window.location.href = "/user/login";
+            return;
+          }
+          throw new Error(`Server returned status ${response.status}`);
+        }
+
+        const result = await response.json();
+        if (result.code === 200) {
+          alert("Thêm vào mục yêu thích thành công!");
+        } else {
+          throw new Error(result.message || "Unknown error");
+        }
+
+      } catch (error) {
+        console.error("Lỗi thực thi:", error);
+        updateUI(!isAdding); 
+        alert("Không thể cập nhật mục yêu thích. Vui lòng kiểm tra lại kết nối!");
+      }
+    }

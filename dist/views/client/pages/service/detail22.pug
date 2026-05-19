@@ -1,0 +1,341 @@
+extends ../../layouts/default.pug
+
+block main
+  section.service-banner.py-32.text-center
+    h2.text-5xl.font-bold.serif-font.italic.mb-4.drop-shadow-lg(class='md:text-6xl text-[#D2B48C]') Chi Tiết Dịch Vụ
+    p.text-xs.uppercase.font-medium(class='text-white/80 md:text-sm tracking-[0.4em]')
+      | Trang chủ / Dịch vụ / 
+      //- ĐÃ SỬA: Xóa dấu chấm thừa ở đây
+      span(class='text-[#D2B48C]') #{service.name}
+
+  main.container.mx-auto.px-6.py-12.max-w-5xl
+    .info-card.p-8.shadow-sm.mb-10.-mt-20.relative.z-10(class='bg-white rounded-[40px] md:p-12')
+      .flex.flex-col.items-center.gap-8.mb-12.border-b.border-neutral-100.pb-10(class='md:flex-row')
+        .relative
+          img.w-32.h-32.rounded-full.object-cover.border-4.shadow-lg(src= service.images class='border-[#F5F5DC]')
+          .absolute.bottom-1.right-1.bg-black.w-8.h-8.flex.items-center.justify-center.rounded-full.border-2.border-white(class='text-[#D2B48C]')
+            i.fa-solid.fa-check.text-xs
+        .text-center(class='md:text-left')
+          h2.text-4xl.font-bold.text-black.uppercase.tracking-tight.mb-2 #{service.name}
+          p.text-sm.text-neutral-500.font-medium
+            i.fa-solid.fa-user-tie.mr-2(class='text-[#D2B48C]')
+            | Chuyên viên: 
+            span.text-black.font-bold #{artist.name}
+            span.ml-4
+              i.fa-solid.fa-phone.mr-1(class='text-[#D2B48C]')
+              | #{artist.phone}
+
+      .grid.grid-cols-1.gap-12(class='md:grid-cols-2')
+        .space-y-6
+          div
+            label.uppercase.font-black.tracking-widest.text-neutral-400.block.mb-2(class='text-[10px]') Địa điểm
+            p.text-sm.font-bold.leading-relaxed #{artist.address}
+          div
+            label.uppercase.font-black.tracking-widest.text-neutral-400.block.mb-2(class='text-[10px]') Kinh nghiệm
+            p.text-sm.font-bold #{artist.experience} năm
+        .space-y-6
+          div
+            label.uppercase.font-black.tracking-widest.text-neutral-400.block.mb-2(class='text-[10px]') Giờ làm việc
+            p.text-sm.font-bold.text-black.inline-block.px-3.py-1.rounded(class='bg-[#F5F5DC]') 
+              | #{service.time_start.slice(0, 5)} - #{service.time_end.slice(0, 5)}
+      .mt-12
+        h4.text-sm.font-black.uppercase.mb-6.flex.items-center.gap-2(class='tracking-[0.2em]')
+          span.w-8(class='h-[2px] bg-[#D2B48C]')
+          | Bảng giá dịch vụ
+        .bg-neutral-50.p-6.rounded-2xl.flex.justify-between.items-center.border.border-neutral-100
+          div
+            p.font-bold.text-lg.text-black #{service.name}
+            p.text-xs.text-neutral-400.uppercase.tracking-tighter.mt-1 Thời gian dự kiến: #{service.duration} phút
+          .font-black.text-xl.bg-black.inline-block.px-4.py-2.rounded-xl(class='text-[#D2B48C]') 
+            | #{service.price.toLocaleString()} đ
+
+      .mt-10
+        h4.text-sm.font-black.uppercase.mb-4(class='tracking-[0.2em]') Tiện ích đi kèm
+        .flex.flex-wrap.gap-3
+          span.bg-neutral-100.px-4.py-2.rounded-full.text-xs.font-bold.flex.items-center
+            i.fa-solid.fa-house-chimney.mr-2(class='text-[#D2B48C]')
+            | Trang điểm tại nhà
+
+      button.w-full.mt-12.py-5.bg-black.font-bold.rounded-2xl.transition-all.uppercase.text-sm.shadow-xl(onclick='openBookingModal()' class='text-[#D2B48C] hover:bg-[#D2B48C] hover:text-black tracking-[0.2em]')
+        | Đặt lịch ngay
+
+    .py-12.border-t(class='border-black/5')
+      h3.text-2xl.font-bold.serif-font.italic.mb-6 Mô tả dịch vụ
+      p.text-neutral-500.mb-10
+        | #{service.description}
+      .image-frame.inline-block.relative
+        img.rounded-2xl.max-w-full.block(src= service.images class='md:max-w-2xl')
+        .absolute.bottom-10.right-10.bg-black.font-bold.px-4.py-2.rounded-full.uppercase.tracking-widest(class='text-[#D2B48C] text-[10px]') Ảnh 1/1
+
+
+  #bookingModal.fixed.inset-0.hidden.items-center.justify-center.p-4(class='z-[100] bg-black/60 backdrop-blur-sm' onclick='closeModalOutside(event)')
+    .bg-white.w-full.max-w-2xl.shadow-2xl.overflow-hidden.relative.border(class='rounded-[40px] border-black/10' onclick='event.stopPropagation()')
+      .p-6.border-b.border-neutral-100.flex.justify-between.items-center.bg-black(class='text-[#D2B48C]')
+        h3.font-bold.text-lg.serif-font.italic.uppercase.tracking-wider ĐẶT LỊCH DỊCH VỤ
+        button.text-2xl(onclick='closeBookingModal()') ×
+      .p-8.overflow-y-auto(class='max-h-[75vh]')
+        //- PHẦN 1: CHỌN NGÀY
+        .mb-8
+          label.uppercase.font-black.text-neutral-400.block.mb-4(class='text-[11px] tracking-[0.2em]') 1. CHỌN NGÀY LÀM VIỆC
+          #dateList.flex.gap-4.overflow-x-auto.pb-4.no-scrollbar
+
+        //- PHẦN 2: CHỌN KHUNG GIỜ (Ẩn lúc đầu)
+        #timeSection.mb-8.hidden.border-t.pt-8.transition-all.duration-500
+          label.uppercase.font-black.text-neutral-400.block.mb-4(class='text-[11px] tracking-[0.2em]') 2. CHỌN KHUNG GIỜ CÒN TRỐNG
+          #timeList.grid.grid-cols-3.gap-3(class='md:grid-cols-4')
+            //- Các khung giờ sẽ được render bởi JS
+      .p-6.bg-neutral-50.border-t.border-neutral-100.flex.gap-4
+        button.flex-1.py-4.bg-white.border.border-neutral-200.rounded-2xl.font-bold.text-xs.uppercase(onclick='closeBookingModal()') Hủy bỏ
+        button.py-4.bg-black.rounded-2xl.font-black.text-xs.uppercase(onclick='openConfirmModal()' class='flex-[2] text-[#D2B48C]') Xác nhận đặt lịch
+
+  //- MODAL 2: XÁC NHẬN CHI TIẾT ĐẶT LỊCH
+  #confirmModal.fixed.inset-0.hidden.items-center.justify-center.p-4(class='z-[110] bg-black/60 backdrop-blur-sm')
+    .bg-white.w-full.max-w-xl.shadow-2xl.overflow-hidden.relative.border(class='rounded-[40px] border-black/10' onclick='event.stopPropagation()')
+      .p-6.border-b.border-neutral-100.flex.justify-between.items-center
+        h3.font-bold.text-lg.text-black.serif-font.italic Xác nhận thông tin đặt lịch
+        button.text-2xl(onclick='closeConfirmModal()') ×
+      
+      .p-8
+        .space-y-4
+          .flex.justify-between.pb-4.border-b.border-dashed
+            span.text-neutral-400 Dịch vụ:
+            span.font-bold.text-black #{service.name}
+          .flex.justify-between.pb-4.border-b.border-dashed
+            span.text-neutral-400 Ngày thực hiện:
+            span.font-bold.text-black#selectedDateDisplay --/--/2026
+          .flex.justify-between.pb-4.border-b.border-dashed
+            span.text-neutral-400 Khung giờ:
+            span.font-bold.text-black #{service.time_start.slice(0, 5)} - #{service.time_end.slice(0, 5)}
+          .flex.justify-between.pb-4.border-b.border-dashed
+            span.text-neutral-400 Chuyên viên:
+            span.font-bold.text-black #{artist.name}
+          .pt-4
+            .flex.justify-between.items-center.mb-2
+              span.text-neutral-400 Tổng chi phí:
+              span.font-bold #{service.price.toLocaleString()} đ
+            .flex.justify-between.items-center.p-4.bg-red-50.rounded-2xl
+              div
+                p.text-xs.text-red-600.font-bold.uppercase Tiền cọc giữ chỗ (30%)
+                p.text-xs.text-neutral-500.italic (Thanh toán ngay để hoàn tất)
+              span.text-xl.font-black.text-red-600 #{(service.price * 0.3).toLocaleString()} đ
+        
+        .mt-8.p-4.bg-neutral-50.rounded-xl.text-center
+          //- ĐÃ SỬA: Đưa text-[10px] vào class để không lỗi Pug
+          p.text-neutral-400.leading-relaxed(class='text-[10px]') 
+            i.fa-solid.fa-circle-info.mr-1
+            | Bằng việc nhấn thanh toán, bạn đồng ý với các điều khoản đặt lịch và chính sách hoàn cọc của Susannie Studio.
+
+      .p-6.bg-neutral-50.border-t.border-neutral-100.flex.gap-4
+        button.flex-1.py-4.bg-white.border.border-neutral-200.rounded-2xl.font-bold.text-xs.uppercase(onclick='closeConfirmModal()') Quay lại
+        //- Nút chuyển hướng thanh toán
+        button.py-4.bg-black.rounded-2xl.font-black.text-xs.uppercase(onclick='goToPaymentPage()' class='flex-[2] text-[#D2B48C] hover:bg-[#D2B48C] hover:text-black transition-all')
+          | Tiến hành thanh toán
+  script.
+    let selectedDate = "";
+
+    function openBookingModal() {
+      const modal = document.getElementById('bookingModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      renderBookingDates();
+    }
+
+    function closeBookingModal() {
+      const modal = document.getElementById('bookingModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function openConfirmModal() {
+      if(!selectedDate) {
+        alert("Vui lòng chọn ngày làm việc!");
+        return;
+      }
+      closeBookingModal();
+      const confirmModal = document.getElementById('confirmModal');
+      confirmModal.classList.remove('hidden');
+      confirmModal.classList.add('flex');
+      document.getElementById('selectedDateDisplay').innerText = selectedDate;
+    }
+
+    function closeConfirmModal() {
+      const confirmModal = document.getElementById('confirmModal');
+      confirmModal.classList.add('hidden');
+      confirmModal.classList.remove('flex');
+    }
+
+    function closeModalOutside(e) {
+      if (e.target.id === 'bookingModal') closeBookingModal();
+    }
+
+    function renderBookingDates() {
+      const dateList = document.getElementById('dateList');
+      dateList.innerHTML = '';
+      const today = new Date();
+      
+      for (let i = 0; i < 10; i++) {
+        const nextDate = new Date();
+        nextDate.setDate(today.getDate() + i);
+        const day = nextDate.getDate();
+        const month = nextDate.getMonth() + 1;
+        const dateStr = day + "/" + month;
+        
+        const dateDiv = document.createElement('div');
+        dateDiv.className = 'date-card p-4 border rounded-2xl min-w-[80px] text-center cursor-pointer transition-all hover:border-[#D2B48C]';
+        dateDiv.innerHTML = `<p class='text-xs font-bold'>${dateStr}</p>`;
+        
+        dateDiv.onclick = function() {
+          document.querySelectorAll('.date-card').forEach(el => el.classList.remove('active'));
+          dateDiv.classList.add('active');
+          selectedDate = dateStr + "/2026";
+        };
+        
+        dateList.appendChild(dateDiv);
+      }
+    }
+    function goToPaymentPage() {
+      // 1. Bạn có thể thu thập thông tin để gửi đi (ví dụ qua URL Params hoặc LocalStorage)
+      const bookingData = {
+        serviceId: "#{service._id}",
+        date: selectedDate,
+        deposit: #{(service.price * 0.3)}
+      };
+      
+      // Lưu tạm vào localStorage để trang thanh toán có thể đọc được
+      localStorage.setItem('pendingBooking', JSON.stringify(bookingData));
+      
+      // 2. Chuyển hướng sang trang thanh toán (Thay URL bằng link trang của bạn)
+      // Ví dụ: window.location.href = "/checkout/payment";
+      
+      // Demo: Hiển thị thông báo chuyển hướng
+      alert("Đang chuyển hướng bạn đến cổng thanh toán an toàn...");
+      window.location.href = "https://img.vietqr.io/image/970422-123456789-compact2.jpg?amount=" + (bookingData.deposit) + "&addInfo=Booking_" + selectedDate.replace(/\//g, '_');
+    }
+    //- function finalSubmit() {
+    //-   alert("Cảm ơn bạn! Yêu cầu đặt lịch đã được gửi. Chúng tôi sẽ xác nhận sau khi nhận được tiền cọc.");
+    //-   closeConfirmModal();
+    //- }
+
+    let selectedTime = "";
+
+    // Giả lập danh sách khung giờ (Bạn có thể lấy từ Backend sau này)
+    // Bạn có thể tự do thêm các khung giờ khác vào đây
+    const timeSlots = [
+      "07:00 - 09:00", 
+      "10:00 - 12:00", 
+      "13:30 - 15:30", 
+      "16:00 - 18:00", 
+      "19:00 - 21:00"
+    ];
+
+    function openBookingModal() {
+      const modal = document.getElementById('bookingModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      renderBookingDates();
+    }
+
+    function closeBookingModal() {
+      const modal = document.getElementById('bookingModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      // Reset khi đóng
+      document.getElementById('timeSection').classList.add('hidden');
+    }
+
+    function renderBookingDates() {
+      const dateList = document.getElementById('dateList');
+      dateList.innerHTML = '';
+      const today = new Date();
+      
+      for (let i = 0; i < 10; i++) {
+        const nextDate = new Date();
+        nextDate.setDate(today.getDate() + i);
+        const day = nextDate.getDate();
+        const month = nextDate.getMonth() + 1;
+        const dateStr = day + "/" + month;
+        
+        const dateDiv = document.createElement('div');
+        dateDiv.className = 'date-card p-4 border rounded-2xl min-w-[80px] text-center cursor-pointer transition-all hover:border-[#D2B48C]';
+        dateDiv.innerHTML = `<p class='text-xs font-bold'>${dateStr}</p>`;
+        
+        dateDiv.onclick = function() {
+          document.querySelectorAll('.date-card').forEach(el => el.classList.remove('active'));
+          dateDiv.classList.add('active');
+          selectedDate = dateStr + "/2026";
+          
+          // Khi chọn ngày xong -> Hiện phần chọn giờ
+          showTimeSection();
+        };
+        dateList.appendChild(dateDiv);
+      }
+    }
+
+    function showTimeSection() {
+      const timeSection = document.getElementById('timeSection');
+      const timeList = document.getElementById('timeList');
+      
+      timeSection.classList.remove('hidden');
+      timeList.innerHTML = ''; 
+
+      // Thay đổi grid-cols từ 3 thành 2 để khung giờ "07:00 - 09:00" hiển thị đẹp nhất
+      timeList.className = "grid grid-cols-2 gap-4 md:grid-cols-3";
+
+      timeSlots.forEach(slot => {
+        const timeDiv = document.createElement('div');
+        // Thêm class time-card và các class style của bạn
+        timeDiv.className = 'time-card py-3 border rounded-xl text-center cursor-pointer font-bold transition-all hover:border-[#D2B48C] border-neutral-200';
+        timeDiv.innerText = slot;
+        
+        timeDiv.onclick = function() {
+          document.querySelectorAll('.time-card').forEach(el => {
+            el.classList.remove('active');
+            el.style.backgroundColor = 'white';
+            el.style.borderColor = '#e5e5e5';
+          });
+          
+          this.classList.add('active');
+          this.style.backgroundColor = '#F5F5DC';
+          this.style.borderColor = '#D2B48C';
+          
+          selectedTime = slot; // Lưu giá trị "07:00 - 09:00"
+        };
+        timeList.appendChild(timeDiv);
+      });
+    }
+
+    function openConfirmModal() {
+      if(!selectedDate || !selectedTime) {
+        alert("Vui lòng chọn đầy đủ Ngày và Khung giờ!");
+        return;
+      }
+      closeBookingModal();
+      const confirmModal = document.getElementById('confirmModal');
+      confirmModal.classList.remove('hidden');
+      confirmModal.classList.add('flex');
+      
+      // Cập nhật thông tin hiển thị ở Modal 2
+      document.getElementById('selectedDateDisplay').innerText = `${selectedTime} - ${selectedDate}`;
+    }
+
+    // Các hàm khác giữ nguyên...
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.add('hidden');
+    }
+
+    function goToPaymentPage() {
+      const bookingData = {
+        serviceId: service._id,
+        date: selectedDate,
+        time: selectedTime,
+        deposit: (service.price * 0.3)
+      };
+      localStorage.setItem('pendingBooking', JSON.stringify(bookingData));
+      const cleanTime = selectedTime.replace(/[:\s-]/g, ''); 
+      const info = `Booking_${selectedDate.replace(/\//g, '')}_${cleanTime}`;
+      
+      window.location.href = `https://img.vietqr.io/image/970422-123456789-compact2.jpg?amount=${deposit}&addInfo=${info}`;
+          
+      alert("Đang chuyển hướng đến thanh toán cho lịch hẹn lúc " + selectedTime + " ngày " + selectedDate);
+      window.location.href = "https://img.vietqr.io/image/970422-123456789-compact2.jpg?amount=" + (bookingData.deposit) + "&addInfo=Booking_" + selectedDate.replace(/\//g, '_') + "_" + selectedTime.replace(':', 'h');
+    }

@@ -1,0 +1,33 @@
+mixin alert(time)
+  -if (message)
+    #toast-container
+      -if(message.success)
+        #toast-success.toast.toast-success.active
+          .toast-icon
+            i.fas.fa-check-circle
+          .toast-content
+            span.toast-title Thành công
+            span.toast-message #{message.success}
+          .toast-close &times;
+          .toast-progress
+
+      -if(message.error)
+        #toast-delete.toast.toast-delete.active
+          .toast-icon
+            i.fas.fa-trash-alt
+          .toast-content
+            span.toast-title Đã xóa
+            span.toast-message #{message.error}.
+          .toast-close &times;
+          .toast-progress
+
+
+      -if(message.warning)
+        #toast-warning.toast.toast-warning.active
+          .toast-icon
+            i.fas.fa-exclamation-triangle
+          .toast-content
+            span.toast-title L&#x1B0;u &yacute;
+            span.toast-message #{message.warning}.
+          .toast-close &times;
+          .toast-progress

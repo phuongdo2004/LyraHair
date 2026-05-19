@@ -1,0 +1,84 @@
+extends ../../layouts/default.pug
+
+block main
+  .container.mx-auto.px-4.py-12.max-w-6xl
+    //- Giữ nguyên phương thức PATCH, đa phương thức upload file và hành động gửi dữ liệu
+    form(action="/user/edit?_method=PATCH" method="POST" enctype="multipart/form-data")
+      
+      //- Tiêu đề trang & cụm nút bấm điều hướng
+      .flex.flex-col.justify-between.items-start.mb-10.gap-4(class='md:flex-row md:items-end')
+        div
+          h1.text-4xl.font-bold.serif-font.italic(class='text-[#FF69B4]') Chỉnh sửa hồ sơ
+          p.text-sm.mt-2.font-medium(class='text-white/60') Cập nhật thông tin cá nhân để trải nghiệm dịch vụ đặt lịch tốt nhất.
+        
+        .flex.items-center.gap-3
+          //- Nút Hủy bỏ - Phù hợp nền dark mode
+          a(href="/user/profile" class='px-8.py-3.rounded-full.text-xs.font-bold.border.border-white/10.text-white.transition-all.hover:bg-white/5.hover:border-white/20')
+            span HỦY BỎ
+          //- Nút Lưu thay đổi - Tone hồng chữ đen nổi bật
+          button(type="submit" class='btn-primary')
+            i.fa-solid.fa-check.mr-2
+            span LƯU THAY ĐỔI
+
+      .grid.grid-cols-1.gap-8(class='lg:grid-cols-12')
+        
+        //- Cột trái: Ảnh đại diện (Avatar Card)
+        div(class='lg:col-span-4')
+          .profile-card.p-10.flex.flex-col.items-center(class='bg-[#1E1E1E] border-white/5 shadow-2xl')
+            .avatar-wrapper.mb-6.relative.group
+              //- Đổi viền ảnh đại diện từ màu xanh nhạt cũ sang màu hồng mờ (border-white/10) hoặc hồng nhạt cực sang
+              img.w-44.h-44.rounded-full.object-cover.shadow-sm.border-8(
+                src=user.avatar[0] 
+                alt='Avatar' 
+                id="avatar-preview"
+                class='border-white/10'
+              )
+              //- Nút bấm đổi ảnh hover đổi sang hồng neon
+              label(for="avatar-input" class='absolute bottom-2 right-2 bg-[#FF69B4] text-[#121212] w-10.h-10.rounded-full.flex.items-center.justify-center.cursor-pointer.shadow-lg.hover:scale-110.transition-transform')
+                i.fa-solid.fa-camera.text-xs
+              input#avatar-input.hidden(type="file" name="avatar" accept="image/*")
+            
+            h2.text-2xl.font-bold.serif-font.italic.text-white #{user.fullName}
+            p.font-bold.uppercase.mt-2(class='text-[10px] text-[#FFB7D5] tracking-[0.2em]') THAY ĐỔI ẢNH ĐẠI DIỆN
+
+        //- Cột phải: Form nhập thông tin chi tiết
+        div(class='lg:col-span-8')
+          .profile-card.p-10(class='md:p-12 bg-[#1E1E1E] border-white/5 shadow-2xl')
+            h3.font-extrabold.uppercase.mb-10(class='text-[11px] tracking-[0.15em] text-[#FFB7D5]') THÔNG TIN CHI TIẾT
+            
+            .space-y-8
+              //- Hàng 1: Họ và tên & Email
+              .grid.grid-cols-1.gap-8(class='md:grid-cols-2')
+                div
+                  label.label-custom(for="fullName") HỌ VÀ TÊN
+                  input#fullName.form-input-custom(type='text' name="fullName" value=user.fullName required)
+                div
+                  label.label-custom(for="email") EMAIL LIÊN HỆ
+                  //- Email chỉ đọc được làm mờ nhẹ đúng chuẩn tối giản hiện đại
+                  input#email.form-input-custom(type='email' value=user.email readonly class='opacity-40 cursor-not-allowed')
+              
+              //- Hàng 2: Số điện thoại & Địa chỉ
+              .grid.grid-cols-1.gap-8(class='md:grid-cols-2')
+                div
+                  label.label-custom(for="phone") SỐ ĐIỆN THOẠI
+                  input#phone.form-input-custom(type='text' name="phone" value=user.phone)
+                div
+                  label.label-custom(for="address") ĐỊA CHỈ
+                  input#address.form-input-custom(type='text' name="address" value=user.address)
+
+    //- Giữ nguyên script xử lý Preview ảnh cũ khi chọn file mới
+    script.
+      const avatarInput = document.getElementById('avatar-input');
+      const avatarPreview = document.getElementById('avatar-preview');
+      if(avatarInput) {
+        avatarInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              avatarPreview.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
