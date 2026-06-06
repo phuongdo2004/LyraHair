@@ -51,31 +51,42 @@ block main
     //- ================= SECTION 2: DANH SÁCH SẢN PHẨM / DỊCH VỤ (NỀN TRẮNG) =================
     section.container.mx-auto.px-6.py-16(class='max-w-7xl bg-white')
       if services && services.length > 0
-        .grid.grid-cols-1.gap-10(class='md:grid-cols-2 lg:grid-cols-3')
+        .grid.gap-8(class="grid-cols-1 md:grid-cols-2 lg:grid-cols-3")
           each service in services
-            .service-card.bg-white.overflow-hidden.flex.flex-col.h-full.border.transition-all(class='border-neutral-100/80 rounded-[32px] hover:border-[#FF69B4]/30 hover:shadow-xl shadow-sm')
-              .relative.h-72.overflow-hidden
-                //- GIỮ NGUYÊN HOÀN TOÀN CÁCH HIỂN THỊ ẢNH GỐC CỦA BẠN ĐỂ TRÁNH LỖI KHUNG TRẮNG
-                img.w-full.h-full.object-cover.transition-transform.duration-500(src=service.images class='hover:scale-105')
-              
+            //- Thêm h-full để các card có chiều cao bằng nhau tuyệt đối trong một hàng
+            .service-card.bg-white.overflow-hidden.flex.flex-col.h-full.border.transition-all(
+              class='border-neutral-100/80 rounded-[32px] hover:border-[#FF69B4]/30 hover:shadow-xl shadow-sm'
+            )
+              //- ĐÃ SỬA TẠI ĐÂY: Đưa aspect-[3/4] vào trong class() để tránh lỗi Pug compile
+              .relative.w-full.overflow-hidden.bg-neutral-950.flex.items-center.justify-center(class="aspect-[3/4]")
+                
+                //- Lớp nền mờ phía sau: Tránh lộ khoảng trống đen/trắng khi gặp ảnh quá gầy hoặc quá bẹt
+                img.absolute.inset-0.w-full.h-full.object-cover.blur-xl.opacity-40(src=service.images)
+                
+                //- Lớp ảnh chính: Hiển thị 100% nguyên vẹn toàn bộ ảnh gốc (dọc hay ngang đều xem được hết, không mất chi tiết)
+                img.relative.z-10.max-w-full.max-h-full.object-contain.transition-transform.duration-500(
+                  src=service.images 
+                  class='hover:scale-105'
+                )
+                
+              //- 3. PHẦN NỘI DUNG: Thêm flex-grow để đẩy phần button xuống dưới cùng, đảm bảo thẳng hàng
               .p-8.flex.flex-col.flex-grow.justify-between
                 div
-                  h3.text-xl.font-black.text-neutral-900.uppercase.mb-2.tracking-wide #{service.name}
-                  p.text-xs.text-neutral-400.mb-6.flex.items-center.font-semibold
-                    i.fa-solid.fa-location-dot.mr-2(class='text-[#FF69B4]')
-                    | Thị trấn Lim, Huyện Tiên Du, Bắc Ninh
-                
+                  h3.text-xl.font-bold.text-black.uppercase.mb-2 #{service.name}
+                  p.text-xs.text-neutral-400.mb-6.flex.items-center.italic
+                    i.fa-solid.fa-location-dot.mr-2(class='text-[#D2B48C]')
+                    |  Thị trấn Thứa, Huyện Lương Tài, Bắc Ninh
+                    
                 div
-                  .flex.justify-between.items-center.py-4.border-y.border-neutral-100.mb-6
+                  .flex.justify-between.items-center.py-4.border-y.border-neutral-50.mb-6
                     .flex.items-center.gap-2
                       i.fa-regular.fa-clock.text-neutral-400(class='text-[14px]')
-                      span.font-bold.uppercase.tracking-tighter.text-neutral-400(class='text-[11px]')
+                      span.font-bold.uppercase.tracking-tighter.text-neutral-500(class='text-[11px]')
                         | #{service.duration} phút
-                    
-                    span.px-3.py-1.rounded-md.font-black.text-sm(class='bg-[#FF69B4]/10 text-[#FF69B4]') 
+                    span.bg-black.px-3.py-1.rounded-md.font-bold.text-sm(class='text-[#D2B48C]') 
                       | #{(service.price * 1).toLocaleString()} đ
-                  
-                  a(href=`/service/detail/${service.id}` class="w-full inline-block text-center py-4 bg-neutral-900 text-white rounded-xl font-black uppercase tracking-widest hover:bg-[#FF69B4] hover:text-white transition-all" class="text-[11px]")
+                      
+                  a(href=`/service/detail/${service.id}` class="w-full inline-block text-center py-4 bg-black text-[#D2B48C] rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-[#D2B48C] hover:text-black transition-all")
                     | Xem chi tiết & Đặt lịch
       else
         .text-center.py-20

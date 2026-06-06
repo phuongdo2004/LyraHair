@@ -59,10 +59,6 @@ block main
             .flex.justify-between.items-center
               span.text-xs.text-neutral-400.font-bold.uppercase Thời lượng
               span.text-sm.font-bold.text-neutral-800 #{service.duration} phút
-            
-            .flex.justify-between.items-center
-              span.text-xs.text-neutral-400.font-bold.uppercase Loại hình
-              span.px-3.py-1.bg-emerald-50.text-emerald-700.rounded-full.font-bold(class='text-[10px]') Dịch vụ Studio
 
       //- Cột bên phải: Nội dung văn bản & Album ảnh
       .space-y-6(class='lg:col-span-2')
@@ -78,10 +74,7 @@ block main
               p.text-neutral-600.leading-relaxed.italic.text-sm.border-l-2.pl-4(class='border-[#FF2D55]')
                 | #{service.amenities || "Chưa cập nhật thông tin tiện ích."}
             
-            div
-              h5.text-xs.font-black.uppercase.tracking-widest.text-neutral-700.mb-4 Mô tả dịch vụ
-              p.text-neutral-600.text-sm.leading-relaxed
-                | #{service.description || "Không có mô tả chi tiết cho dịch vụ này."}
+
             
             div
               h5.text-xs.font-black.uppercase.tracking-widest.text-neutral-700.mb-6 Album ảnh dịch vụ

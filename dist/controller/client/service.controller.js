@@ -6,6 +6,164 @@ import Comment from "../../model/comment.model.js";
 import Booking from "../../model/booking.model.js";
 import { pagi } from "../../helpers/pagination.helper.js";
 import ServiceCategory from "../../model/serviceCategory.model.js";
+// export const detail = async(req: Request, res: Response) => {
+//   const id = req.params.id;
+//   // 1. Tìm dịch vụ (Giữ nguyên)
+//   const service = await Service.findOne({ where: { id: id } });
+//   if (!service) return res.redirect("/services");
+//   // 2. Xử lý mảng ảnh (Giữ nguyên)
+//   if ((service as any).images) {
+//     try {
+//       const allImages = JSON.parse((service as any).images);
+//       (service as any).allImages = allImages;
+//       (service as any).images = allImages[0];
+//     } catch (e) {
+//       (service as any).allImages = [(service as any).images];
+//     }
+//   }
+//   // 4. LẤY BÌNH LUẬN THEO KIỂU THỦ CÔNG (Không dùng include)
+//   // Lấy tất cả comment của dịch vụ này
+//   const rawReviews = await Comment.findAll({
+//     where: { service_id: id },
+//     order: [['created_at', 'DESC']],
+//     raw: true // Lấy dữ liệu thuần túy cho dễ xử lý
+//   });
+//   // Tạo một mảng mới để chứa comment đã có thông tin khách hàng
+//   const reviews = [];
+//   for (const review of rawReviews) {
+//     // Tìm khách hàng tương ứng với mỗi comment
+//     const customer = await Customer.findOne({
+//       where: { customer_id: (review as any).customer_id },
+//       attributes: ['fullName', 'avatar'],
+//       raw: true
+//     });
+//  if (typeof (customer as any).avatar === 'string') {
+//       // Nếu là chuỗi JSON mảng thì parse, nếu là chuỗi thường thì bọc vào mảng
+//       try {
+//         (customer as any).avatar = (JSON.parse((customer as any).avatar))[0];
+//       } catch (e) {
+//         (customer as any).avatar = [(customer as any).avatar];
+//       }
+//     }
+//     // Gộp thông tin khách vào object review
+//     reviews.push({
+//       ...review,
+//       customer_name: customer ? (customer as any).fullName : "Khách hàng",
+//       customer_avatar: customer ? (customer as any).avatar : null
+//     });
+//   }
+//   // 5. Render ra giao diện
+//   res.render("client/pages/service/detail.pug", {
+//     service: service,
+//     reviews: reviews // Giờ reviews đã có thêm customer_name và customer_avatar
+//   // ,existingBookings: JSON.stringify(existingBookings) // Chuyển sang JSON để Script ở Frontend đọc được
+//   });
+// }
+// detail service end
+// export const index = async (req: Request, res: Response) => {
+//   try {
+//     // 1. Lấy dữ liệu phân trang trước (Đợi pagination xử lý xong)
+//     const pagination = await pagi(req, res);
+//     // 2. Lấy categoryId đang lọc trên URL query (nếu có)
+//     const currentCategoryId = req.query.categoryId || "";
+//     // 3. Khởi tạo object điều kiện tìm kiếm dựa trên trường 'is_deleted' của Model
+//     const findCondition: any = {
+//       is_deleted: 0 // Khớp 100% với defaultValue: 0 trong model của em
+//     };
+//     // ĐÃ SỬA TẠI ĐÂY: Khớp với trường 'category_id' trong Model Service của em
+//     if (currentCategoryId) {
+//       findCondition.category_id = currentCategoryId; 
+//     }
+//     // 4. Lấy danh sách dịch vụ dựa trên bộ lọc phân trang và danh mục
+//     const services = await Service.findAll({
+//       where: findCondition,
+//       limit: pagination.limitItem,
+//       offset: pagination.skip,
+//       raw: true
+//     });
+//     // 5. Chuẩn hóa hiển thị ảnh đầu tiên của dịch vụ từ chuỗi JSON mảng
+//     for (const service of services) {
+//       if ((service as any)["images"]) {
+//         try {
+//           (service as any)["images"] = (JSON.parse((service as any)["images"]))[0];
+//         } catch (e) {
+//           // Phòng trường hợp chuỗi thường không thể parse JSON
+//           (service as any)["images"] = (service as any)["images"];
+//         }
+//       }
+//     }
+//     // 6. Lấy thông tin khách hàng từ locals (nếu đã đăng nhập)
+//     const customer = res.locals.Customer;
+//     // 7. Lấy tất cả danh mục dịch vụ chưa bị xóa để hiển thị lên thanh bộ lọc
+//     const categories = await ServiceCategory.findAll({
+//       where: { is_deleted: 0 }, // Khớp với trường 'is_deleted' trong Model ServiceCategory
+//       raw: true
+//     });
+//     // 8. Render dữ liệu ra giao diện Pug
+//     res.render("client/pages/service/index.pug", {
+//       services: services,
+//       categories: categories,
+//       currentCategoryId: currentCategoryId, // Truyền sang để nút Danh mục sáng màu hồng lên
+//       pagination: pagination,
+//       customer: customer,
+//     });
+//   } catch (error) {
+//     console.error("Lỗi khi tải danh sách dịch vụ:", error);
+//     res.status(500).send("Có lỗi xảy ra ở hệ thống!");
+//   }
+// };
+export const index = async (req, res) => {
+    try {
+        // 1. Lấy categoryId đang lọc trên URL query (nếu có) trước
+        const currentCategoryId = req.query.categoryId || "";
+        // 2. Khởi tạo object điều kiện tìm kiếm dựa trên trường 'is_deleted' và 'category_id'
+        const findCondition = {
+            is_deleted: 0
+        };
+        if (currentCategoryId) {
+            findCondition.category_id = currentCategoryId;
+        }
+        // 3. ĐÃ SỬA TẠI ĐÂY: Truyền findCondition vào hàm pagi để tính toán phân trang chuẩn theo danh mục
+        const pagination = await pagi(req, res, findCondition);
+        // 4. Lấy danh sách dịch vụ dựa trên bộ lọc phân trang và danh mục đã chuẩn hóa
+        const services = await Service.findAll({
+            where: findCondition,
+            limit: pagination.limitItem,
+            offset: pagination.skip,
+            raw: true
+        });
+        // 5. Chuẩn hóa hiển thị ảnh đầu tiên của dịch vụ từ chuỗi JSON mảng
+        for (const service of services) {
+            if (service["images"]) {
+                try {
+                    service["images"] = (JSON.parse(service["images"]))[0];
+                }
+                catch (e) {
+                    service["images"] = service["images"];
+                }
+            }
+        }
+        // 6. Lấy thông tin khách hàng từ locals (nếu đã đăng nhập)
+        const customer = res.locals.Customer;
+        // 7. Lấy tất cả danh mục dịch vụ chưa bị xóa để hiển thị lên thanh bộ lọc
+        const categories = await ServiceCategory.findAll({
+            where: { is_deleted: 0 },
+            raw: true
+        });
+        // 8. Render dữ liệu ra giao diện Pug
+        res.render("client/pages/service/index.pug", {
+            services: services,
+            categories: categories,
+            currentCategoryId: currentCategoryId,
+            pagination: pagination,
+            customer: customer,
+        });
+    }
+    catch (error) {
+        console.error("Lỗi khi tải danh sách dịch vụ:", error);
+        res.status(500).send("Có lỗi xảy ra ở hệ thống!");
+    }
+};
 export const detail = async (req, res) => {
     const id = req.params.id;
     // 1. Tìm dịch vụ (Giữ nguyên)
@@ -72,90 +230,6 @@ export const detail = async (req, res) => {
         service: service,
         reviews: reviews,
         artists: artists // Gửi danh sách nhân viên sang phía giao diện Pug nhận dữ liệu tuần hoàn
-    });
-};
-// export const detail = async(req: Request, res: Response) => {
-//   const id = req.params.id;
-//   // 1. Tìm dịch vụ (Giữ nguyên)
-//   const service = await Service.findOne({ where: { id: id } });
-//   if (!service) return res.redirect("/services");
-//   // 2. Xử lý mảng ảnh (Giữ nguyên)
-//   if ((service as any).images) {
-//     try {
-//       const allImages = JSON.parse((service as any).images);
-//       (service as any).allImages = allImages;
-//       (service as any).images = allImages[0];
-//     } catch (e) {
-//       (service as any).allImages = [(service as any).images];
-//     }
-//   }
-//   // 4. LẤY BÌNH LUẬN THEO KIỂU THỦ CÔNG (Không dùng include)
-//   // Lấy tất cả comment của dịch vụ này
-//   const rawReviews = await Comment.findAll({
-//     where: { service_id: id },
-//     order: [['created_at', 'DESC']],
-//     raw: true // Lấy dữ liệu thuần túy cho dễ xử lý
-//   });
-//   // Tạo một mảng mới để chứa comment đã có thông tin khách hàng
-//   const reviews = [];
-//   for (const review of rawReviews) {
-//     // Tìm khách hàng tương ứng với mỗi comment
-//     const customer = await Customer.findOne({
-//       where: { customer_id: (review as any).customer_id },
-//       attributes: ['fullName', 'avatar'],
-//       raw: true
-//     });
-//  if (typeof (customer as any).avatar === 'string') {
-//       // Nếu là chuỗi JSON mảng thì parse, nếu là chuỗi thường thì bọc vào mảng
-//       try {
-//         (customer as any).avatar = (JSON.parse((customer as any).avatar))[0];
-//       } catch (e) {
-//         (customer as any).avatar = [(customer as any).avatar];
-//       }
-//     }
-//     // Gộp thông tin khách vào object review
-//     reviews.push({
-//       ...review,
-//       customer_name: customer ? (customer as any).fullName : "Khách hàng",
-//       customer_avatar: customer ? (customer as any).avatar : null
-//     });
-//   }
-//   // 5. Render ra giao diện
-//   res.render("client/pages/service/detail.pug", {
-//     service: service,
-//     reviews: reviews // Giờ reviews đã có thêm customer_name và customer_avatar
-//   // ,existingBookings: JSON.stringify(existingBookings) // Chuyển sang JSON để Script ở Frontend đọc được
-//   });
-// }
-// detail service end
-export const index = async (req, res) => {
-    const pagination = await pagi(req, res);
-    const services = await Service.findAll({
-        where: {
-            is_deleted: 0
-        }, limit: (await pagination).limitItem,
-        offset: (await pagination).skip,
-        raw: true
-    });
-    for (const service of services) {
-        if (service["images"]) {
-            service["images"] = (JSON.parse(service["images"]))[0];
-        }
-    }
-    // tim khach hang
-    const customer = res.locals.Customer;
-    // Lấy danh sách danh mục hiện có từ DB
-    const categories = await ServiceCategory.findAll({
-        where: { is_deleted: 0 },
-        raw: true
-    });
-    // Lấy categoryId đang lọc trên URL query (nếu có)
-    const currentCategoryId = req.query.categoryId || "";
-    res.render("client/pages/service/index.pug", {
-        services: services,
-        categories: categories,
-        pagination: pagination,
-        customer: customer,
     });
 };
 // Thêm API này vào cùng file controller của bạn để Frontend gọi xử lý bằng AJAX (Fetch)

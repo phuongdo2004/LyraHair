@@ -5,6 +5,7 @@ import { userRouter } from "./user.route.js";
 import { serviceRouter } from "./service.route.js";
 import { requireAuth } from "../../middleware/client/auth.middleware.js";
 import { paymentRouter } from "./payment.route.js";
+import { bookingsRouter } from "./bookingsRouter.route.js";
 const app:Express = express();
 export const clientRouter = (app:Express)=>{
   app.use("/user", userRouter);
@@ -12,6 +13,11 @@ export const clientRouter = (app:Express)=>{
   app.use(requireAuth);
   app.use("/home", homeRouter);
   app.use("/service", serviceRouter);
+  app.use("/bookings",
+  //    ()=>{
+  //   console.log("Đã vào router bookings");
+  // }
+  bookingsRouter);
   
 
 }

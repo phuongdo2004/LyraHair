@@ -43,13 +43,13 @@ block main
         //- CỘT 1 (Trái - Lg: 4 cột): WIDGET THÔNG TIN NHANH
         div(class='lg:col-span-4 space-y-6')
           //- Thẻ Badge Dịch vụ
-          .p-6.rounded-3xl.border.bg-white.shadow-sm.transition-all(class='border-neutral-200/60 hover:shadow-md hover:border-[#FF69B4]/40')
-            .flex.items-center.gap-4
-              .w-12.h-12.rounded-2xl.flex.items-center.justify-center(class='bg-[#FF69B4]/10 text-[#FF69B4]')
-                i.fa-solid.fa-gem.text-lg
-              div
-                span.font-extrabold.tracking-widest.uppercase.block(class='text-[#FF69B4] text-[10px]') Phân hạng
-                p.text-base.font-bold.text-neutral-900(class='mt-0.5') Premium Experience
+          //- .p-6.rounded-3xl.border.bg-white.shadow-sm.transition-all(class='border-neutral-200/60 hover:shadow-md hover:border-[#FF69B4]/40')
+          //-   .flex.items-center.gap-4
+          //-     .w-12.h-12.rounded-2xl.flex.items-center.justify-center(class='bg-[#FF69B4]/10 text-[#FF69B4]')
+          //-       i.fa-solid.fa-gem.text-lg
+          //-     div
+          //-       span.font-extrabold.tracking-widest.uppercase.block(class='text-[#FF69B4] text-[10px]') Phân hạng
+          //-       p.text-base.font-bold.text-neutral-900(class='mt-0.5') Premium Experience
 
           //- Thẻ Địa điểm
           .p-6.rounded-3xl.border.bg-white.shadow-sm.transition-all(class='border-neutral-200/60 hover:shadow-md hover:border-[#FF69B4]/40')
@@ -59,7 +59,7 @@ block main
               div
                 span.font-extrabold.tracking-widest.uppercase.block(class='text-neutral-400 text-[10px]') Địa điểm thực hiện
                 p.text-sm.font-medium.leading-relaxed(class='text-neutral-700 mt-1')
-                  | Thị trấn Lim, Huyện Tiên Du, Bắc Ninh
+                  | Thị trấn Thứa, Huyện Lương Tài, Bắc Ninh
 
           //- Thẻ Thời gian vận hành
           .p-6.rounded-3xl.border.bg-white.shadow-sm.transition-all(class='border-neutral-200/60 hover:shadow-md hover:border-[#FF69B4]/40')
@@ -78,7 +78,7 @@ block main
               | Mô tả chi tiết dịch vụ
             
             .space-y-6.text-sm.leading-relaxed(class='text-neutral-600')
-              p #{service.description || 'Chưa có mô tả chi tiết cho dịch vụ này. Vui lòng liên hệ hỗ trợ để biết thêm chi tiết.'}
+              p #{service.amenities || 'Chưa có mô tả chi tiết cho dịch vụ này. Vui lòng liên hệ hỗ trợ để biết thêm chi tiết.'}
               
               .pt-6.border-t(class='border-neutral-100')
                 h4.text-xs.font-bold.uppercase.mb-4.tracking-wider(class='text-[#FF69B4]') Đặc quyền đi kèm:

@@ -24,7 +24,6 @@ block main
           thead.bg-neutral-50.uppercase.font-black.text-neutral-400.tracking-widest(class='text-xs')
             tr
               th.px-8.py-5 Tên Danh mục
-              th.px-8.py-5 Mô tả
               th.px-8.py-5 Ngày tạo
               th.px-8.py-5 Trạng thái
               th.px-8.py-5.text-right Thao tác
@@ -42,10 +41,7 @@ block main
                         p.text-base.font-bold.text-neutral-800 #{category.name}
                         //- Tăng chữ ID lên text-xs (12px)
                         p.text-neutral-400.mt-1.uppercase.tracking-tighter(class='text-xs') ID: #{category.id}
-                  
-                  //- Tăng mô tả lên text-sm (14px)
-                  td.px-8.py-6.text-sm.text-neutral-500.max-w-xs.truncate
-                    | #{category.description ? category.description : 'Không có mô tả'}
+
                   
                   //- Tăng ngày tạo lên text-sm (14px)
                   td.px-8.py-6.text-sm.text-neutral-600.font-medium
@@ -93,3 +89,24 @@ block main
       action=""
       data-path=`/${prefixAdmin}/categories/delete` 
     )
+  //- Đặt đoạn script này ở cuối block main hoặc trong file js hệ thống của em
+  script.
+    const buttonsDelete = document.querySelectorAll("[button-delete-category]");
+    if (buttonsDelete.length > 0) {
+      const formDelete = document.querySelector("#form-delete-category");
+      const path = formDelete.getAttribute("data-path");
+
+      buttonsDelete.forEach(button => {
+        button.addEventListener("click", () => {
+          const isConfirm = confirm("Em có chắc chắn muốn xóa danh mục dịch vụ này không?");
+          
+          if (isConfirm) {
+            const id = button.getAttribute("data-id");
+            // Tạo đường dẫn chuẩn: /admin/categories/delete/12345678901?_method=PATCH
+            // (Nên dùng PATCH để xóa mềm bảo mật dữ liệu)
+            formDelete.action = `${path}/${id}?_method=PATCH`;
+            formDelete.submit();
+          }
+        });
+      });
+    }

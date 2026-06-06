@@ -3,54 +3,66 @@ include ../../mixins/alert.pug
 include ../../mixins/pagination.pug
 
 block main
-    +alert(3000)
-    main.flex-1.p-10
-      header.flex.justify-between.items-center.mb-10
-        div
-          h2.text-3xl.font-bold.serif-font.italic Quản lý lịch đặt
-          p.text-neutral-400.text-sm Theo dõi và điều phối lịch hẹn của khách hàng trong ngày.
-        //- .flex.gap-4
-        //-   .flex.bg-white.p-1.rounded-full.border.border-neutral-100.shadow-sm
-        //-     button.px-6.py-2.bg-black.rounded-full.font-bold.uppercase.tracking-widest.transition-all(class='text-[#D2B48C] text-[10px]') Tất cả
-      .card.overflow-hidden
-        .p-8.border-b.border-neutral-50.flex.justify-between.items-center
-          h3.text-xl.font-bold.serif-font.italic Chi tiết lịch hẹn
-        .overflow-x-auto
-          table.w-full.text-left
-            thead.bg-neutral-50.uppercase.font-black.text-neutral-400.tracking-widest(class='text-[10px]')
+  +alert(3000)
+  //- Đảm bảo màu nền đồng bộ #fafafa với hệ thống
+  main(class="flex-1 p-10 bg-[#fafafa] min-h-screen")
+    
+    header.flex.justify-between.items-center.mb-10
+      div
+        //- Thêm chữ "Quản lý" nghiêng mượt mà với sắc hồng nhẹ nhàng
+        h2.text-3xl.font-bold.serif-font.italic.text-neutral-800 Quản lý lịch đặt
+        p.text-neutral-400.text-sm Theo dõi và điều phối lịch hẹn của khách hàng trong ngày.
+      
+    .card.overflow-hidden.bg-white.rounded-3xl.shadow-sm.border.border-neutral-100
+      .p-8.border-b.border-neutral-100.flex.justify-between.items-center
+        h3.text-xl.font-bold.serif-font.italic.text-neutral-800 Chi tiết lịch hẹn
+      
+      .overflow-x-auto
+        table.w-full.text-left
+          thead.bg-neutral-50.uppercase.font-black.text-neutral-400.tracking-widest(class='text-[10px]')
+            tr
+              th.px-8.py-5 Mã đơn
+              th.px-8.py-5 Khách hàng
+              th.px-8.py-5 Thời gian
+              th.px-8.py-5 Dịch vụ
+              th.px-8.py-5 Thanh toán
+          
+          tbody.divide-y.divide-neutral-100
+            if bookings && bookings.length > 0
+              each item in bookings
+                - var bookingId = item.id || item.booking_id
+                
+                //- Cập nhật viền bên trái (border-l-4) khi hover sẽ tạo cảm giác mềm mại sang hồng pastel
+                tr.transition-all.cursor-pointer(
+                  class=`hover:bg-rose-50/30 border-l-4 ${item.status == 'pending' ? 'border-yellow-400' : (item.status == 'paid' ? 'border-green-400' : 'border-rose-300')}`
+                  onclick=`window.location.href='/${prefixAdmin}/bookings/detail/${bookingId}'`
+                )
+                  //- Mã đơn được đổi sang text màu Rose nhẹ
+                  td.px-8.py-5.font-bold.text-xs.text-rose-400(class="pointer-events-none") #SSN-#{bookingId.substring(0, 8)}
+                  
+                  td.px-8.py-5
+                    p.text-sm.font-bold.text-neutral-800 #{item.fullName}
+                    p.text-neutral-400(class='text-[10px]') #{item.phone}
+                  
+                  td.px-8.py-5
+                    .flex.items-center.gap-2
+                      //- Thay khối icon màu Beige cũ thành khối màu Hồng Pastel mịn màng
+                      span.w-8.h-8.rounded-lg.flex.items-center.justify-center.bg-rose-50.text-rose-400
+                        i.fa-regular.fa-calendar-days(class='text-xs')
+                      div
+                        p.text-xs.font-bold.text-neutral-700 #{item.booking_date}
+                        p.text-rose-400.font-medium(class='text-[10px]') #{item.time_start} - #{item.time_end}
+                  
+                  td.px-8.py-5
+                    //- Làm nổi bật tên gói dịch vụ bằng màu chữ Hồng Pastel sang trọng
+                    span.text-xs.font-bold.text-rose-500 #{item.serviceName}
+                  
+                  td.px-8.py-5
+                    .flex.flex-col.gap-1
+                      span(class=`status-pill w-fit ${item.statusClass}`) #{item.statusDisplay}
+            else
               tr
-                th.px-8.py-5 Mã đơn
-                th.px-8.py-5 Khách hàng
-                th.px-8.py-5 Thời gian
-                th.px-8.py-5 Dịch vụ
-                th.px-8.py-5 Thanh toán
-            tbody.divide-y.divide-neutral-50
-              if bookings && bookings.length > 0
-                each item in bookings
-                  - var bookingId = item.id || item.booking_id
-                  //- Thêm cursor-pointer và sự kiện onclick vào thẻ tr
-                  tr.transition-all.cursor-pointer(
-                    class=`hover:bg-neutral-50/50 border-l-4 ${item.status == 'pending' ? 'border-yellow-400' : (item.status == 'paid' ? 'border-green-500' : 'border-blue-400')}`
-                    onclick=`window.location.href='/${prefixAdmin}/bookings/detail/${bookingId}'`
-                  )
-                    td.px-8.py-5.font-bold.text-xs(class="pointer-events-none") #SSN-#{bookingId.substring(0, 8)}
-                    td.px-8.py-5
-                      p.text-sm.font-bold.text-neutral-800 #{item.fullName}
-                      p.text-neutral-400(class='text-[10px]') #{item.phone}
-                    td.px-8.py-5
-                      .flex.items-center.gap-2
-                        span.w-8.h-8.rounded-lg.flex.items-center.justify-center(class='bg-[#F5F5DC] text-[#D2B48C]')
-                          i.fa-regular.fa-calendar-days(class='text-[10px]')
-                        div
-                          p.text-xs.font-bold #{item.booking_date}
-                          p.text-neutral-400.uppercase(class='text-[10px]') #{item.time_start} - #{item.time_end}
-                    td.px-8.py-5
-                      span.text-xs.font-semibold #{item.serviceName}
-                    td.px-8.py-5
-                      .flex.flex-col.gap-1
-                        span(class=`status-pill w-fit ${item.statusClass}`) #{item.statusDisplay}
-              else
-                tr
-                  td.px-8.py-10.text-center.text-neutral-400(colspan="6") Không có dữ liệu lịch đặt.
+                td.px-8.py-10.text-center.text-neutral-400(colspan="5") Không có dữ liệu lịch đặt.
 
+    .mt-6
       +pagination(pagination)

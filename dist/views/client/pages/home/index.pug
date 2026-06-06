@@ -61,7 +61,8 @@ block main
 
   //- ================= SECTION 3: FEATURED SERVICES (NỀN TRẮNG SÁNG VỚI CARD CÓ ĐỔ BÓNG NHẸ) =================
   section#featured-services.py-24.px-6(class="bg-white")
-    .container.mx-auto
+    //- ĐÃ SỬA: Thêm px-6 để không tràn lề và max-w-6xl (hoặc max-w-7xl) để bóp các card nhỏ lại vừa vặn
+    .container.mx-auto.px-6(class="max-w-6xl")
       .flex.flex-col.justify-between.items-start.mb-12.gap-4(class="md:flex-row md:items-end")
         div.space-y-2
           h3.text-4xl.serif-font.italic.text-neutral-900.font-bold Danh mục dịch vụ
@@ -70,34 +71,41 @@ block main
       //- Lưới danh sách dịch vụ giữ nguyên logic vòng lặp
       .grid.gap-8(class="grid-cols-1 md:grid-cols-2 lg:grid-cols-3")
         each service in services
-          //- Chuyển nền card sang trắng tinh (bg-white), viền xám nhạt (border-neutral-100) và shadow mềm mại
-          .service-card.overflow-hidden.flex.flex-col.h-full.border.transition-all(class="bg-white border-neutral-100 rounded-[32px] hover:border-[#FF69B4]/30 hover:shadow-xl shadow-neutral-100")
-            .relative.h-72.overflow-hidden
-              img.w-full.h-full.object-cover.transition-transform.duration-500(src=service.images class="hover:scale-105")
-            
-            //- Phần nội dung thông tin dịch vụ
+          //- Thêm h-full để các card có chiều cao bằng nhau tuyệt đối trong một hàng
+          .service-card.bg-white.overflow-hidden.flex.flex-col.h-full.border.transition-all(
+            class='border-neutral-100/80 rounded-[32px] hover:border-[#FF69B4]/30 hover:shadow-xl shadow-sm'
+          )
+            //- ĐÁ SỬA TẠI ĐÂY: Đưa aspect-[3/4] vào trong class() để tránh lỗi Pug compile
+            .relative.w-full.overflow-hidden.bg-neutral-950.flex.items-center.justify-center(class="aspect-[3/4]")
+              
+              //- Lớp nền mờ phía sau: Tránh lộ khoảng trống đen/trắng khi gặp ảnh quá gầy hoặc quá bẹt
+              img.absolute.inset-0.w-full.h-full.object-cover.blur-xl.opacity-40(src=service.images)
+              
+              //- Lớp ảnh chính: Hiển thị 100% nguyên vẹn toàn bộ ảnh gốc (dọc hay ngang đều xem được hết, không mất chi tiết)
+              img.relative.z-10.max-w-full.max-h-full.object-contain.transition-transform.duration-500(
+                src=service.images 
+                class='hover:scale-105'
+              )
+              
+            //- 3. PHẦN NỘI DUNG: Thêm flex-grow để đẩy phần button xuống dưới cùng, đảm bảo thẳng hàng
             .p-8.flex.flex-col.flex-grow.justify-between
               div
-                h3.text-xl.font-black.text-neutral-900.uppercase.mb-2.tracking-wide #{service.name}
-                p.text-xs.mb-6.flex.items-center.font-semibold(class='text-neutral-400')
-                  i.fa-solid.fa-location-dot.mr-2(class='text-[#FF69B4]')
-                  | Thị trấn Lim, Huyện Tiên Du, Bắc Ninh
-              
-              div
-                .flex.justify-between.items-center.py-4.mb-6(class="border-y border-neutral-100")
-                  .flex.items-center.gap-2
-                    i.fa-regular.fa-clock(class='text-[14px] text-neutral-400')
-                    span.font-bold.uppercase.tracking-tighter(class='text-[11px] text-neutral-400')
-                      | #{service.duration} phút
+                h3.text-xl.font-bold.text-black.uppercase.mb-2 #{service.name}
+                p.text-xs.text-neutral-400.mb-6.flex.items-center.italic
+                  i.fa-solid.fa-location-dot.mr-2(class='text-[#D2B48C]')
+                  |  Thị trấn Thứa, Huyện Lương Tài, Bắc Ninh
                   
-                  span.px-3.py-1.rounded-md.font-black.text-sm(class='bg-[#FF69B4]/10 text-[#FF69B4]') 
+              div
+                .flex.justify-between.items-center.py-4.border-y.border-neutral-50.mb-6
+                  .flex.items-center.gap-2
+                    i.fa-regular.fa-clock.text-neutral-400(class='text-[14px]')
+                    span.font-bold.uppercase.tracking-tighter.text-neutral-500(class='text-[11px]')
+                      | #{service.duration} phút
+                  span.bg-black.px-3.py-1.rounded-md.font-bold.text-sm(class='text-[#D2B48C]') 
                     | #{(service.price * 1).toLocaleString()} đ
-                
-                //- Nút chuyển sang phong cách Dark-Button nổi bật trên nền trắng
-                a(href=`/service/detail/${service.id}` class="w-full inline-block text-center py-4 bg-neutral-900 text-white rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-[#FF69B4] hover:text-white transition-all")
+                    
+                a(href=`/service/detail/${service.id}` class="w-full inline-block text-center py-4 bg-black text-[#D2B48C] rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-[#D2B48C] hover:text-black transition-all")
                   | Xem chi tiết & Đặt lịch
-
-  //- ================= SECTION 4: FEEDBACKS (CARD REVIEW ĐƯỢC CHUẨN HÓA TRẮNG TRONG SUỐT ĐỔ BÓNG) =================
   section.py-24(class="bg-[#F7F4EF]")
     .container.mx-auto.px-6.text-center
       p(class="text-[#FF69B4] text-xs font-bold uppercase tracking-widest mb-2") Trải nghiệm thực tế

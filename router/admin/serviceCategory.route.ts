@@ -7,8 +7,9 @@ const router = express.Router();
 router.get("/", controller.index);
 router.get("/create", controller.create);
 router.post("/create", controller.store);
-// router.get("/edit/:id", controller.edit);
+router.get("/edit/:id", controller.edit);
+router.patch("/edit/:id", controller.update);
 router.get("/detail/:id", controller.details);
-
+router.patch("/delete/:id", controller.deleteCategory);
 
 export const serviceCategoryRouter   = router;

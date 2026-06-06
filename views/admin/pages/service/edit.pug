@@ -1,46 +1,59 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
-
 block main
-  main.flex-1.p-12
-    +alert(3000)
+  +alert(3000)
+  main(class="flex-1 p-12 bg-[#fafafa] min-h-screen")
     header.flex.justify-between.items-end.mb-10
       div
         h2.text-4xl.font-bold.serif-font.italic Chỉnh sửa dịch vụ
-        p.text-neutral-400.mt-2.text-sm Cập nhật thông tin gói dịch vụ chung cho Susannie Studio.
+        p.text-neutral-400.mt-2.text-sm Cập nhật thông tin gói dịch vụ chung cho Lyra Hair.
       a.text-sm.font-bold.uppercase.tracking-widest.flex.items-center.gap-2(href="/admin/service" class='text-neutral-400 hover:text-black')
         i.fa-solid.fa-arrow-left
         | Quay lại
 
-    .form-card.max-w-4xl.p-10
-      form(action=`/${prefixAdmin}/service/edit/${service.id}` method="POST" enctype="multipart/form-data")
+    .form-card.max-w-4xl.p-10.bg-white.rounded-3xl.shadow-sm.border.border-neutral-100
+      form(action="/admin/service/edit/${service.id}" method="POST" enctype="multipart/form-data")
         .grid.grid-cols-2.gap-8
           //- Tên dịch vụ (name)
           .col-span-2
             label.block.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-3 Tên dịch vụ
             input.w-full.px-5.py-4.rounded-2xl.border.border-neutral-100(type="text" name="name" value=service.name required)
 
-          //- ĐÃ XÓA: Chuyên viên thực hiện, Giờ bắt đầu, Giờ kết thúc
-
           //- Giá (price)
           .col-span-2(class='md:col-span-1')
             label.block.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-3 Giá dịch vụ (VNĐ)
             input.w-full.px-5.py-4.rounded-2xl.border.border-neutral-100(type="number" name="price" value=service.price)
+
+          //- Danh mục dịch vụ (category_id)
+          .col-span-2(class='md:col-span-1')
+            label.block.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-3 Danh mục dịch vụ
+            select.w-full.px-5.py-4.rounded-2xl.border.border-neutral-100.bg-white.cursor-pointer(name="category_id")
+              option(value="") -- Chọn danh mục dịch vụ --
+              if categories && categories.length > 0
+                each category in categories
+                  option(
+                    value=category.id 
+                    selected=(category.id == service.category_id)
+                  ) #{category.name}
 
           //- Tiện ích (amenities)
           .col-span-2
             label.block.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-3 Tiện ích đi kèm (Mô tả ngắn)
             textarea.w-full.px-5.py-4.rounded-2xl.border.border-neutral-100(name="amenities" rows="3") #{service.amenities}
 
-          //- Hình ảnh
-          - const hasImages = service.images && service.images.length > 0
+          //- Khung xử lý upload và hiển thị đa ảnh
+          //- Ép kiểu dữ liệu an toàn phòng trường hợp mảng lỗi
+          - const rawImages = service.images
+          - const imageArray = Array.isArray(rawImages) ? rawImages : (rawImages ? [rawImages] : [])
+          - const hasImages = imageArray.length > 0
+
           .col-span-2(upload-image class=hasImages ? "has-image" : "")
             label.block.text-xs.font-black.uppercase.tracking-widest.text-neutral-400.mb-3 Hình ảnh minh họa
             
+            //- Khu vực 1: Kéo thả file (Chỉ hiện khi chưa chọn ảnh nào)
             .relative.w-full.border-2.border-dashed.border-neutral-100.rounded-2xl.bg-neutral-50.transition-all(
-              class='min-h-[200px] hover:border-[#D2B48C] hover:bg-white group p-4'
+              class=`min-h-[150px] hover:border-rose-400 hover:bg-white group p-6 flex flex-col items-center justify-center ${hasImages ? 'hidden' : 'group-[.has-image]:hidden'}`
             )
-              //- Input gốc
               input.absolute.inset-0.w-full.h-full.opacity-0.cursor-pointer.z-50(
                 type="file" 
                 name="images" 
@@ -48,37 +61,33 @@ block main
                 multiple
                 upload-image-input
               )
-              
-              //- Trạng thái 1: Khi chưa có ảnh
-              .flex.flex-col.items-center.justify-center.h-full.py-10(class="group-[.has-image]:hidden")
-                i.fa-solid.fa-cloud-arrow-up.text-4xl.text-neutral-300(class='group-hover:text-[#D2B48C] transition-colors')
-                p.text-xs.text-neutral-400.mt-4.font-bold Nhấn hoặc kéo thả ảnh mới vào đây
-                p.text-neutral-300.uppercase.tracking-widest.mt-1(class="text-[10px]") (JPG, PNG, WEBP)
+              i.fa-solid.fa-cloud-arrow-up.text-4xl.text-neutral-300(class='group-hover:text-rose-400 transition-colors')
+              p.text-xs.text-neutral-400.mt-4.font-bold Nhấn hoặc kéo thả ảnh mới vào đây
+              p.text-neutral-300.uppercase.tracking-widest.mt-1(class="text-[10px]") (JPG, PNG, WEBP)
 
-              //- Trạng thái 2: Hiển thị danh sách ảnh cũ hoặc mới
-              .hidden.grid.grid-cols-2.gap-4(
-                class="md:grid-cols-4 lg:grid-cols-5 group-[.has-image]:grid relative z-40"
-                upload-image-container
-              )
-                //- Nút xóa tất cả
-                button.absolute.right-0.font-black.uppercase.tracking-widest.text-red-400(
-                  type="button"
-                  close-icon-upload
-                  class="text-[10px] -top-12 hover:text-red-600 z-[60]"
-                ) 
-                  i.fa-solid.fa-trash-can.mr-1
-                  | Xóa tất cả ảnh đã chọn
+            //- Khu vực 2: Khung lưới ảnh (Nút xóa tất cả và ảnh cũ)
+            div(
+              class=`grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5 relative pt-10 ${hasImages ? '' : 'hidden'} group-[.has-image]:grid`
+              upload-image-container
+            )
+              button.absolute.right-0.font-black.uppercase.tracking-widest.text-red-400(
+                type="button"
+                close-icon-upload
+                class="text-[10px] top-0 hover:text-red-600 z-[60] cursor-pointer"
+              ) 
+                i.fa-solid.fa-trash-can.mr-1
+                | Xóa tất cả ảnh đã chọn
 
-                //- Hiển thị ảnh đang có trong CSDL
-                if hasImages
-                  each imgUrl in service.images
-                    .relative.aspect-square.w-full.h-full.rounded-xl.overflow-hidden.border.border-neutral-200.shadow-sm
-                      img.w-full.h-full.object-cover(src=imgUrl)
-                      .absolute.inset-0.bg-black/20.opacity-0.transition-opacity(class='hover:opacity-100 flex items-center justify-center')
-                        i.fa-solid.fa-eye.text-white
+              each imgUrl in imageArray
+                .relative.aspect-square.w-full.rounded-xl.overflow-hidden.border.border-neutral-200.shadow-sm.group-image-item
+                  img.w-full.h-full.object-cover(src=imgUrl)
 
-        //- Nút Submit
-        .mt-10.pt-10.border-t.border-neutral-50.flex.justify-end
-          button.px-10.py-4.bg-black.rounded-full.font-bold.text-sm.uppercase.tracking-widest.transition-all(type="submit" class='text-[#D2B48C] hover:scale-105 active:scale-95 shadow-xl shadow-black/10')
-            i.fa-solid.fa-floppy-disk.mr-2
-            | Lưu thay đổi
+
+      //- KHU VỰC QUAN TRỌNG: Tách hẳn ra khỏi khối grid-cols-2 của form để tránh vỡ nút bấm
+      .mt-12.pt-8.border-t.border-neutral-100.flex.justify-end
+        button.px-8.py-3.bg-rose-400.rounded-full.font-bold.text-sm.uppercase.tracking-widest.transition-all.text-white(
+          type="submit" 
+          class='hover:bg-rose-500 hover:scale-105 active:scale-95 shadow-lg shadow-rose-100 cursor-pointer block'
+        )
+          i.fa-solid.fa-floppy-disk.mr-2
+          | Lưu thay đổi

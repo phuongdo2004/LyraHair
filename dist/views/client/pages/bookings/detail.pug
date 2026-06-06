@@ -1,0 +1,105 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  
+  //- LỚP BỌC MỚI: Tràn toàn bộ chiều rộng màn hình để nhuộm màu #fafafa dứt điểm 2 bên rìa
+  div(class="w-full bg-[#fafafa] min-h-screen py-6 md:py-10")
+    
+    //- Container chính: Căn giữa và giới hạn độ rộng để tạo cảm giác sang trọng
+    //- Bỏ p-6 md:p-10 ra ngoài lớp bọc để tránh bị dính khoảng trắng, thêm px-4 để responsive mượt
+    main.flex-1.max-w-4xl.mx-auto.pb-16.px-4(class="md:px-0")
+      
+      //- Điều hướng quay lại
+      div(class="mb-8")
+        a.text-sm.font-bold.text-neutral-400.flex.items-center.gap-2.transition-all(
+          href="/bookings/history"
+          class="hover:text-[#FF2D55]"
+        )
+          i.fa-solid.fa-chevron-left
+          | Quay lại lịch sử đặt lịch
+
+      //- Card thông tin chính
+      .bg-white.rounded-3xl.border.border-neutral-100.shadow-sm.overflow-hidden
+        
+        //- PHẦN 1: Banner trạng thái (Highlight Status) - Phối màu mịn màng hơn trên nền #fafafa
+        .p-8.flex.flex-wrap.justify-between.items-center.gap-6(class="bg-[#FFF5F6] md:p-10 border-b border-rose-100/40")
+          div
+            span.block.text-xs.font-black.uppercase.tracking-widest(class="text-[#FF2D55] mb-2") Trạng thái cuộc hẹn
+            .flex.items-center.gap-3
+              if booking.status === 'deposited'
+                .w-3.h-3.rounded-full.bg-green-500.animate-pulse
+                h2.text-2xl.font-black.text-neutral-800 Đã cọc tiền thành công
+              else if booking.status === 'pending'
+                .w-3.h-3.rounded-full.bg-amber-500
+                h2.text-2xl.font-black.text-neutral-800 Đang chờ xác nhận
+              else if booking.status === 'completed'
+                .w-3.h-3.rounded-full.bg-blue-500
+                h2.text-2xl.font-black.text-neutral-800 Đã hoàn thành dịch vụ
+              else
+                .w-3.h-3.rounded-full.bg-neutral-400
+                h2.text-2xl.font-black.text-neutral-800 Đã hủy bỏ
+          
+          //- ID lịch đặt hiển thị to
+          .text-right
+            p.text-xs.font-black.text-neutral-400.uppercase.tracking-widest Mã lịch đặt
+            p.text-xl.font-black.text-neutral-800(class="opacity-50") ##{booking.id ? booking.id.substring(0, 8).toUpperCase() : 'ĐANG CẬP NHẬT'}
+
+        //- PHẦN 2: Nội dung chi tiết (Chia 2 cột trên màn hình lớn)
+        .p-8.grid.grid-cols-1.gap-12(class="md:p-12 md:grid-cols-2")
+          
+          //- Cột trái: Thời gian & Địa điểm & Chuyên viên
+          .space-y-8
+            div
+              h3.text-xs.font-black.text-neutral-400.uppercase.tracking-widest.mb-4(class="flex items-center gap-2")
+                i.fa-solid.fa-clock-rotate-left
+                | Thông tin cuộc hẹn
+              .bg-neutral-50.rounded-2xl.p-5.space-y-3
+                p.text-lg.font-bold.text-neutral-800
+                  | #{booking.booking_date ? new Date(booking.booking_date).toLocaleDateString('vi-VN', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}) : '--/--/----'}
+                p.text-3xl.font-black(class="text-[#FF2D55]") #{booking.slot_time}
+                
+                //- Khối chuyên viên
+                .pt-3.border-t.border-neutral-200.flex.items-center.gap-2.text-sm.text-neutral-600
+                  i.fa-solid.fa-user-tie.text-neutral-400
+                  span Chuyên viên: 
+                  span.font-bold.text-neutral-800 #{artistName}
+
+            div
+              h3.text-xs.font-black.text-neutral-400.uppercase.tracking-widest.mb-4(class="flex items-center gap-2")
+                i.fa-solid.fa-location-dot
+                | Địa điểm thực hiện
+              p.text-base.text-neutral-600.leading-relaxed
+                if booking.address
+                  | #{booking.address}
+                else
+                  | Thực hiện trực tiếp tại Studio (Địa chỉ mặc định)
+
+          //- Cột phải: Tài chính & Thanh toán
+          div
+            h3.text-xs.font-black.text-neutral-400.uppercase.tracking-widest.mb-4(class="flex items-center gap-2")
+              i.fa-solid.fa-receipt
+              | Tóm tắt thanh toán
+            
+            .space-y-4
+              .flex.justify-between.items-center
+                span.text-neutral-500 Tổng giá trị dịch vụ
+                span.text-lg.font-bold.text-neutral-800 #{booking.price ? Number(booking.price).toLocaleString('vi-VN') : '0'} đ
+              
+              .flex.justify-between.items-center
+                span.text-neutral-500 Số tiền đã đặt cọc
+                span.text-lg.font-bold.text-green-600 - #{booking.deposit ? Number(booking.deposit).toLocaleString('vi-VN') : '0'} đ
+              
+              .pt-4.border-t.border-dashed.border-neutral-200.flex.justify-between.items-center
+                div
+                  span.text-sm.font-black.text-neutral-800 Còn lại cần thanh toán
+                  p.text-xs.text-neutral-400 (Tại cửa hàng sau khi làm xong)
+                span.text-3xl.font-black(class="text-[#FF2D55]")
+                  | #{booking.remaining_balance ? Number(booking.remaining_balance).toLocaleString('vi-VN') : '0'} đ
+
+      //- PHẦN 3: Chân trang (Đặt ra ngoài Card, thêm class để chống tràn lề)
+      .mt-8.pt-4.flex.flex-col.items-center.justify-between.gap-4.w-full(class="md:flex-row")
+        p.text-sm.text-neutral-400.block.w-full.text-left
+          | Lịch hẹn này được tạo vào lúc: 
+          span.font-bold.text-neutral-600 #{booking.created_at ? new Date(booking.created_at).toLocaleString('vi-VN') : '--/--/---- --:--'}

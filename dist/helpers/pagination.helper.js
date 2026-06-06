@@ -1,5 +1,6 @@
 import Service from "../model/service.model.js";
-export const pagi = async (req, res) => {
+// ĐÃ SỬA TẠI ĐÂY: Nhận thêm tham số findCondition (mặc định là { is_deleted: 0 })
+export const pagi = async (req, res, findCondition = { is_deleted: 0 }) => {
     const pagination = {
         currentPage: 1,
         limitItem: 6,
@@ -15,11 +16,9 @@ export const pagi = async (req, res) => {
     }
     pagination.skip = (pagination.currentPage - 1) * pagination.limitItem;
     try {
-        // SỬA TẠI ĐÂY: Chỉ count dựa trên cột 'id', không lấy 'rating'
+        // ĐÃ SỬA TẠI ĐÂY: Đếm dựa trên findCondition động truyền từ controller vào
         const count = await Service.count({
-            where: {
-                is_deleted: 0
-            }
+            where: findCondition
         });
         pagination.count = count;
         pagination.totalPage = Math.ceil(count / pagination.limitItem);

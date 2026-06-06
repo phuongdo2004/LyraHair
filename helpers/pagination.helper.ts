@@ -9,7 +9,8 @@ interface Pagination {
   count: number;
 }
 
-export const pagi = async (req: Request, res: Response): Promise<Pagination> => {
+// ĐÃ SỬA TẠI ĐÂY: Nhận thêm tham số findCondition (mặc định là { is_deleted: 0 })
+export const pagi = async (req: Request, res: Response, findCondition: any = { is_deleted: 0 }): Promise<Pagination> => {
   const pagination: Pagination = {
     currentPage: 1,
     limitItem: 6,
@@ -28,11 +29,9 @@ export const pagi = async (req: Request, res: Response): Promise<Pagination> => 
   pagination.skip = (pagination.currentPage - 1) * pagination.limitItem;
 
   try {
-    // SỬA TẠI ĐÂY: Chỉ count dựa trên cột 'id', không lấy 'rating'
+    // ĐÃ SỬA TẠI ĐÂY: Đếm dựa trên findCondition động truyền từ controller vào
     const count = await Service.count({
-      where: {
-        is_deleted: 0
-      }
+      where: findCondition
     });
 
     pagination.count = count;

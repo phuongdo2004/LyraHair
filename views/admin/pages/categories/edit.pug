@@ -1,0 +1,92 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main
+  +alert(3000)
+  
+  main.flex-1.p-10.bg-white.min-h-screen
+    //- ================= HEADER SECTION =================
+    header.flex.justify-between.items-center.mb-10
+      div
+        h2.text-3xl.font-bold.serif-font.italic Chỉnh sửa Danh mục
+        p.text-neutral-400.text-sm Cập nhật thông tin phân loại nhóm dịch vụ của cửa hàng.
+      
+      .flex.gap-4
+        a.px-6.py-3.rounded-full.font-bold.text-sm.uppercase.tracking-widest.flex.items-center.gap-2.text-neutral-600.bg-neutral-100.transition-all(
+          href=`/${prefixAdmin}/categories`
+          class='hover:bg-neutral-200'
+        )
+          i.fa-solid.fa-arrow-left
+          | Quay lại danh sách
+
+    //- ================= FORM EDIT SECTION =================
+    //- ĐÃ FIX TẠI ĐÂY: Đưa rounded-[32px] vào trong class() để tránh lỗi compile của Pug
+    .max-w-3xl.bg-white.border.border-neutral-100.p-8.shadow-sm(class="rounded-[32px]")
+      form(
+        action=`/${prefixAdmin}/categories/edit/${category.id}?_method=PATCH`
+        method="POST"
+        id="form-edit-category"
+      )
+        //- 1. Trường nhập Tên Danh Mục (Trường bắt buộc)
+        .mb-6
+          label.block.text-sm.font-black.text-neutral-700.uppercase.tracking-wider.mb-2(for="name") 
+            | Tên Danh mục 
+            span.text-red-500 *
+          input#name.w-full.px-6.py-4.rounded-xl.border.border-neutral-200.text-base.font-medium.transition-all(
+            type="text"
+            name="name"
+            value=category.name
+            placeholder="Ví dụ: ASMR Thư Giãn, Chăm sóc da mặt..."
+            required
+            class='focus:border-[#FF2D55] focus:ring-1 focus:ring-[#FF2D55] outline-none text-neutral-800'
+          )
+        
+        //- 2. Trường nhập Mô tả ngắn (Cho phép null)
+        .mb-6
+          label.block.text-sm.font-black.text-neutral-700.uppercase.tracking-wider.mb-2(for="description") 
+            | Mô tả danh mục
+          textarea#description.w-full.px-6.py-4.rounded-xl.border.border-neutral-200.text-base.font-medium.transition-all(
+            name="description"
+            rows="5"
+            placeholder="Nhập mô tả ngắn gọn về nhóm dịch vụ này để khách hàng dễ hiểu..."
+            class='focus:border-[#FF2D55] focus:ring-1 focus:ring-[#FF2D55] outline-none text-neutral-800'
+          ) #{category.description}
+
+        //- 3. Trạng thái hoạt động (Ứng với trường is_deleted trong Model)
+        .mb-8
+          label.block.text-sm.font-black.text-neutral-700.uppercase.tracking-wider.mb-3
+            | Trạng thái hiển thị
+          .flex.items-center.gap-6
+            //- Lựa chọn 1: Hoạt động (is_deleted = 0)
+            label.flex.items-center.gap-3.cursor-pointer.group
+              input.w-5.h-5.accent-red-500(
+                type="radio"
+                name="is_deleted"
+                value="0"
+                checked=(category.is_deleted === 0)
+              )
+              span.text-sm.font-bold.text-neutral-700(class='group-hover:text-black') Hoạt động (Hiện)
+            
+            //- Lựa chọn 2: Ẩn đi (is_deleted = 1)
+            label.flex.items-center.gap-3.cursor-pointer.group
+              input.w-5.h-5.accent-red-500(
+                type="radio"
+                name="is_deleted"
+                value="1"
+                checked=(category.is_deleted === 1)
+              )
+              span.text-sm.font-bold.text-neutral-600(class='group-hover:text-black') Đã ẩn (Khóa)
+
+        //- ================= BUTTON SUBMIT =================
+        .flex.items-center.justify-end.gap-4.pt-6.border-t.border-neutral-100
+          a.px-6.py-3.rounded-full.font-bold.text-sm.uppercase.tracking-widest.text-neutral-500.transition-all(
+            href=`/${prefixAdmin}/categories`
+            class='hover:bg-neutral-50'
+          ) Hủy bỏ
+
+          button.px-8.py-3.rounded-full.font-bold.text-sm.uppercase.tracking-widest.text-white.transition-all.shadow-lg(
+            type="submit"
+            class='bg-[#FF2D55] hover:bg-[#ff4f70] shadow-[#FF2D55]/20'
+          ) 
+            i.fa-solid.fa-floppy-disk.mr-2
+            | Lưu thay đổi

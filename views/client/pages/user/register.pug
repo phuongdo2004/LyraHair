@@ -4,80 +4,51 @@ include ../../mixins/alert.pug
 block main
   +alert(3000)
   
-  //- Phần Banner trên cùng - Đồng bộ tone hồng neon chủ đạo
-  section.login-banner.py-24.text-center.relative
-    h2.text-5xl.font-bold.serif-font.italic.mb-4.drop-shadow-lg(class='md:text-6xl text-[#FF69B4]') Đăng ký
-    p.text-xs.uppercase.font-medium(class='text-white/60 md:text-sm tracking-[0.4em]')
-      | Trang chủ / 
-      span(class='text-[#FF69B4]') Đăng ký
-
-  //- Khung form đăng ký: Đổi sang nền dark card (bg-[#1E1E1E]) và bọc class an toàn không lo lỗi cú pháp
-  main.container.mx-auto.px-6.mb-20.relative.z-10(class='-mt-16')
-    .max-w-lg.mx-auto.p-10.border(class='bg-[#1E1E1E] shadow-2xl rounded-[40px] md:p-14 border-white/5 shadow-[#FF69B4]/5')
+  //- Sử dụng background gradient nhẹ để làm nổi bật form
+  div(class='min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-white p-4')
+    
+    //- Container chính
+    div(class='max-w-5xl w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[32px] overflow-hidden flex')
       
-      form.space-y-6(action='/user/register' method='POST')
+      //- CỘT TRÁI: Hình ảnh thương hiệu (Tạo cảm giác chuyên nghiệp)
+      div(class='hidden md:flex w-5/12 bg-[#121212] p-12 text-white relative flex-col justify-end')
+        //- Bạn có thể thay link ảnh này thành ảnh tiệm hoặc ảnh tóc nghệ thuật
+        img(src='https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?q=80&w=1000&auto=format&fit=crop', class='absolute inset-0 w-full h-full object-cover opacity-40')
         
-        //- Ô nhập Họ và tên
-        div
-          label.uppercase.font-black.tracking-widest.block.mb-2.ml-1(class='text-[11px] text-[#FFB7D5]') Họ và tên
-          input.w-full.px-6.py-4.rounded-2xl.text-sm.font-medium.border.text-white(
-            type='text' 
-            name='fullName' 
-            placeholder='Nguyễn Văn A' 
-            class='border-white/10 bg-white/5 focus:border-[#FF69B4] focus:bg-white/10 outline-none transition-all placeholder:text-white/30' 
-            required
-          )
-        
-        //- Ô nhập Tài khoản Email
-        div
-          label.uppercase.font-black.tracking-widest.block.mb-2.ml-1(class='text-[11px] text-[#FFB7D5]') Tài khoản Email
-          input.w-full.px-6.py-4.rounded-2xl.text-sm.font-medium.border.text-white(
-            type='email' 
-            name='email' 
-            placeholder='nhapemail@gmail.com' 
-            class='border-white/10 bg-white/5 focus:border-[#FF69B4] focus:bg-white/10 outline-none transition-all placeholder:text-white/30' 
-            required
-          )
-        
-        //- Ô nhập Số điện thoại
-        div
-          label.uppercase.font-black.tracking-widest.block.mb-2.ml-1(class='text-[11px] text-[#FFB7D5]') Số điện thoại
-          input.w-full.px-6.py-4.rounded-2xl.text-sm.font-medium.border.text-white(
-            type='text' 
-            name='phone' 
-            placeholder='090xxxxxxx' 
-            class='border-white/10 bg-white/5 focus:border-[#FF69B4] focus:bg-white/10 outline-none transition-all placeholder:text-white/30'
-          )
+        div(class='relative z-10')
+          h2(class='text-5xl font-serif italic font-bold mb-4') Lyra
+          p(class='text-white/80 leading-relaxed text-sm tracking-wide') 
+            | Hãy gia nhập cộng đồng Lyra Hair Studio. 
+            | Trải nghiệm dịch vụ làm đẹp chuẩn 5 sao với đội ngũ chuyên gia hàng đầu.
 
-        //- Ô nhập Mật khẩu
-        div
-          label.uppercase.font-black.tracking-widest.block.mb-2.ml-1(class='text-[11px] text-[#FFB7D5]') Mật khẩu
-          input.w-full.px-6.py-4.rounded-2xl.text-sm.font-medium.border.text-white(
-            type='password' 
-            name='password' 
-            placeholder='********' 
-            class='border-white/10 bg-white/5 focus:border-[#FF69B4] focus:bg-white/10 outline-none transition-all placeholder:text-white/30' 
-            required
-          )
-        
-        //- Checkbox đồng ý điều khoản
-        .flex.items-center.gap-2.text-xs.font-bold.px-1
-          input#terms.w-4.h-4.rounded(
-            type='checkbox' 
-            class='border-white/20 bg-white/5 text-[#FF69B4] focus:ring-[#FF69B4] focus:ring-offset-[#1E1E1E]' 
-            required
-          )
-          label.cursor-pointer(for='terms' class='text-white/60') Tôi đồng ý với Điều khoản & Chính sách
+      //- CỘT PHẢI: Form Đăng ký
+      div(class='w-full md:w-7/12 p-10 md:p-16 flex flex-col justify-center')
+        div(class='mb-8')
+          h2(class='text-3xl font-bold text-gray-900 mb-2') Tạo tài khoản
+          p(class='text-gray-500') Bắt đầu hành trình làm đẹp của bạn ngay hôm nay.
 
-        //- Nút Đạo tài khoản ngay
-        button.w-full.py-5.rounded-2xl.font-black.text-sm.uppercase.shadow-xl.transition-all.border-none.cursor-pointer(
-          type='submit' 
-          class='tracking-[0.2em] bg-[#FF69B4] text-[#121212] hover:bg-white hover:text-[#121212] shadow-[#FF69B4]/20 hover:scale-[1.01]'
-        )
-          | Tạo tài khoản ngay
+        form(action='/user/register', method='POST', class='space-y-5')
+          
+          div
+            label(class='block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2') Họ và tên
+            input(type='text', name='fullName', placeholder='Nguyễn Văn A', class='w-full px-0 py-3 border-b-2 border-gray-100 outline-none focus:border-[#FF69B4] transition-all text-gray-800')
+          
+          div
+            label(class='block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2') Tài khoản Email
+            input(type='email', name='email', placeholder='name@gmail.com', class='w-full px-0 py-3 border-b-2 border-gray-100 outline-none focus:border-[#FF69B4] transition-all text-gray-800')
+          
+          div
+            label(class='block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2') Mật khẩu
+            input(type='password', name='password', placeholder='••••••••', class='w-full px-0 py-3 border-b-2 border-gray-100 outline-none focus:border-[#FF69B4] transition-all text-gray-800')
 
-        //- Chuyển hướng sang trang đăng nhập nếu đã có tài khoản
-        .text-center.mt-8
-          p.text-xs.font-bold(class='text-white/60')
-            | Bạn đã có tài khoản? 
-            a.ml-1.transition-colors.font-black(href='/user/login' class='text-[#FF69B4] hover:text-white') Đăng nhập ngay
+          div(class='flex items-center gap-2')
+            input#terms(type='checkbox', name='terms', required, class='w-4 h-4 rounded border-gray-300 text-[#FF69B4] focus:ring-[#FF69B4]')
+            label(for='terms', class='text-sm text-gray-600') Tôi đồng ý với Điều khoản & Chính sách
+
+          button(type='submit', class='w-full py-4 mt-4 text-white rounded-2xl font-bold hover:shadow-lg hover:shadow-[#FF69B4]/30 transition-all bg-[#FF69B4]') 
+            | Tạo tài khoản ngay
+          
+          div(class='text-center mt-6')
+            p(class='text-sm text-gray-500')
+              | Bạn đã có tài khoản? 
+              a(href='/user/login', class='font-bold text-[#FF69B4] hover:underline ml-1') Đăng nhập ngay

@@ -191,43 +191,6 @@ export const store = async (req, res) => {
 //         res.redirect("back");
 //     }
 // }
-// [GET] /admin/service/detail/:id
-// export const detail = async (req: Request, res: Response) => {
-//     try {
-//         const id = req.params.id;
-//         // Chỉ lấy các trường hiện có trong Database
-//         const service = await Service.findOne({
-//             where: { id: id, is_deleted: 0 },
-//             raw: true
-//         });
-//         if (!service) {
-//             req.flash('error', 'Không tìm thấy dịch vụ');
-//             return res.redirect("back");
-//         }
-//         // Parse JSON an toàn cho ảnh và tiện ích
-//         try {
-//             if ((service as any).images) {
-//                 const parsedImages = JSON.parse((service as any).images);
-//                 (service as any).images = Array.isArray(parsedImages) ? parsedImages : [parsedImages];
-//             } else {
-//                 (service as any).images = [];
-//             }
-//             if ((service as any).amenities) {
-//                 const parsedAmenities = JSON.parse((service as any).amenities);
-//                 (service as any).amenities = parsedAmenities;
-//             }
-//         } catch (e) {
-//             console.error("Lỗi parse JSON:", e);
-//         }
-//         res.render("admin/pages/service/detail.pug", {
-//             service: service,
-//             // Đã xóa phần tìm Artist vì cấu trúc bảng mới không còn dùng chung artist_id
-//         });
-//     } catch (error) {
-//         console.error("Lỗi trang chi tiết:", error);
-//         res.redirect("back");
-//     }
-// }
 export const detail = async (req, res) => {
     try {
         const id = req.params.id;
@@ -283,56 +246,6 @@ export const detail = async (req, res) => {
         res.redirect("back");
     }
 };
-// [GET] /admin/service/edit/:id
-// export const edit = async (req: Request, res: Response) => {
-//     try {
-//         const id = req.params.id;
-//         const service = await Service.findOne({
-//             where: { id: id, is_deleted: 0 },
-//             raw: true
-//         });
-//         if (!service) return res.redirect("back");
-//         // Parse dữ liệu cũ để hiện lên form
-//         try {
-//             (service as any).amenities = JSON.parse((service as any).amenities || "\"\"");
-//             (service as any).images = JSON.parse((service as any).images || "[]");
-//         } catch (e) {}
-//         const artists = await Artist.findAll({ raw: true }) || [];
-//         res.render("admin/pages/service/edit", {
-//             service: service,
-//             artists: artists,
-//             message: req.flash()
-//         });
-//     } catch (error) {
-//         res.redirect("back");
-//     }
-// }
-// // [POST] /admin/service/edit/:id
-// export const editPost = async (req: Request, res: Response) => {
-//     try {
-//         const id = req.params.id;
-//         const dataUpdate = req.body;
-//         // 1. Xử lý images
-//         if (dataUpdate.images) {
-//             dataUpdate.images = Array.isArray(dataUpdate.images) 
-//                 ? JSON.stringify(dataUpdate.images) 
-//                 : JSON.stringify([dataUpdate.images]);
-//         }
-//         // 2. Xử lý duration
-//         if (dataUpdate.duration) {
-//             dataUpdate.duration = parseInt(dataUpdate.duration.toString().replace(/\D/g, ''));
-//         }
-//         // 3. Xử lý amenities
-//         dataUpdate.amenities = JSON.stringify(dataUpdate.amenities || "");
-//         await Service.update(dataUpdate, { where: { id: id } });
-//         req.flash("success", "Đã cập nhật thành công!");
-//         res.redirect(`${system.prefixAdmin}/services`);
-//     } catch (error) {
-//         console.error("Lỗi Update:", error);
-//         res.redirect("back");
-//     }
-// };
-// [GET] /admin/service/edit/:id
 export const edit = async (req, res) => {
     try {
         const id = req.params.id;
@@ -342,6 +255,12 @@ export const edit = async (req, res) => {
         });
         if (!service)
             return res.redirect(`/${system.prefixAdmin}/service`);
+        // --- ĐOẠN THÊM MỚI: Lấy tất cả danh mục chưa bị xóa để hiện lên form option ---
+        const categories = await ServiceCategory.findAll({
+            where: { is_deleted: 0 }, // Nếu DB không có cột này thì bỏ điều kiện where đi nhé
+            raw: true
+        });
+        // ------------------------------------------------------------------------
         // Parse dữ liệu để hiện lên form
         try {
             if (service.images) {
@@ -351,7 +270,6 @@ export const edit = async (req, res) => {
             else {
                 service.images = [];
             }
-            // Nếu amenities là chuỗi JSON thì parse, không thì để nguyên
             if (service.amenities) {
                 try {
                     service.amenities = JSON.parse(service.amenities);
@@ -362,8 +280,12 @@ export const edit = async (req, res) => {
         catch (e) {
             console.error("Lỗi parse dữ liệu Edit:", e);
         }
+        console.log(service.images);
+        const imageArray = service.images || [];
         res.render("admin/pages/service/edit", {
             service: service,
+            imageArray: imageArray, // Truyền mảng ảnh đã parse sang Pug để hiển thị
+            categories: categories, // <-- TRUYỀN THÊM BIẾN NÀY SANG PUG
             message: req.flash()
         });
     }
@@ -371,42 +293,6 @@ export const edit = async (req, res) => {
         res.redirect("back");
     }
 };
-// [PATCH] /admin/service/edit/:id
-// export const editPost = async (req: Request, res: Response) => {
-//     try {
-//         const id = req.params.id;
-//         const dataUpdate = req.body;
-//         // 1. Xử lý images (Giữ ảnh cũ nếu không chọn ảnh mới)
-//         // Kiểm tra nếu có dữ liệu images từ middleware upload gửi lên
-//         if (dataUpdate.images && dataUpdate.images.length > 0) {
-//             dataUpdate.images = Array.isArray(dataUpdate.images) 
-//                 ? JSON.stringify(dataUpdate.images) 
-//                 : JSON.stringify([dataUpdate.images]);
-//         } else {
-//             /**
-//              * QUAN TRỌNG: Nếu người dùng không chọn ảnh mới, 
-//              * ta xóa luôn key 'images' ra khỏi đối tượng update.
-//              * Như vậy Sequelize sẽ không tác động đến cột images trong DB.
-//              */
-//             delete dataUpdate.images;
-//         }
-//         // 2. Xử lý duration & price (Ép kiểu số)
-//         if (dataUpdate.duration) dataUpdate.duration = parseInt(dataUpdate.duration);
-//         if (dataUpdate.price) dataUpdate.price = parseInt(dataUpdate.price);
-//         // 3. Xử lý amenities
-//         // Lưu ý: Nếu bạn muốn lưu dạng chuỗi để hiện lên textarea thì không cần stringify,
-//         // nhưng nếu DB yêu cầu JSON thì giữ nguyên dòng dưới.
-//         dataUpdate.amenities = JSON.stringify(dataUpdate.amenities || "");
-//         // Thực hiện cập nhật
-//         await Service.update(dataUpdate, { where: { id: id } });
-//         req.flash("success", "Đã cập nhật thành công!");
-//         res.redirect(`/${system.prefixAdmin}/service`);
-//     } catch (error) {
-//         console.error("Lỗi Update:", error);
-//         req.flash("error", "Cập nhật thất bại!");
-//         res.redirect("back");
-//     }
-// };
 export const editPost = async (req, res) => {
     try {
         const id = req.params.id;

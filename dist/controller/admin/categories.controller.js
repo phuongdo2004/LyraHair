@@ -26,6 +26,60 @@ export const create = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 };
+export const edit = async (req, res) => {
+    const id = req.params.id;
+    const category = await ServiceCategory.findOne({
+        where: { id: id },
+        raw: true
+    });
+    res.render("admin/pages/categories/edit.pug", {
+        category: category
+    });
+};
+export const update = async (req, res) => {
+    const id = req.params.id;
+    const { name, description, is_deleted } = req.body;
+    try {
+        const category = await ServiceCategory.findOne({ where: { id: id } });
+        if (!category) {
+            return res.status(404).send("Danh mục không tồn tại");
+        }
+        await category.update({ name: name.trim(), description: description || "", is_deleted: is_deleted ? 1 : 0 });
+        res.redirect('/admin/categories');
+    }
+    catch (error) {
+        console.error("Error updating service category:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+export const deleteCategory = async (req, res) => {
+    try {
+        const id = req.params.id;
+        // 1. Kiểm tra xem danh mục có tồn tại trong hệ thống không
+        const category = await ServiceCategory.findOne({
+            where: {
+                id: id,
+                is_deleted: 0 // Chỉ tìm những danh mục chưa xóa
+            }
+        });
+        if (!category) {
+            res.redirect('/admin/categories');
+        }
+        // 2. Cập nhật trường is_deleted thành 1 để chuyển trạng thái thành "Đã ẩn"
+        await ServiceCategory.update({
+            is_deleted: 1
+        }, {
+            where: { id: id }
+        });
+        // 3. Thông báo thành công và chuyển hướng quay lại trang trước
+        // req.flash("success", "Xóa danh mục dịch vụ thành công!");
+        res.redirect('/admin/categories');
+    }
+    catch (error) {
+        console.error("Lỗi khi chạy hàm deleteCategory:", error);
+        res.status(500).send("Có lỗi xảy ra ở hệ thống, không thể xóa danh mục!");
+    }
+};
 export const store = async (req, res) => {
     try {
         const { name } = req.body;
